@@ -866,10 +866,10 @@ Use this checklist to track everything that needs to be added from the pasted pr
 - [x] `composer install` completes.
 - [x] `npm install` completes.
 - [x] `npm run build` creates `public/build/manifest.json`.
-- [ ] XAMPP MySQL/MariaDB is running.
-- [ ] `jobportal` database exists.
-- [ ] `php artisan migrate --seed` completes.
-- [ ] Super admin is created from `.env`.
+- [x] XAMPP MySQL/MariaDB is running.
+- [x] `jobportal` database exists.
+- [x] `php artisan migrate --seed` completes.
+- [x] Super admin is created from `.env`.
 - [ ] Homepage loads.
 - [ ] Job search page loads.
 - [ ] Job detail page loads.

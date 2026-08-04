@@ -14,6 +14,7 @@ class DatabaseSeeder extends Seeder
             RolePermissionSeeder::class,
             SettingsSeeder::class,
             DemoPortalContentSeeder::class,
+            AdminPortalSeeder::class,
             DemoAccountsSeeder::class,
             SuperAdminSeeder::class,
         ]);
