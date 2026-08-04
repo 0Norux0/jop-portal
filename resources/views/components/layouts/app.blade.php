@@ -18,15 +18,15 @@
 <body class="min-h-screen text-slate-950 antialiased" style="background: {{ $secondary }};">
     <header class="sticky top-0 z-30 backdrop-blur" style="background: color-mix(in srgb, {{ $secondary }} 95%, transparent);">
         <div class="mx-auto flex max-w-7xl items-center justify-between px-4 py-5 sm:px-6 lg:px-8">
-            <div class="flex items-center overflow-hidden rounded-[18px] border-2 bg-white font-bold shadow-sm" style="border-color: {{ $primary }}; color: {{ $primary }};">
-                <a href="/" class="flex items-center">
+            <div class="flex items-center gap-2">
+                <a href="/" class="flex items-center overflow-hidden rounded-[18px] border-2 bg-white font-bold shadow-sm" style="border-color: {{ $primary }}; color: {{ $primary }};">
                     @if (! empty($site['brand']['logo_path']))
                         <img src="{{ \App\Support\SiteContent::assetUrl($site['brand']['logo_path']) }}" alt="{{ $site['brand']['name'] }}" class="h-10 w-[150px] object-contain px-3 py-1">
                     @else
                         <span class="px-4 py-2">{{ $site['brand']['name'] }}</span>
                     @endif
                 </a>
-                <a href="/jobs" aria-label="Search jobs" class="flex h-10 w-10 items-center justify-center text-white" style="background: {{ $primary }};">
+                <a href="/jobs" aria-label="Search jobs" class="flex h-11 w-11 items-center justify-center rounded-[16px] text-white shadow-sm" style="background: {{ $primary }};">
                     <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" aria-hidden="true">
                         <path d="m20 20-4.2-4.2m1.2-5.3a6.5 6.5 0 1 1-13 0 6.5 6.5 0 0 1 13 0Z" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
                     </svg>
