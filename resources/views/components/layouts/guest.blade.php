@@ -16,8 +16,8 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="min-h-screen text-slate-950 antialiased" style="background: {{ $secondary }};">
-    <main class="grid min-h-screen lg:grid-cols-[0.95fr_1.05fr]">
-        <section class="relative hidden overflow-hidden lg:block" style="background: {{ $primary }};">
+    <main class="min-h-screen lg:grid lg:grid-cols-[0.95fr_1.05fr]">
+        <section class="relative hidden h-screen overflow-hidden lg:sticky lg:top-0 lg:block" style="background: {{ $primary }};">
             <img src="{{ \App\Support\SiteContent::assetUrl($site['home']['hero_image_path'], 'images/global-career-hero.webp') }}" alt="{{ $site['brand']['name'] }}" class="absolute inset-0 h-full w-full object-cover opacity-90 mix-blend-screen" loading="eager" fetchpriority="high">
             <div class="absolute inset-0" style="background: color-mix(in srgb, {{ $primary }} 55%, transparent);"></div>
             <div class="relative z-10 flex min-h-screen flex-col justify-between px-12 py-10 text-white">
