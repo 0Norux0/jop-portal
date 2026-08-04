@@ -178,7 +178,7 @@ Use this checklist to track everything that needs to be added from the pasted pr
 - [x] Apply with video profile.
 - [x] Apply with portfolio.
 - [x] Apply with cover letter.
-- [ ] Apply with LinkedIn profile in later phase.
+- [x] Apply with LinkedIn profile.
 
 ## 10. Job Seeker Registration
 

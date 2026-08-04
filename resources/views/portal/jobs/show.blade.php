@@ -84,6 +84,7 @@
                         <a href="/video-profile" class="rounded border border-slate-300 bg-white px-4 py-2 text-left text-sm font-semibold">Apply with video profile</a>
                         <a href="/portfolio" class="rounded border border-slate-300 bg-white px-4 py-2 text-left text-sm font-semibold">Apply with portfolio</a>
                         <a href="/login" class="rounded border border-slate-300 bg-white px-4 py-2 text-left text-sm font-semibold">Apply with cover letter</a>
+                        <a href="/login" class="rounded border border-slate-300 bg-white px-4 py-2 text-left text-sm font-semibold">Apply with LinkedIn profile</a>
                     </div>
                     <a href="/login" class="mt-5 block w-full rounded bg-[#2a7190] px-4 py-3 text-center font-semibold text-white">Apply now</a>
                     <a href="{{ route('report.create', ['type' => 'job', 'subject' => $job['slug']]) }}" class="mt-3 block w-full rounded border border-red-200 bg-red-50 px-4 py-2 text-center text-sm font-semibold text-red-700">Report job</a>

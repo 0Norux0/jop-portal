@@ -115,9 +115,10 @@
 
                     <section class="rounded-lg bg-white p-6 shadow-sm">
                         <h2 class="text-xl font-bold">CV / resume and references</h2>
-                        <div class="mt-4 grid gap-4 sm:grid-cols-3">
+                        <div class="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
                             <div class="rounded border border-slate-200 p-4"><p class="font-semibold">CV uploaded</p><p class="mt-1 text-sm text-slate-600">ATS-friendly PDF</p></div>
                             <div class="rounded border border-slate-200 p-4"><p class="font-semibold">References</p><p class="mt-1 text-sm text-slate-600">Available on request</p></div>
+                            <div class="rounded border border-slate-200 p-4"><p class="font-semibold">LinkedIn profile</p><p class="mt-1 text-sm text-slate-600">Available with candidate consent</p></div>
                             <div class="rounded border border-slate-200 p-4"><p class="font-semibold">Preferred countries</p><p class="mt-1 text-sm text-slate-600">UK, Canada, UAE, Kuwait</p></div>
                         </div>
                     </section>
