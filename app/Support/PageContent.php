@@ -13,33 +13,42 @@ class PageContent
     public const SETTING_KEY = 'page_content';
 
     /**
+     * @var array<string, array{title: string, eyebrow: string, description: string}> | null
+     */
+    private static ?array $loaded = null;
+
+    /**
      * @return array<string, array{title: string, eyebrow: string, description: string}>
      */
     public static function all(): array
     {
+        if (static::$loaded !== null) {
+            return static::$loaded;
+        }
+
         $defaults = static::defaults();
 
         try {
             if (! Schema::hasTable('settings')) {
-                return $defaults;
+                return static::$loaded = $defaults;
             }
 
             $stored = Setting::query()->where('key', static::SETTING_KEY)->value('value');
         } catch (Throwable) {
-            return $defaults;
+            return static::$loaded = $defaults;
         }
 
         if (! is_string($stored) || trim($stored) === '') {
-            return $defaults;
+            return static::$loaded = $defaults;
         }
 
         $decoded = json_decode($stored, true);
 
         if (! is_array($decoded)) {
-            return $defaults;
+            return static::$loaded = $defaults;
         }
 
-        return static::sanitize(array_replace($defaults, $decoded));
+        return static::$loaded = static::sanitize(array_replace($defaults, $decoded));
     }
 
     /**
@@ -59,15 +68,19 @@ class PageContent
      */
     public static function save(array $pages): void
     {
+        $pages = static::sanitize($pages);
+
         Setting::query()->updateOrCreate(
             ['key' => static::SETTING_KEY],
             [
                 'group' => 'content',
                 'type' => 'json',
-                'value' => json_encode(static::sanitize($pages), JSON_PRETTY_PRINT),
+                'value' => json_encode($pages, JSON_PRETTY_PRINT),
                 'is_sensitive' => false,
             ],
         );
+
+        static::$loaded = $pages;
     }
 
     /**

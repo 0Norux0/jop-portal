@@ -15,35 +15,44 @@ class SiteContent
     public const SETTING_KEY = 'site_content';
 
     /**
+     * @var array<string, mixed> | null
+     */
+    private static ?array $loaded = null;
+
+    /**
      * @return array<string, mixed>
      */
     public static function load(): array
     {
+        if (static::$loaded !== null) {
+            return static::$loaded;
+        }
+
         $defaults = static::defaults();
 
         try {
             if (! Schema::hasTable('settings')) {
-                return $defaults;
+                return static::$loaded = $defaults;
             }
 
             $stored = Setting::query()
                 ->where('key', static::SETTING_KEY)
                 ->value('value');
         } catch (Throwable) {
-            return $defaults;
+            return static::$loaded = $defaults;
         }
 
         if (! is_string($stored) || trim($stored) === '') {
-            return $defaults;
+            return static::$loaded = $defaults;
         }
 
         $decoded = json_decode($stored, true);
 
         if (! is_array($decoded)) {
-            return $defaults;
+            return static::$loaded = $defaults;
         }
 
-        return static::sanitize(static::mergeWithDefaults($decoded));
+        return static::$loaded = static::sanitize(static::mergeWithDefaults($decoded));
     }
 
     /**
@@ -62,6 +71,8 @@ class SiteContent
                 'is_sensitive' => false,
             ],
         );
+
+        static::$loaded = $content;
     }
 
     /**
@@ -173,7 +184,7 @@ class SiteContent
                 'keyword_placeholder' => 'Job title or Keyword',
                 'location_placeholder' => 'Location',
                 'search_button_label' => 'Find Now!',
-                'hero_image_path' => 'images/global-career-hero.png',
+                'hero_image_path' => 'images/global-career-hero.webp',
                 'featured_jobs_heading' => 'Latest international jobs',
                 'featured_jobs_subheading' => 'Featured openings',
                 'employers_heading' => 'Trusted hiring teams across regions',
@@ -239,7 +250,7 @@ class SiteContent
         $path = trim((string) $path);
 
         if ($path === '') {
-            return asset($fallback ?: 'images/global-career-hero.png');
+            return asset($fallback ?: 'images/global-career-hero.webp');
         }
 
         if (str_starts_with($path, 'http://') || str_starts_with($path, 'https://')) {

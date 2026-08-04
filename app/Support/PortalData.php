@@ -14,35 +14,44 @@ class PortalData
     public const SETTING_KEY = 'portal_data';
 
     /**
+     * @var array<string, mixed> | null
+     */
+    private static ?array $loaded = null;
+
+    /**
      * @return array<string, mixed>
      */
     public static function load(): array
     {
+        if (static::$loaded !== null) {
+            return static::$loaded;
+        }
+
         $defaults = config('portal', []);
 
         try {
             if (! Schema::hasTable('settings')) {
-                return $defaults;
+                return static::$loaded = $defaults;
             }
 
             $stored = Setting::query()
                 ->where('key', static::SETTING_KEY)
                 ->value('value');
         } catch (Throwable) {
-            return $defaults;
+            return static::$loaded = $defaults;
         }
 
         if (! is_string($stored) || trim($stored) === '') {
-            return $defaults;
+            return static::$loaded = $defaults;
         }
 
         $decoded = json_decode($stored, true);
 
         if (! is_array($decoded)) {
-            return $defaults;
+            return static::$loaded = $defaults;
         }
 
-        return static::sanitize(array_replace($defaults, $decoded)) + $defaults;
+        return static::$loaded = static::sanitize(array_replace($defaults, $decoded)) + $defaults;
     }
 
     /**
@@ -61,6 +70,8 @@ class PortalData
                 'is_sensitive' => false,
             ],
         );
+
+        static::$loaded = $data;
     }
 
     /**

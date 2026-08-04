@@ -64,7 +64,7 @@
             </div>
 
             <div class="relative min-h-[580px] overflow-hidden lg:rounded-bl-[90px]" style="background: {{ $primary }};">
-                <img src="{{ \App\Support\SiteContent::assetUrl($site['home']['hero_image_path'], 'images/global-career-hero.png') }}" alt="Global talent hiring platform" class="absolute inset-0 h-full w-full object-cover opacity-90 mix-blend-screen">
+                <img src="{{ \App\Support\SiteContent::assetUrl($site['home']['hero_image_path'], 'images/global-career-hero.webp') }}" alt="Global talent hiring platform" class="absolute inset-0 h-full w-full object-cover opacity-90 mix-blend-screen" loading="eager" fetchpriority="high">
                 <div class="absolute inset-0" style="background: color-mix(in srgb, {{ $primary }} 35%, transparent);"></div>
                 <div class="absolute left-10 top-28 hidden h-20 w-20 items-center justify-center rounded-full bg-white/95 shadow-xl sm:flex" style="color: {{ $primary }};">
                     <svg class="h-10 w-10" viewBox="0 0 24 24" fill="none" aria-hidden="true">
