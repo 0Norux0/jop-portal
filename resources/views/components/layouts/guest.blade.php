@@ -27,11 +27,6 @@
                     @else
                         <span class="px-5 py-3">{{ $site['brand']['name'] }}</span>
                     @endif
-                    <span class="flex h-12 w-12 items-center justify-center text-white" style="background: {{ $primary }};">
-                        <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                            <path d="m20 20-4.2-4.2m1.2-5.3a6.5 6.5 0 1 1-13 0 6.5 6.5 0 0 1 13 0Z" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                        </svg>
-                    </span>
                 </a>
                 <div class="max-w-xl pb-10">
                     <p class="text-sm font-semibold uppercase tracking-[0.24em]">{{ $site['brand']['powered_by'] }}</p>
