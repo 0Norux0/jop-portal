@@ -66,14 +66,22 @@ class WebsiteCustomization extends Page
                             ->label('Logo')
                             ->disk('public')
                             ->directory('site')
+                            ->visibility('public')
                             ->image()
-                            ->maxSize(2048),
+                            ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp', 'image/svg+xml'])
+                            ->maxSize(2048)
+                            ->openable()
+                            ->downloadable(),
                         FileUpload::make('brand.favicon_path')
                             ->label('Favicon')
                             ->disk('public')
                             ->directory('site')
+                            ->visibility('public')
                             ->image()
-                            ->maxSize(1024),
+                            ->acceptedFileTypes(['image/x-icon', 'image/vnd.microsoft.icon', 'image/png', 'image/jpeg', 'image/webp', 'image/svg+xml'])
+                            ->maxSize(1024)
+                            ->openable()
+                            ->downloadable(),
                     ]),
                 Section::make('Navigation')
                     ->description('Rename account buttons and manage the public header menu links.')
@@ -112,8 +120,12 @@ class WebsiteCustomization extends Page
                             ->label('Hero image')
                             ->disk('public')
                             ->directory('site')
+                            ->visibility('public')
                             ->image()
+                            ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp', 'image/svg+xml'])
                             ->maxSize(4096)
+                            ->openable()
+                            ->downloadable()
                             ->columnSpanFull(),
                     ]),
                 Section::make('Homepage Sections')

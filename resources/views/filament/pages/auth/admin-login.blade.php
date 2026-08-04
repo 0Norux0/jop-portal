@@ -87,13 +87,13 @@
             <img src="{{ \App\Support\SiteContent::assetUrl($site['home']['hero_image_path'], 'images/global-career-hero.png') }}" alt="{{ $site['brand']['name'] }}" class="absolute inset-0 h-full w-full object-cover opacity-90 mix-blend-screen">
             <div class="absolute inset-0" style="background: color-mix(in srgb, {{ $primary }} 58%, transparent);"></div>
             <div class="relative z-10 flex min-h-screen flex-col justify-between px-12 py-10 text-white">
-                <a href="/" class="inline-flex w-fit items-center overflow-hidden rounded-[18px] border-2 border-white bg-white font-bold shadow-sm" style="color: {{ $primary }};">
+                <a href="/" class="inline-flex w-fit items-center overflow-hidden rounded-[20px] border-2 border-white bg-white font-bold shadow-sm" style="color: {{ $primary }};">
                     @if (! empty($site['brand']['logo_path']))
-                        <img src="{{ \App\Support\SiteContent::assetUrl($site['brand']['logo_path']) }}" alt="{{ $site['brand']['name'] }}" class="h-10 max-w-[170px] object-contain px-3">
+                        <img src="{{ \App\Support\SiteContent::assetUrl($site['brand']['logo_path']) }}" alt="{{ $site['brand']['name'] }}" class="h-12 w-[178px] object-contain px-4 py-1">
                     @else
-                        <span class="px-4 py-2">{{ $site['brand']['name'] }}</span>
+                        <span class="px-5 py-3">{{ $site['brand']['name'] }}</span>
                     @endif
-                    <span class="flex h-10 w-10 items-center justify-center text-white" style="background: {{ $primary }};">
+                    <span class="flex h-12 w-12 items-center justify-center text-white" style="background: {{ $primary }};">
                         <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" aria-hidden="true">
                             <path d="m20 20-4.2-4.2m1.2-5.3a6.5 6.5 0 1 1-13 0 6.5 6.5 0 0 1 13 0Z" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
                         </svg>
@@ -121,13 +121,13 @@
 
             <div class="mx-auto flex w-full max-w-xl flex-1 items-center py-8">
                 <div class="admin-login-card w-full p-5 sm:p-7">
-                    <div class="admin-login-mobile-brand mb-6 items-center overflow-hidden rounded-[18px] border-2 bg-white font-bold shadow-sm" style="border-color: {{ $primary }}; color: {{ $primary }};">
+                    <div class="admin-login-mobile-brand mb-6 items-center overflow-hidden rounded-[20px] border-2 bg-white font-bold shadow-sm" style="border-color: {{ $primary }}; color: {{ $primary }};">
                         @if (! empty($site['brand']['logo_path']))
-                            <img src="{{ \App\Support\SiteContent::assetUrl($site['brand']['logo_path']) }}" alt="{{ $site['brand']['name'] }}" class="h-10 max-w-[170px] object-contain px-3">
+                            <img src="{{ \App\Support\SiteContent::assetUrl($site['brand']['logo_path']) }}" alt="{{ $site['brand']['name'] }}" class="h-12 w-[178px] object-contain px-4 py-1">
                         @else
-                            <span class="px-4 py-2">{{ $site['brand']['name'] }}</span>
+                            <span class="px-5 py-3">{{ $site['brand']['name'] }}</span>
                         @endif
-                        <span class="flex h-10 w-10 items-center justify-center text-white" style="background: {{ $primary }};">
+                        <span class="flex h-12 w-12 items-center justify-center text-white" style="background: {{ $primary }};">
                             <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" aria-hidden="true">
                                 <path d="m20 20-4.2-4.2m1.2-5.3a6.5 6.5 0 1 1-13 0 6.5 6.5 0 0 1 13 0Z" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
                             </svg>
