@@ -1,0 +1,29 @@
+@import "tailwindcss";
+
+@layer base {
+    html {
+        scroll-behavior: smooth;
+    }
+
+    body {
+        text-rendering: optimizeLegibility;
+    }
+
+    input,
+    select,
+    textarea {
+        border-color: #cbd5e1;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+        border-color: #047857;
+        box-shadow: 0 0 0 3px rgb(16 185 129 / 18%);
+        outline: none;
+    }
+
+    a {
+        text-underline-offset: 3px;
+    }
+}
