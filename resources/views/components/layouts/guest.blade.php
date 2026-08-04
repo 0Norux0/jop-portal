@@ -21,19 +21,23 @@
             <img src="{{ \App\Support\SiteContent::assetUrl($site['home']['hero_image_path'], 'images/global-career-hero.png') }}" alt="{{ $site['brand']['name'] }}" class="absolute inset-0 h-full w-full object-cover opacity-90 mix-blend-screen">
             <div class="absolute inset-0" style="background: color-mix(in srgb, {{ $primary }} 55%, transparent);"></div>
             <div class="relative z-10 flex min-h-screen flex-col justify-between px-12 py-10 text-white">
-                <div class="inline-flex w-fit items-center gap-2">
-                    <a href="/" class="flex items-center overflow-hidden rounded-[18px] border-2 border-white bg-white font-bold shadow-sm" style="color: {{ $primary }};">
+                <div class="inline-flex w-fit items-center gap-3">
+                    <a href="/" class="flex shrink-0 items-center overflow-hidden rounded-lg border border-white bg-white font-bold shadow-sm" style="color: {{ $primary }};">
                         @if (! empty($site['brand']['logo_path']))
-                            <img src="{{ \App\Support\SiteContent::assetUrl($site['brand']['logo_path']) }}" alt="{{ $site['brand']['name'] }}" class="h-10 w-[150px] object-contain px-3 py-1">
+                            <img src="{{ \App\Support\SiteContent::assetUrl($site['brand']['logo_path']) }}" alt="{{ $site['brand']['name'] }}" class="h-12 w-[170px] object-contain px-3 py-1">
                         @else
-                            <span class="px-4 py-2">{{ $site['brand']['name'] }}</span>
+                            <span class="px-4 py-3">{{ $site['brand']['name'] }}</span>
                         @endif
                     </a>
-                    <a href="/jobs" aria-label="Search jobs" class="flex h-11 w-11 items-center justify-center rounded-[16px] text-white shadow-sm" style="background: {{ $primary }};">
-                        <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                            <path d="m20 20-4.2-4.2m1.2-5.3a6.5 6.5 0 1 1-13 0 6.5 6.5 0 0 1 13 0Z" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                        </svg>
-                    </a>
+                    <form action="/jobs" method="GET" class="flex h-12 w-[300px] items-center overflow-hidden rounded-lg border border-white bg-white shadow-sm">
+                        <input name="q" value="{{ request('q') }}" class="h-full min-w-0 flex-1 border-0 bg-transparent px-4 text-sm text-slate-800 placeholder:text-slate-400 focus:ring-0" placeholder="Search jobs">
+                        <button type="submit" class="flex h-full items-center gap-2 px-4 text-sm font-semibold text-white" style="background: {{ $primary }};">
+                            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                                <path d="m20 20-4.2-4.2m1.2-5.3a6.5 6.5 0 1 1-13 0 6.5 6.5 0 0 1 13 0Z" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                            </svg>
+                            <span>Search</span>
+                        </button>
+                    </form>
                 </div>
                 <div class="max-w-xl pb-10">
                     <p class="text-sm font-semibold uppercase tracking-[0.24em]">{{ $site['brand']['powered_by'] }}</p>
