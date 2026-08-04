@@ -9,29 +9,27 @@ use App\Support\InstitutionMetrics;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
-$portalView = static fn (string $view): \Closure => static fn () => view($view, ['portal' => PortalData::load()]);
-
 Route::get('/', static fn () => view('welcome', ['portal' => PortalData::load()]))->name('home');
 
-Route::middleware('portal.capability:candidates')->group(function () use ($portalView): void {
-    Route::get('/job-seekers', $portalView('portal.job-seekers'))->name('job-seekers');
-    Route::get('/candidate-profile', $portalView('portal.candidate-profile'))->name('candidate-profile');
-    Route::get('/cv-builder', $portalView('portal.cv-builder'))->name('cv-builder');
-    Route::get('/video-profile', $portalView('portal.video-profile'))->name('video-profile');
-    Route::get('/portfolio', $portalView('portal.portfolio'))->name('portfolio');
+Route::middleware('portal.capability:candidates')->group(function (): void {
+    Route::get('/job-seekers', static fn () => view('portal.job-seekers', ['portal' => PortalData::load()]))->name('job-seekers');
+    Route::get('/candidate-profile', static fn () => view('portal.candidate-profile', ['portal' => PortalData::load()]))->name('candidate-profile');
+    Route::get('/cv-builder', static fn () => view('portal.cv-builder', ['portal' => PortalData::load()]))->name('cv-builder');
+    Route::get('/video-profile', static fn () => view('portal.video-profile', ['portal' => PortalData::load()]))->name('video-profile');
+    Route::get('/portfolio', static fn () => view('portal.portfolio', ['portal' => PortalData::load()]))->name('portfolio');
 });
 
-Route::middleware('portal.capability:employers')->group(function () use ($portalView): void {
-    Route::get('/employers', $portalView('portal.employers'))->name('employers');
-    Route::get('/employer-register', $portalView('portal.employer-register'))->name('employer-register');
-    Route::get('/employer-dashboard', $portalView('portal.employer-dashboard'))->name('employer-dashboard');
-    Route::get('/candidate-search', $portalView('portal.candidate-search'))->name('candidate-search');
-    Route::get('/packages', $portalView('portal.packages'))->name('packages');
+Route::middleware('portal.capability:employers')->group(function (): void {
+    Route::get('/employers', static fn () => view('portal.employers', ['portal' => PortalData::load()]))->name('employers');
+    Route::get('/employer-register', static fn () => view('portal.employer-register', ['portal' => PortalData::load()]))->name('employer-register');
+    Route::get('/employer-dashboard', static fn () => view('portal.employer-dashboard', ['portal' => PortalData::load()]))->name('employer-dashboard');
+    Route::get('/candidate-search', static fn () => view('portal.candidate-search', ['portal' => PortalData::load()]))->name('candidate-search');
+    Route::get('/packages', static fn () => view('portal.packages', ['portal' => PortalData::load()]))->name('packages');
 });
 
-Route::middleware('portal.capability:content')->group(function () use ($portalView): void {
-    Route::get('/career-ecosystem', $portalView('portal.ecosystem'))->name('ecosystem');
-    Route::get('/career-resources', $portalView('portal.blog'))->name('blog');
+Route::middleware('portal.capability:content')->group(function (): void {
+    Route::get('/career-ecosystem', static fn () => view('portal.ecosystem', ['portal' => PortalData::load()]))->name('ecosystem');
+    Route::get('/career-resources', static fn () => view('portal.blog', ['portal' => PortalData::load()]))->name('blog');
     Route::get('/career-coach', function (Request $request) {
         $input = $request->only(['target_role', 'skills', 'has_cv', 'has_portfolio', 'has_video']);
 
@@ -43,8 +41,8 @@ Route::middleware('portal.capability:content')->group(function () use ($portalVi
     })->name('career-coach');
 });
 
-Route::middleware('portal.capability:international')->group(function () use ($portalView): void {
-    Route::get('/international-support', $portalView('portal.international-support'))->name('international-support');
+Route::middleware('portal.capability:international')->group(function (): void {
+    Route::get('/international-support', static fn () => view('portal.international-support', ['portal' => PortalData::load()]))->name('international-support');
 });
 
 Route::middleware('portal.capability:content')->group(function (): void {
@@ -65,11 +63,11 @@ Route::middleware('portal.capability:content')->group(function (): void {
     })->name('institution-dashboard.show');
 });
 
-Route::middleware('portal.capability:trust_safety')->group(function () use ($portalView): void {
-    Route::get('/trust-safety', $portalView('portal.trust-safety'))->name('trust-safety');
-    Route::get('/platform-admin', $portalView('portal.platform-admin'))->name('platform-admin');
-    Route::get('/candidate-verification', $portalView('portal.candidate-verification'))->name('candidate-verification');
-    Route::get('/employer-verification', $portalView('portal.employer-verification'))->name('employer-verification');
+Route::middleware('portal.capability:trust_safety')->group(function (): void {
+    Route::get('/trust-safety', static fn () => view('portal.trust-safety', ['portal' => PortalData::load()]))->name('trust-safety');
+    Route::get('/platform-admin', static fn () => view('portal.platform-admin', ['portal' => PortalData::load()]))->name('platform-admin');
+    Route::get('/candidate-verification', static fn () => view('portal.candidate-verification', ['portal' => PortalData::load()]))->name('candidate-verification');
+    Route::get('/employer-verification', static fn () => view('portal.employer-verification', ['portal' => PortalData::load()]))->name('employer-verification');
     Route::get('/report/{type}/{subject?}', function (string $type, ?string $subject = null) {
         abort_unless(in_array($type, ['job', 'employer', 'candidate'], true), 404);
 
@@ -127,6 +125,6 @@ Route::middleware('portal.capability:content')->group(function (): void {
     })->name('seo.landing');
 });
 
-Route::middleware(['auth', 'verified', 'portal.capability:candidates'])->group(function () use ($portalView): void {
-    Route::get('/dashboard', $portalView('dashboard'))->name('dashboard');
+Route::middleware(['auth', 'verified', 'portal.capability:candidates'])->group(function (): void {
+    Route::get('/dashboard', static fn () => view('dashboard', ['portal' => PortalData::load()]))->name('dashboard');
 });
