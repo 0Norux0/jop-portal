@@ -69,12 +69,12 @@
                 </div>
                 <div>
                     <label class="block text-sm font-semibold" for="current_job_title">Current status / job title</label>
-                    <input id="current_job_title" name="current_job_title" type="text" list="current-statuses" required value="{{ old('current_job_title') }}" class="mt-2 w-full rounded border-slate-300 px-4 py-3" placeholder="Working, unemployed, student...">
-                    <datalist id="current-statuses">
+                    <select id="current_job_title" name="current_job_title" required class="mt-2 w-full rounded border-slate-300 px-4 py-3">
+                        <option value="">Select current status</option>
                         @foreach (['Working full-time', 'Working part-time', 'Unemployed', 'Student', 'Fresh graduate', 'Freelancer', 'Career changer', 'Business owner'] as $status)
-                            <option value="{{ $status }}"></option>
+                            <option value="{{ $status }}" @selected(old('current_job_title') === $status)>{{ $status }}</option>
                         @endforeach
-                    </datalist>
+                    </select>
                 </div>
                 <div class="sm:col-span-2">
                     <label class="block text-sm font-semibold" for="preferred_job_category">Preferred job category</label>

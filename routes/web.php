@@ -7,6 +7,7 @@ use App\Support\PortalJobPresenter;
 use App\Support\PortalReports;
 use App\Support\CareerCoach;
 use App\Support\InstitutionMetrics;
+use App\Http\Controllers\CandidateWorkspaceController;
 use App\Http\Controllers\EmployerWorkspaceController;
 use App\Domain\Identity\Enums\Role;
 use App\Domain\Portal\Models\Employer;
@@ -143,11 +144,15 @@ Route::middleware(['auth', 'verified'])->group(function (): void {
             return redirect()->route('business.dashboard');
         }
 
-        $portal = PortalData::load();
-        $portal['jobs'] = PortalJobPresenter::publishedJobs();
-
-        return view('dashboard', ['portal' => $portal]);
+        return app(CandidateWorkspaceController::class)->dashboard($request);
     })->name('dashboard');
+    Route::post('/jobs/{job:slug}/save', [CandidateWorkspaceController::class, 'saveJob'])->name('candidate.jobs.save');
+    Route::delete('/saved-jobs/{savedJob}', [CandidateWorkspaceController::class, 'unsaveJob'])->name('candidate.saved-jobs.destroy');
+    Route::post('/jobs/{job:slug}/apply', [CandidateWorkspaceController::class, 'apply'])->name('candidate.jobs.apply');
+    Route::get('/saved-jobs', [CandidateWorkspaceController::class, 'savedJobs'])->name('candidate.saved-jobs');
+    Route::get('/applications', [CandidateWorkspaceController::class, 'applications'])->name('candidate.applications');
+    Route::get('/messages', [CandidateWorkspaceController::class, 'messages'])->name('candidate.messages');
+    Route::post('/messages', [CandidateWorkspaceController::class, 'sendMessage'])->name('candidate.messages.store');
 });
 
 Route::middleware(['auth', 'verified', 'employer', 'portal.capability:employers'])->prefix('business')->name('business.')->group(function (): void {
@@ -159,6 +164,7 @@ Route::middleware(['auth', 'verified', 'employer', 'portal.capability:employers'
     Route::put('/jobs/{job}', [EmployerWorkspaceController::class, 'updateJob'])->name('jobs.update');
     Route::get('/applicants', [EmployerWorkspaceController::class, 'applicants'])->name('applicants');
     Route::put('/applicants/{application}', [EmployerWorkspaceController::class, 'updateApplication'])->name('applicants.update');
+    Route::post('/applicants/{application}/message', [EmployerWorkspaceController::class, 'messageApplicant'])->name('applicants.message');
     Route::get('/candidates', [EmployerWorkspaceController::class, 'candidates'])->name('candidates');
     Route::post('/candidates/{candidate}/invite', [EmployerWorkspaceController::class, 'inviteCandidate'])->name('candidates.invite');
     Route::get('/admin-center', [EmployerWorkspaceController::class, 'billing'])->name('billing');

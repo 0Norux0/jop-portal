@@ -9,7 +9,10 @@ use App\Domain\Identity\Enums\Permission;
 use App\Domain\Identity\Enums\RegistrationPurpose;
 use App\Domain\Identity\Enums\RegistrationSource;
 use App\Domain\Identity\Enums\Role as RoleEnum;
+use App\Domain\Portal\Models\ConversationMessage;
 use App\Domain\Portal\Models\Employer;
+use App\Domain\Portal\Models\JobApplication;
+use App\Domain\Portal\Models\SavedJob;
 use App\Domain\Shared\Concerns\HasPublicId;
 use Database\Factories\UserFactory;
 use Filament\Models\Contracts\FilamentUser;
@@ -85,6 +88,21 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail
     public function employers(): HasMany
     {
         return $this->hasMany(Employer::class);
+    }
+
+    public function savedJobs(): HasMany
+    {
+        return $this->hasMany(SavedJob::class);
+    }
+
+    public function jobApplications(): HasMany
+    {
+        return $this->hasMany(JobApplication::class);
+    }
+
+    public function candidateMessages(): HasMany
+    {
+        return $this->hasMany(ConversationMessage::class, 'candidate_user_id');
     }
 
     // ----------------------------------------------------------------------

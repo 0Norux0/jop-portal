@@ -72,6 +72,7 @@ class PortalJobPresenter
         ])->filter()->values()->all();
 
         return [
+            'id' => $job->id,
             'slug' => $job->slug,
             'title' => $job->title,
             'company' => $employer?->name ?? 'Confidential employer',

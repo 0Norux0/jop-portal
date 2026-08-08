@@ -65,24 +65,28 @@
                 <section class="rounded-lg bg-white p-6 shadow-sm">
                     <h2 class="text-xl font-bold">Saved jobs</h2>
                     <div class="mt-4 grid gap-3">
-                        @foreach (array_slice($portal['jobs'], 1, 2) as $job)
-                            <a href="/jobs/{{ $job['slug'] }}" class="rounded border border-slate-200 p-4 hover:border-[#2a7190]">
-                                <p class="font-semibold">{{ $job['title'] }}</p>
-                                <p class="mt-1 text-sm text-slate-600">Saved for later review</p>
+                        @forelse (($savedJobs ?? collect()) as $savedJob)
+                            <a href="/jobs/{{ $savedJob->job?->slug }}" class="rounded border border-slate-200 p-4 hover:border-[#2a7190]">
+                                <p class="font-semibold">{{ $savedJob->job?->title }}</p>
+                                <p class="mt-1 text-sm text-slate-600">Saved {{ $savedJob->saved_at?->diffForHumans() ?? $savedJob->created_at->diffForHumans() }}</p>
                             </a>
-                        @endforeach
+                        @empty
+                            <a href="{{ route('candidate.saved-jobs') }}" class="rounded border border-dashed border-slate-300 p-4 text-sm font-semibold text-slate-600">No saved jobs yet</a>
+                        @endforelse
                     </div>
                 </section>
 
                 <section class="rounded-lg bg-white p-6 shadow-sm">
                     <h2 class="text-xl font-bold">Applied jobs</h2>
                     <div class="mt-4 grid gap-3">
-                        @foreach (array_slice($portal['jobs'], 0, 2) as $job)
-                            <a href="/jobs/{{ $job['slug'] }}#apply" class="rounded border border-slate-200 p-4 hover:border-[#2a7190]">
-                                <p class="font-semibold">{{ $job['title'] }}</p>
-                                <p class="mt-1 text-sm text-[#2a7190]">Application status active</p>
+                        @forelse (($applications ?? collect()) as $application)
+                            <a href="/jobs/{{ $application->job?->slug }}" class="rounded border border-slate-200 p-4 hover:border-[#2a7190]">
+                                <p class="font-semibold">{{ $application->job?->title }}</p>
+                                <p class="mt-1 text-sm text-[#2a7190]">{{ str($application->status)->headline() }}</p>
                             </a>
-                        @endforeach
+                        @empty
+                            <a href="{{ route('candidate.applications') }}" class="rounded border border-dashed border-slate-300 p-4 text-sm font-semibold text-slate-600">No applications yet</a>
+                        @endforelse
                     </div>
                 </section>
             </div>
@@ -90,8 +94,17 @@
             <div class="mt-8 grid gap-5 lg:grid-cols-2">
                 <section class="rounded-lg bg-white p-6 shadow-sm">
                     <h2 class="text-xl font-bold">Interview invitations</h2>
-                    <p class="mt-3 text-sm leading-6 text-slate-600">Interview tools will appear here when real employer scheduling is connected.</p>
-                    <a href="/jobs" class="mt-4 inline-flex rounded border border-[#2a7190] px-4 py-2 text-sm font-semibold text-[#2a7190]">Browse jobs</a>
+                    <div class="mt-3 grid gap-3">
+                        @forelse (($messages ?? collect()) as $message)
+                            <a href="{{ route('candidate.messages') }}" class="rounded border border-slate-200 p-4 hover:border-[#2a7190]">
+                                <p class="font-semibold">{{ $message->employer?->name }}</p>
+                                <p class="mt-1 line-clamp-2 text-sm text-slate-600">{{ $message->body }}</p>
+                            </a>
+                        @empty
+                            <p class="text-sm leading-6 text-slate-600">Employer messages and interview requests will appear here.</p>
+                        @endforelse
+                    </div>
+                    <a href="{{ route('candidate.messages') }}" class="mt-4 inline-flex rounded border border-[#2a7190] px-4 py-2 text-sm font-semibold text-[#2a7190]">Open messages</a>
                 </section>
                 <section class="rounded-lg bg-white p-6 shadow-sm">
                     <h2 class="text-xl font-bold">Career tips</h2>

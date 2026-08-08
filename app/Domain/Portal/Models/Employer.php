@@ -61,4 +61,9 @@ class Employer extends Model
     {
         return $this->hasMany(Job::class);
     }
+
+    public function messages(): HasMany
+    {
+        return $this->hasMany(ConversationMessage::class);
+    }
 }

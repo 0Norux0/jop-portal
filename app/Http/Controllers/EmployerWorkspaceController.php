@@ -6,6 +6,7 @@ namespace App\Http\Controllers;
 
 use App\Domain\Identity\Models\User;
 use App\Domain\Portal\Models\Candidate;
+use App\Domain\Portal\Models\ConversationMessage;
 use App\Domain\Portal\Models\Employer;
 use App\Domain\Portal\Models\Job;
 use App\Domain\Portal\Models\JobApplication;
@@ -185,6 +186,27 @@ class EmployerWorkspaceController
         return back()->with('status', 'Applicant updated.');
     }
 
+    public function messageApplicant(Request $request, JobApplication $application): RedirectResponse
+    {
+        $employer = $this->employer($request->user());
+        abort_unless($application->job()->where('employer_id', $employer->id)->exists(), 403);
+        abort_unless($application->user_id !== null, 422);
+
+        $validated = $request->validate([
+            'body' => ['required', 'string', 'max:2000'],
+        ]);
+
+        ConversationMessage::query()->create([
+            'employer_id' => $employer->id,
+            'candidate_user_id' => $application->user_id,
+            'job_application_id' => $application->id,
+            'sender_id' => $request->user()->id,
+            'body' => $validated['body'],
+        ]);
+
+        return back()->with('status', 'Message sent to candidate.');
+    }
+
     public function candidates(Request $request): View
     {
         $employer = $this->employer($request->user());
@@ -277,16 +299,6 @@ class EmployerWorkspaceController
         ]);
 
         return back()->with('status', 'Advertisement request created for admin review.');
-    }
-
-    public function premium(Request $request): View
-    {
-        return view('employer.premium', ['employer' => $this->employer($request->user())]);
-    }
-
-    public function learning(Request $request): View
-    {
-        return view('employer.learning', ['employer' => $this->employer($request->user())]);
     }
 
     private function employer(?User $user): Employer

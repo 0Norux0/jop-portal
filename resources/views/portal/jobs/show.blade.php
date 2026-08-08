@@ -83,14 +83,25 @@
                         <div><dt class="text-slate-500">Employer status</dt><dd class="font-semibold text-[#2a7190]">Verified employer</dd></div>
                     </dl>
                     <div class="mt-5 grid gap-2">
-                        <a href="/login" class="rounded border border-slate-300 bg-white px-4 py-2 text-left text-sm font-semibold">Apply with portal profile</a>
-                        <a href="/cv-builder" class="rounded border border-slate-300 bg-white px-4 py-2 text-left text-sm font-semibold">Apply with CV</a>
-                        <a href="/video-profile" class="rounded border border-slate-300 bg-white px-4 py-2 text-left text-sm font-semibold">Apply with video profile</a>
-                        <a href="/portfolio" class="rounded border border-slate-300 bg-white px-4 py-2 text-left text-sm font-semibold">Apply with portfolio</a>
-                        <a href="/login" class="rounded border border-slate-300 bg-white px-4 py-2 text-left text-sm font-semibold">Apply with cover letter</a>
-                        <a href="/login" class="rounded border border-slate-300 bg-white px-4 py-2 text-left text-sm font-semibold">Apply with LinkedIn profile</a>
+                        @auth
+                            @if (! auth()->user()->hasAnyRole([\App\Domain\Identity\Enums\Role::Employer->value, \App\Domain\Identity\Enums\Role::RecruitmentAgency->value]))
+                                <form method="POST" action="{{ route('candidate.jobs.save', $job['slug']) }}">
+                                    @csrf
+                                    <button class="w-full rounded border border-slate-300 bg-white px-4 py-2 text-left text-sm font-semibold">Save job</button>
+                                </form>
+                                <form method="POST" action="{{ route('candidate.jobs.apply', $job['slug']) }}" class="grid gap-3">
+                                    @csrf
+                                    <textarea name="cover_letter" rows="4" class="rounded border-slate-300 px-4 py-3 text-sm" placeholder="Short cover note for the employer"></textarea>
+                                    <button class="w-full rounded bg-[#2a7190] px-4 py-3 text-center font-semibold text-white">Apply with portal profile</button>
+                                </form>
+                            @else
+                                <a href="{{ route('business.jobs') }}" class="rounded bg-[#2a7190] px-4 py-3 text-center font-semibold text-white">Manage employer jobs</a>
+                            @endif
+                        @else
+                            <a href="/login" class="rounded border border-slate-300 bg-white px-4 py-2 text-left text-sm font-semibold">Sign in to save or apply</a>
+                            <a href="/register" class="rounded bg-[#2a7190] px-4 py-3 text-center font-semibold text-white">Create account to apply</a>
+                        @endauth
                     </div>
-                    <a href="/login" class="mt-5 block w-full rounded bg-[#2a7190] px-4 py-3 text-center font-semibold text-white">Apply now</a>
                     <a href="{{ route('report.create', ['type' => 'job', 'subject' => $job['slug']]) }}" class="mt-3 block w-full rounded border border-red-200 bg-red-50 px-4 py-2 text-center text-sm font-semibold text-red-700">Report job</a>
                     <p class="mt-4 text-xs leading-5 text-slate-500">The portal does not guarantee visa approval, job placement, salary, or migration outcome. It connects job seekers and employers.</p>
                 </aside>

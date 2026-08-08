@@ -56,6 +56,14 @@
                             </div>
                         </div>
                     </form>
+                    @if ($application->user_id)
+                        <form method="POST" action="{{ route('business.applicants.message', $application) }}" class="rounded-lg bg-white p-5 shadow-sm">
+                            @csrf
+                            <label class="text-sm font-bold">Message candidate</label>
+                            <textarea name="body" rows="3" class="mt-2 w-full rounded border-slate-300 px-4 py-3 text-sm" placeholder="Send an interview request, question, or update"></textarea>
+                            <button class="mt-3 rounded bg-[#2a7190] px-4 py-2 text-sm font-bold text-white">Send message</button>
+                        </form>
+                    @endif
                 @empty
                     <p class="rounded-lg bg-white p-6 text-sm text-slate-600 shadow-sm">No applicants found for this employer account.</p>
                 @endforelse
