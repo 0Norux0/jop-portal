@@ -2,28 +2,30 @@
     <section class="bg-[#f7f7f7]">
         <div class="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
             <div class="overflow-hidden rounded-lg bg-white shadow-sm">
-                <div class="relative h-56 bg-[#2a7190]">
+                <div class="relative min-h-[320px] bg-[#2a7190]">
                     @if ($employer->cover_path)
-                        <img src="{{ asset($employer->cover_path) }}" alt="{{ $employer->name }} cover" class="h-full w-full object-cover">
+                        <img src="{{ asset($employer->cover_path) }}" alt="{{ $employer->name }} cover" class="absolute inset-0 h-full w-full object-cover">
                     @endif
-                    <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/25 to-white/10"></div>
-                </div>
-                <div class="relative p-6">
-                    <div class="-mt-16 flex flex-col gap-4 sm:flex-row sm:items-end">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/85 via-black/45 to-black/20"></div>
+                    <div class="relative z-10 flex min-h-[320px] flex-col justify-end p-6 text-white sm:p-8">
+                        <div class="flex flex-col gap-4 sm:flex-row sm:items-end">
                         @if ($employer->logo_path)
                             <img src="{{ asset($employer->logo_path) }}" alt="{{ $employer->name }}" class="h-28 w-28 rounded-lg border-4 border-white bg-white object-contain shadow-sm">
                         @else
                             <div class="flex h-28 w-28 items-center justify-center rounded-lg border-4 border-white bg-[#2a7190] text-4xl font-bold text-white shadow-sm">{{ str($employer->name)->substr(0, 1) }}</div>
                         @endif
-                        <div class="pb-2">
-                            <h1 class="text-3xl font-extrabold">{{ $employer->name }}</h1>
-                            <p class="mt-2 text-slate-600">{{ $employer->industry }} · {{ $employer->city }}, {{ $employer->country }} · {{ $employer->company_size }}</p>
+                        <div class="pb-2 drop-shadow">
+                            <h1 class="text-3xl font-extrabold text-white sm:text-4xl">{{ $employer->name }}</h1>
+                            <p class="mt-2 text-white/90">{{ $employer->industry }} · {{ $employer->city }}, {{ $employer->country }} · {{ $employer->company_size }}</p>
                             <div class="mt-3 flex flex-wrap gap-2">
-                                <span class="rounded-full bg-[#e9f3f7] px-3 py-1 text-xs font-bold text-[#2a7190]">{{ str($employer->verification_status)->headline() }} employer</span>
-                                <span class="rounded-full bg-slate-100 px-3 py-1 text-xs font-bold">{{ $employer->jobs->count() }} open jobs</span>
+                                <span class="rounded-full bg-white px-3 py-1 text-xs font-bold text-[#2a7190]">{{ str($employer->verification_status)->headline() }} employer</span>
+                                <span class="rounded-full bg-white/90 px-3 py-1 text-xs font-bold text-slate-800">{{ $employer->jobs->count() }} open jobs</span>
                             </div>
                         </div>
                     </div>
+                    </div>
+                </div>
+                <div class="p-6">
                     <div class="mt-8 grid gap-8 lg:grid-cols-[1fr_320px]">
                         <article>
                             <h2 class="text-xl font-bold">About</h2>

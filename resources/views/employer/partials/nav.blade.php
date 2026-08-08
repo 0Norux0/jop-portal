@@ -1,13 +1,5 @@
 @php
-    $items = [
-        ['label' => 'Overview', 'route' => 'business.dashboard'],
-        ['label' => 'Company Page', 'route' => 'business.company'],
-        ['label' => 'Jobs', 'route' => 'business.jobs'],
-        ['label' => 'Applicants', 'route' => 'business.applicants'],
-        ['label' => 'Find Candidates', 'route' => 'business.candidates'],
-        ['label' => 'Admin Center', 'route' => 'business.billing'],
-        ['label' => 'Advertise', 'route' => 'business.promotion'],
-    ];
+    $items = \App\Support\EmployerPortalContent::navigationItems();
 @endphp
 
 <aside class="rounded-lg border border-slate-200 bg-white p-4 shadow-sm">

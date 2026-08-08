@@ -9,7 +9,7 @@
                 </div>
             </div>
 
-            <div class="mt-8 grid gap-5 xl:grid-cols-[340px_1fr]">
+            <div class="mt-8 grid items-start gap-5 xl:grid-cols-[380px_1fr]">
                 <aside class="rounded-lg bg-white p-6 shadow-sm">
                     <div class="flex items-center justify-between">
                         <div>
@@ -33,14 +33,14 @@
                     </div>
                 </aside>
 
-                <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+                <div class="grid auto-rows-min gap-5 sm:grid-cols-2 lg:grid-cols-4">
                     @foreach ([
                         'Profile views' => '42',
                         'CV downloads' => '8',
                         'Video views' => '15',
                         'Job alerts' => '6',
                     ] as $label => $value)
-                        <div class="rounded-lg bg-white p-6 shadow-sm">
+                        <div class="min-h-[132px] rounded-lg bg-white p-6 shadow-sm">
                             <p class="text-3xl font-extrabold text-[#2a7190]">{{ $value }}</p>
                             <p class="mt-1 text-sm text-slate-600">{{ $label }}</p>
                         </div>
