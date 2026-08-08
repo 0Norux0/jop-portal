@@ -217,6 +217,44 @@
             font-weight: 850;
         }
 
+        .admin-login-shell .fi-fo-field-wrp-label span,
+        .admin-login-shell label span,
+        .admin-login-shell .fi-checkbox label,
+        .admin-login-shell .fi-fo-checkbox-list-option-label {
+            color: #0f172a;
+            font-size: 14px;
+            font-weight: 850;
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .admin-login-shell .fi-fo-field-wrp:has(input[type="email"]) .fi-fo-field-wrp-label::before {
+            content: "Email address";
+        }
+
+        .admin-login-shell .fi-fo-field-wrp:has(input[type="password"]) .fi-fo-field-wrp-label::before {
+            content: "Password";
+        }
+
+        .admin-login-shell .fi-fo-field-wrp:has(input[type="email"]) .fi-fo-field-wrp-label::before,
+        .admin-login-shell .fi-fo-field-wrp:has(input[type="password"]) .fi-fo-field-wrp-label::before {
+            margin-right: 2px;
+            color: #0f172a;
+            font-size: 14px;
+            font-weight: 850;
+        }
+
+        .admin-login-shell .fi-checkbox label:empty::after,
+        .admin-login-shell .fi-fo-field-wrp:has(input[type="checkbox"]) label:empty::after {
+            content: "Remember me";
+        }
+
+        .admin-login-shell .fi-fo-field-wrp:has(input[type="checkbox"]) {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
         .admin-login-shell .fi-input-wrp {
             width: 100%;
             border: 1px solid #cbd5e1;
