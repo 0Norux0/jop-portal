@@ -3,10 +3,15 @@
 declare(strict_types=1);
 
 use App\Support\PortalData;
+use App\Support\PortalJobPresenter;
 use App\Support\PortalReports;
 use App\Support\CareerCoach;
 use App\Support\InstitutionMetrics;
+use App\Http\Controllers\EmployerWorkspaceController;
+use App\Domain\Identity\Enums\Role;
+use App\Domain\Portal\Models\Employer;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', static fn () => view('welcome', ['portal' => PortalData::load()]))->name('home');
@@ -94,15 +99,72 @@ Route::middleware('portal.capability:trust_safety')->group(function (): void {
 });
 
 Route::middleware('portal.capability:jobs')->group(function (): void {
-    Route::get('/jobs', static fn () => view('portal.jobs.index', ['portal' => PortalData::load()]))->name('jobs.index');
+    Route::get('/jobs', static function () {
+        $portal = PortalData::load();
+        $portal['jobs'] = PortalJobPresenter::publishedJobs();
+
+        return view('portal.jobs.index', ['portal' => $portal]);
+    })->name('jobs.index');
     Route::get('/jobs/{slug}', function (string $slug) {
         $portal = PortalData::load();
-        $job = collect($portal['jobs'])->firstWhere('slug', $slug);
+        $job = PortalJobPresenter::find($slug);
 
         abort_unless($job, 404);
 
-        return view('portal.jobs.show', ['portal' => $portal, 'job' => $job]);
+        $portal['jobs'] = PortalJobPresenter::publishedJobs();
+
+        return view('portal.jobs.show', ['portal' => $portal, 'job' => $job, 'similarJobs' => PortalJobPresenter::similar($slug, $job['category'] ?? null)]);
     })->name('jobs.show');
+});
+
+Route::get('/companies/{slug}', function (string $slug) {
+    $employer = Employer::query()
+        ->with(['jobs' => fn ($query) => $query->where('status', 'published')->latest()])
+        ->where('slug', $slug)
+        ->where('is_published', true)
+        ->first();
+
+    abort_unless($employer, 404);
+
+    return view('portal.company-show', ['employer' => $employer]);
+})->name('companies.show');
+
+Route::get('/logout', function (Request $request) {
+    Auth::guard('web')->logout();
+    $request->session()->invalidate();
+    $request->session()->regenerateToken();
+
+    return redirect()->route('home');
+})->middleware('auth')->name('logout.safe');
+
+Route::middleware(['auth', 'verified'])->group(function (): void {
+    Route::get('/dashboard', function (Request $request) {
+        if ($request->user()?->hasAnyRole([Role::Employer->value, Role::RecruitmentAgency->value])) {
+            return redirect()->route('business.dashboard');
+        }
+
+        $portal = PortalData::load();
+        $portal['jobs'] = PortalJobPresenter::publishedJobs();
+
+        return view('dashboard', ['portal' => $portal]);
+    })->name('dashboard');
+});
+
+Route::middleware(['auth', 'verified', 'employer', 'portal.capability:employers'])->prefix('business')->name('business.')->group(function (): void {
+    Route::get('/', [EmployerWorkspaceController::class, 'dashboard'])->name('dashboard');
+    Route::get('/company', [EmployerWorkspaceController::class, 'company'])->name('company');
+    Route::post('/company', [EmployerWorkspaceController::class, 'updateCompany'])->name('company.update');
+    Route::get('/jobs', [EmployerWorkspaceController::class, 'jobs'])->name('jobs');
+    Route::post('/jobs', [EmployerWorkspaceController::class, 'storeJob'])->name('jobs.store');
+    Route::put('/jobs/{job}', [EmployerWorkspaceController::class, 'updateJob'])->name('jobs.update');
+    Route::get('/applicants', [EmployerWorkspaceController::class, 'applicants'])->name('applicants');
+    Route::put('/applicants/{application}', [EmployerWorkspaceController::class, 'updateApplication'])->name('applicants.update');
+    Route::get('/candidates', [EmployerWorkspaceController::class, 'candidates'])->name('candidates');
+    Route::post('/candidates/{candidate}/invite', [EmployerWorkspaceController::class, 'inviteCandidate'])->name('candidates.invite');
+    Route::get('/admin-center', [EmployerWorkspaceController::class, 'billing'])->name('billing');
+    Route::post('/admin-center', [EmployerWorkspaceController::class, 'updateBilling'])->name('billing.update');
+    Route::get('/advertise', [EmployerWorkspaceController::class, 'promotion'])->name('promotion');
+    Route::post('/advertise', [EmployerWorkspaceController::class, 'storePromotion'])->name('promotion.store');
 });
 
 Route::middleware('portal.capability:content')->group(function (): void {
@@ -123,8 +185,4 @@ Route::middleware('portal.capability:content')->group(function (): void {
             'page' => $portal['seo_pages'][$slug],
         ]);
     })->name('seo.landing');
-});
-
-Route::middleware(['auth', 'verified', 'portal.capability:candidates'])->group(function (): void {
-    Route::get('/dashboard', static fn () => view('dashboard', ['portal' => PortalData::load()]))->name('dashboard');
 });

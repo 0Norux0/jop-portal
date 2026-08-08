@@ -9,7 +9,7 @@
                 </div>
             </div>
 
-            <div class="mt-8 grid gap-5 lg:grid-cols-[360px_1fr]">
+            <div class="mt-8 grid gap-5 xl:grid-cols-[340px_1fr]">
                 <aside class="rounded-lg bg-white p-6 shadow-sm">
                     <div class="flex items-center justify-between">
                         <div>
@@ -22,8 +22,13 @@
                         <div class="h-3 w-[78%] rounded-full bg-[#2a7190]"></div>
                     </div>
                     <div class="mt-6 grid gap-3">
-                        @foreach (['Add one more certificate', 'Upload portfolio samples', 'Confirm phone verification', 'Add preferred salary range'] as $improvement)
-                            <div class="rounded border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-semibold">{{ $improvement }}</div>
+                        @foreach ([
+                            ['Add one more certificate', '/candidate-profile'],
+                            ['Upload portfolio samples', '/portfolio'],
+                            ['Confirm phone verification', '/candidate-verification'],
+                            ['Add preferred salary range', '/candidate-profile'],
+                        ] as [$improvement, $url])
+                            <a href="{{ $url }}" class="rounded border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-semibold hover:border-[#2a7190] hover:text-[#2a7190]">{{ $improvement }}</a>
                         @endforeach
                     </div>
                 </aside>
@@ -46,6 +51,7 @@
             <div class="mt-8 grid gap-5 lg:grid-cols-3">
                 <section class="rounded-lg bg-white p-6 shadow-sm">
                     <h2 class="text-xl font-bold">Recommended jobs</h2>
+                    <p class="mt-1 text-sm text-slate-600">Refreshed from the latest published jobs.</p>
                     <div class="mt-4 grid gap-3">
                         @foreach (array_slice($portal['jobs'], 0, 3) as $job)
                             <a href="/jobs/{{ $job['slug'] }}" class="rounded border border-slate-200 p-4 hover:border-[#2a7190]">
@@ -60,10 +66,10 @@
                     <h2 class="text-xl font-bold">Saved jobs</h2>
                     <div class="mt-4 grid gap-3">
                         @foreach (array_slice($portal['jobs'], 1, 2) as $job)
-                            <div class="rounded border border-slate-200 p-4">
+                            <a href="/jobs/{{ $job['slug'] }}" class="rounded border border-slate-200 p-4 hover:border-[#2a7190]">
                                 <p class="font-semibold">{{ $job['title'] }}</p>
                                 <p class="mt-1 text-sm text-slate-600">Saved for later review</p>
-                            </div>
+                            </a>
                         @endforeach
                     </div>
                 </section>
@@ -72,42 +78,25 @@
                     <h2 class="text-xl font-bold">Applied jobs</h2>
                     <div class="mt-4 grid gap-3">
                         @foreach (array_slice($portal['jobs'], 0, 2) as $job)
-                            <div class="rounded border border-slate-200 p-4">
+                            <a href="/jobs/{{ $job['slug'] }}#apply" class="rounded border border-slate-200 p-4 hover:border-[#2a7190]">
                                 <p class="font-semibold">{{ $job['title'] }}</p>
                                 <p class="mt-1 text-sm text-[#2a7190]">Application status active</p>
-                            </div>
+                            </a>
                         @endforeach
                     </div>
                 </section>
             </div>
 
-            <section class="mt-8 rounded-lg bg-white p-6 shadow-sm">
-                <div class="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
-                    <div>
-                        <h2 class="text-xl font-bold">Application status pipeline</h2>
-                        <p class="mt-1 text-sm text-slate-600">Every application can move through these statuses.</p>
-                    </div>
-                    <span class="rounded-full bg-[#e9f3f7] px-3 py-1 text-sm font-bold text-[#2a7190]">Current: Shortlisted</span>
-                </div>
-                <div class="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
-                    @foreach (['Applied', 'Viewed', 'Shortlisted', 'Interview invited', 'Interview completed', 'Selected', 'Offer received', 'Hired', 'Rejected', 'Withdrawn'] as $status)
-                        <div class="rounded border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-semibold">{{ $status }}</div>
-                    @endforeach
-                </div>
-            </section>
-
-            <div class="mt-8 grid gap-5 lg:grid-cols-3">
+            <div class="mt-8 grid gap-5 lg:grid-cols-2">
                 <section class="rounded-lg bg-white p-6 shadow-sm">
                     <h2 class="text-xl font-bold">Interview invitations</h2>
-                    <p class="mt-3 text-sm leading-6 text-slate-600">Pearl Vista Hotels invited you to a first interview. Confirm availability or suggest another time.</p>
-                </section>
-                <section class="rounded-lg bg-white p-6 shadow-sm">
-                    <h2 class="text-xl font-bold">Employer messages</h2>
-                    <p class="mt-3 text-sm leading-6 text-slate-600">2 unread employer messages. Contact details stay protected until sharing is approved.</p>
+                    <p class="mt-3 text-sm leading-6 text-slate-600">Interview tools will appear here when real employer scheduling is connected.</p>
+                    <a href="/jobs" class="mt-4 inline-flex rounded border border-[#2a7190] px-4 py-2 text-sm font-semibold text-[#2a7190]">Browse jobs</a>
                 </section>
                 <section class="rounded-lg bg-white p-6 shadow-sm">
                     <h2 class="text-xl font-bold">Career tips</h2>
                     <p class="mt-3 text-sm leading-6 text-slate-600">Add a 60-second video profile and one country-specific CV version to improve shortlist chances.</p>
+                    <a href="/career-coach" class="mt-4 inline-flex rounded bg-[#2a7190] px-4 py-2 text-sm font-semibold text-white">Open career coach</a>
                 </section>
             </div>
         </div>

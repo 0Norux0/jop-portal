@@ -63,6 +63,7 @@ class JobApplicationResource extends Resource
             DateTimePicker::make('reviewed_at'),
             Textarea::make('cover_letter')->rows(4)->columnSpanFull(),
             Textarea::make('admin_notes')->rows(4)->columnSpanFull(),
+            Textarea::make('internal_notes')->rows(4)->columnSpanFull(),
         ]);
     }
 

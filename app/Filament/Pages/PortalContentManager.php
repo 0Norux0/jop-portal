@@ -23,9 +23,9 @@ class PortalContentManager extends Page
 
     protected static string | \UnitEnum | null $navigationGroup = 'Website';
 
-    protected static ?string $navigationLabel = 'Portal Content';
+    protected static ?string $navigationLabel = 'Portal Content (Public Data)';
 
-    protected static ?string $title = 'Portal Content';
+    protected static ?string $title = 'Portal Content (Public Data)';
 
     protected static ?int $navigationSort = 2;
 

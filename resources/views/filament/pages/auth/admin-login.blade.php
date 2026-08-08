@@ -4,6 +4,8 @@
     $secondary = $site['brand']['secondary_color'];
 @endphp
 
+@vite(['resources/css/app.css', 'resources/js/app.js'])
+
 <div class="admin-login-shell min-h-screen text-slate-950" style="background: {{ $secondary }};">
     <style>
         .admin-login-shell {

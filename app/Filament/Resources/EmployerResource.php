@@ -9,9 +9,11 @@ use App\Domain\Portal\Models\Employer;
 use App\Filament\Resources\EmployerResource\Pages;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\Toggle;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
@@ -39,12 +41,28 @@ class EmployerResource extends Resource
                 ->afterStateUpdated(fn ($state, callable $set) => $set('slug', Str::slug((string) $state))),
             TextInput::make('slug')->required()->maxLength(255)->unique(ignoreRecord: true),
             TextInput::make('industry')->maxLength(120),
+            TextInput::make('company_size')->maxLength(120),
             TextInput::make('country')->maxLength(120),
             TextInput::make('city')->maxLength(120),
             TextInput::make('website_url')->url()->maxLength(255),
+            FileUpload::make('logo_path')->image()->directory('company-assets')->disk('public')->label('Logo'),
+            FileUpload::make('cover_path')->image()->directory('company-assets')->disk('public')->label('Cover image'),
             TextInput::make('contact_name')->maxLength(160),
             TextInput::make('contact_email')->email()->maxLength(160),
             TextInput::make('contact_phone')->maxLength(80),
+            TextInput::make('billing_email')->email()->maxLength(160),
+            Select::make('billing_plan')->options([
+                'free' => 'Free',
+                'growth' => 'Growth',
+                'premium' => 'Premium',
+                'enterprise' => 'Enterprise',
+            ])->required(),
+            Select::make('premium_status')->options([
+                'not_upgraded' => 'Not upgraded',
+                'trial' => 'Trial',
+                'active' => 'Active',
+                'expired' => 'Expired',
+            ])->required(),
             Select::make('verification_status')->options([
                 'pending' => 'Pending',
                 'verified' => 'Verified',
@@ -55,6 +73,9 @@ class EmployerResource extends Resource
                 'suspended' => 'Suspended',
                 'archived' => 'Archived',
             ])->required(),
+            Toggle::make('is_published')->label('Public company page'),
+            Toggle::make('advertising_enabled'),
+            Toggle::make('learning_enabled'),
             Textarea::make('description')->rows(4)->columnSpanFull(),
         ]);
     }
@@ -68,6 +89,7 @@ class EmployerResource extends Resource
                 TextColumn::make('country')->searchable()->sortable(),
                 TextColumn::make('verification_status')->badge()->sortable(),
                 TextColumn::make('status')->badge()->sortable(),
+                TextColumn::make('billing_plan')->badge()->sortable(),
                 TextColumn::make('jobs_count')->counts('jobs')->label('Jobs')->sortable(),
                 TextColumn::make('updated_at')->dateTime()->sortable()->toggleable(),
             ])

@@ -28,6 +28,7 @@ class PortalData
         }
 
         $defaults = config('portal', []);
+        $defaults['countries'] = CountryRepository::countries();
 
         try {
             if (! Schema::hasTable('settings')) {
@@ -51,7 +52,10 @@ class PortalData
             return static::$loaded = $defaults;
         }
 
-        return static::$loaded = static::sanitize(array_replace($defaults, $decoded)) + $defaults;
+        $loaded = static::sanitize(array_replace($defaults, $decoded)) + $defaults;
+        $loaded['countries'] = CountryRepository::countries();
+
+        return static::$loaded = $loaded;
     }
 
     /**

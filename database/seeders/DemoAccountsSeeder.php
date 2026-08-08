@@ -9,20 +9,23 @@ use App\Domain\Identity\Enums\RegistrationPurpose;
 use App\Domain\Identity\Enums\RegistrationSource;
 use App\Domain\Identity\Enums\Role as RoleEnum;
 use App\Domain\Identity\Models\User;
+use App\Support\CountryRepository;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 
 class DemoAccountsSeeder extends Seeder
 {
-    private const PASSWORD = 'Demo@icsa123';
-
     public function run(): void
     {
+        $password = (string) env('DEMO_ACCOUNT_PASSWORD', Str::password(18));
+
         $this->createUser(
             role: RoleEnum::JobSeeker,
             name: 'Ayesha Khan',
             email: 'candidate@jobportal.test',
             purpose: RegistrationPurpose::FindJob,
+            password: $password,
             extra: [
                 'phone' => '+965 5000 1001',
                 'country' => 'Pakistan',
@@ -42,6 +45,7 @@ class DemoAccountsSeeder extends Seeder
             name: 'Sarah Mitchell',
             email: 'employer@jobportal.test',
             purpose: RegistrationPurpose::Hire,
+            password: $password,
             extra: [
                 'phone' => '+965 5000 2002',
                 'country' => 'United Kingdom',
@@ -55,6 +59,7 @@ class DemoAccountsSeeder extends Seeder
             name: 'Omar Rahman',
             email: 'agency@jobportal.test',
             purpose: RegistrationPurpose::RecruitmentAgency,
+            password: $password,
             extra: [
                 'phone' => '+965 5000 3003',
                 'country' => 'Kuwait',
@@ -68,6 +73,7 @@ class DemoAccountsSeeder extends Seeder
             name: 'Demo Administrator',
             email: 'admin@jobportal.test',
             purpose: RegistrationPurpose::General,
+            password: $password,
             extra: [
                 'phone' => '+965 5000 4004',
                 'country' => 'Kuwait',
@@ -80,19 +86,20 @@ class DemoAccountsSeeder extends Seeder
     /**
      * @param  array<string, mixed>  $extra
      */
-    private function createUser(RoleEnum $role, string $name, string $email, RegistrationPurpose $purpose, array $extra = []): void
+    private function createUser(RoleEnum $role, string $name, string $email, RegistrationPurpose $purpose, string $password, array $extra = []): void
     {
         $user = User::query()->updateOrCreate(
             ['email' => $email],
             [
                 'name' => $name,
-                'password' => Hash::make(self::PASSWORD),
+                'password' => Hash::make($password),
                 'status' => AccountStatus::Active,
                 'email_verified_at' => now(),
                 'terms_accepted_at' => now(),
                 'privacy_accepted_at' => now(),
                 'registration_purpose' => $purpose,
                 'registration_source' => RegistrationSource::AdminCreated,
+                'preferred_timezone' => CountryRepository::timezoneForCountry((string) ($extra['country'] ?? null)),
             ] + $extra,
         );
 

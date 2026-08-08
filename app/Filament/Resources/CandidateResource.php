@@ -35,7 +35,6 @@ class CandidateResource extends Resource
     public static function form(Schema $schema): Schema
     {
         return $schema->schema([
-            Select::make('user_id')->relationship('user', 'email')->searchable()->preload(),
             TextInput::make('full_name')->required()->maxLength(255),
             TextInput::make('headline')->maxLength(255),
             TextInput::make('email')->email()->maxLength(160),

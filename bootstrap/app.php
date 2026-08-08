@@ -5,7 +5,9 @@ declare(strict_types=1);
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
+use App\Http\Middleware\CheckMaintenanceMode;
 use App\Http\Middleware\EnsureAdminSectionAccess;
+use App\Http\Middleware\EnsureEmployerAccess;
 use App\Http\Middleware\EnsurePortalCapabilityEnabled;
 
 return Application::configure(basePath: dirname(__DIR__))
@@ -15,9 +17,10 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        $middleware->web(append: []);
+        $middleware->web(append: [CheckMaintenanceMode::class]);
         $middleware->alias([
             'admin.section' => EnsureAdminSectionAccess::class,
+            'employer' => EnsureEmployerAccess::class,
             'portal.capability' => EnsurePortalCapabilityEnabled::class,
         ]);
     })

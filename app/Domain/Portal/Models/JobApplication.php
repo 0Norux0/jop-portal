@@ -28,11 +28,14 @@ class JobApplication extends Model
         'cv_path',
         'cover_letter',
         'admin_notes',
+        'internal_notes',
         'reviewed_at',
+        'interview_requested_at',
     ];
 
     protected $casts = [
         'reviewed_at' => 'datetime',
+        'interview_requested_at' => 'datetime',
     ];
 
     public function job(): BelongsTo

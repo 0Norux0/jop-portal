@@ -35,6 +35,8 @@ class Job extends Model
         'status',
         'is_featured',
         'is_urgent',
+        'promotion_status',
+        'published_at',
         'visa_sponsorship',
         'relocation_support',
         'description',
@@ -42,10 +44,12 @@ class Job extends Model
         'skills',
         'requirements',
         'benefits',
+        'applicant_questions',
     ];
 
     protected $casts = [
         'application_deadline' => 'date',
+        'published_at' => 'datetime',
         'is_featured' => 'boolean',
         'is_urgent' => 'boolean',
         'visa_sponsorship' => 'boolean',
@@ -57,6 +61,7 @@ class Job extends Model
         'skills' => 'array',
         'requirements' => 'array',
         'benefits' => 'array',
+        'applicant_questions' => 'array',
     ];
 
     public function employer(): BelongsTo

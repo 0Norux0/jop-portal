@@ -9,6 +9,7 @@ use App\Domain\Identity\Enums\Permission;
 use App\Domain\Identity\Enums\RegistrationPurpose;
 use App\Domain\Identity\Enums\RegistrationSource;
 use App\Domain\Identity\Enums\Role as RoleEnum;
+use App\Domain\Portal\Models\Employer;
 use App\Domain\Shared\Concerns\HasPublicId;
 use Database\Factories\UserFactory;
 use Filament\Models\Contracts\FilamentUser;
@@ -76,6 +77,14 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail
     public function loginActivities(): HasMany
     {
         return $this->hasMany(LoginActivity::class);
+    }
+
+    /**
+     * @return HasMany<Employer, $this>
+     */
+    public function employers(): HasMany
+    {
+        return $this->hasMany(Employer::class);
     }
 
     // ----------------------------------------------------------------------

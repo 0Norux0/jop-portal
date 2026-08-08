@@ -8,6 +8,8 @@ use App\Domain\Identity\Enums\AccountStatus;
 use App\Domain\Identity\Enums\RegistrationPurpose;
 use App\Domain\Identity\Enums\RegistrationSource;
 use App\Domain\Identity\Models\User;
+use App\Domain\Portal\Models\Employer;
+use App\Support\CountryRepository;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -44,6 +46,10 @@ class CreateNewUser implements CreatesNewUsers
             'preferred_work_countries.*' => ['string', 'max:120'],
             'willing_to_relocate' => ['nullable', 'boolean'],
             'available_for_remote_work' => ['nullable', 'boolean'],
+            'company_name' => ['nullable', 'required_if:purpose,hire,recruitment_agency', 'string', 'max:255'],
+            'company_industry' => ['nullable', 'string', 'max:120'],
+            'company_size' => ['nullable', 'string', 'max:120'],
+            'company_website_url' => ['nullable', 'url', 'max:255'],
             'terms' => ['accepted'],
         ])->validate();
 
@@ -58,6 +64,7 @@ class CreateNewUser implements CreatesNewUsers
                 'country' => $input['country'],
                 'city' => $input['city'],
                 'nationality' => $input['nationality'],
+                'preferred_timezone' => CountryRepository::timezoneForCountry($input['country'] ?? null),
                 'current_job_title' => $input['current_job_title'],
                 'preferred_job_category' => $input['preferred_job_category'],
                 'linkedin_url' => $input['linkedin_url'] ?? null,
@@ -83,7 +90,47 @@ class CreateNewUser implements CreatesNewUsers
                 $user->assignRole($role->value);
             }
 
+            if (in_array($purpose, [RegistrationPurpose::Hire, RegistrationPurpose::RecruitmentAgency], true)) {
+                $companyName = trim((string) ($input['company_name'] ?? ''));
+
+                Employer::query()->create([
+                    'user_id' => $user->id,
+                    'name' => $companyName,
+                    'slug' => $this->uniqueEmployerSlug($companyName),
+                    'industry' => $input['company_industry'] ?? null,
+                    'company_size' => $input['company_size'] ?? null,
+                    'country' => $input['country'],
+                    'city' => $input['city'],
+                    'website_url' => $input['company_website_url'] ?? null,
+                    'contact_name' => $input['name'],
+                    'contact_email' => $input['email'],
+                    'contact_phone' => $input['phone'] ?? null,
+                    'billing_email' => $input['email'],
+                    'billing_plan' => 'free',
+                    'premium_status' => 'not_upgraded',
+                    'verification_status' => 'pending',
+                    'status' => 'active',
+                    'is_published' => false,
+                    'description' => null,
+                    'social_links' => [],
+                ]);
+            }
+
             return $user;
         });
+    }
+
+    private function uniqueEmployerSlug(string $name): string
+    {
+        $base = str($name)->slug('-')->toString() ?: 'company';
+        $slug = $base;
+        $count = 2;
+
+        while (Employer::query()->where('slug', $slug)->exists()) {
+            $slug = $base.'-'.$count;
+            $count++;
+        }
+
+        return $slug;
     }
 }

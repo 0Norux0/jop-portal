@@ -47,11 +47,8 @@
             </nav>
             <nav class="flex items-center gap-3 text-sm font-medium">
                 @auth
-                    <a href="/dashboard" style="color: {{ $primary }};">Dashboard</a>
-                    <form method="POST" action="/logout">
-                        @csrf
-                        <button type="submit" class="text-slate-500 underline">Sign out</button>
-                    </form>
+                    <a href="{{ auth()->user()->hasAnyRole([\App\Domain\Identity\Enums\Role::Employer->value, \App\Domain\Identity\Enums\Role::RecruitmentAgency->value]) ? route('business.dashboard') : route('dashboard') }}" style="color: {{ $primary }};">Dashboard</a>
+                    <a href="{{ route('logout.safe') }}" class="text-slate-500 underline">Sign out</a>
                 @else
                     <a href="/login" class="hidden text-slate-700 sm:inline">{{ $site['navigation']['sign_in_label'] }}</a>
                     <a href="/register" class="flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-4 py-2 shadow-sm" style="color: {{ $primary }};">

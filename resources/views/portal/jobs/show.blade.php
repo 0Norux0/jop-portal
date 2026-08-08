@@ -53,13 +53,17 @@
                                     <h2 class="font-bold">Company profile</h2>
                                     <p class="mt-2 text-sm text-slate-600">{{ $job['company'] }} is shown as a verified employer preview. Full company profile pages will connect here.</p>
                                 </div>
-                                <a href="/employers" class="rounded border border-[#2a7190] px-4 py-2 text-sm font-semibold text-[#2a7190]">View company profile</a>
+                                @if (! empty($job['company_slug']))
+                                    <a href="{{ route('companies.show', $job['company_slug']) }}" class="rounded border border-[#2a7190] px-4 py-2 text-sm font-semibold text-[#2a7190]">View company profile</a>
+                                @else
+                                    <a href="/employers" class="rounded border border-[#2a7190] px-4 py-2 text-sm font-semibold text-[#2a7190]">View company profile</a>
+                                @endif
                             </div>
                         </section>
                         <section class="rounded-lg border border-slate-200 bg-white p-5">
                             <h2 class="font-bold">Similar jobs</h2>
                             <div class="mt-4 grid gap-3 sm:grid-cols-3">
-                                @foreach (array_slice(array_filter($portal['jobs'], fn ($item) => $item['slug'] !== $job['slug']), 0, 3) as $similar)
+                                @foreach (($similarJobs ?? array_slice(array_filter($portal['jobs'], fn ($item) => $item['slug'] !== $job['slug']), 0, 3)) as $similar)
                                     <a href="/jobs/{{ $similar['slug'] }}" class="rounded border border-slate-200 p-4 hover:border-[#2a7190]">
                                         <p class="font-semibold">{{ $similar['title'] }}</p>
                                         <p class="mt-1 text-xs text-slate-600">{{ $similar['city'] }}, {{ $similar['country'] }}</p>

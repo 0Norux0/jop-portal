@@ -13,9 +13,9 @@ class DatabaseSeeder extends Seeder
         $this->call([
             RolePermissionSeeder::class,
             SettingsSeeder::class,
+            DemoAccountsSeeder::class,
             DemoPortalContentSeeder::class,
             AdminPortalSeeder::class,
-            DemoAccountsSeeder::class,
             SuperAdminSeeder::class,
         ]);
     }

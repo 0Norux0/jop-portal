@@ -50,6 +50,12 @@ class JobResource extends Resource
                 'paused' => 'Paused',
                 'closed' => 'Closed',
             ])->required(),
+            Select::make('promotion_status')->options([
+                'not_promoted' => 'Not promoted',
+                'requested' => 'Requested',
+                'active' => 'Active',
+                'expired' => 'Expired',
+            ])->required(),
             TextInput::make('country')->maxLength(120),
             TextInput::make('city')->maxLength(120),
             Select::make('work_mode')->options(['on_site' => 'On-site', 'remote' => 'Remote', 'hybrid' => 'Hybrid'])->required(),
@@ -68,6 +74,7 @@ class JobResource extends Resource
             TagsInput::make('skills')->separator(',')->columnSpanFull(),
             TagsInput::make('requirements')->separator(',')->columnSpanFull(),
             TagsInput::make('benefits')->separator(',')->columnSpanFull(),
+            TagsInput::make('applicant_questions')->separator(',')->columnSpanFull(),
         ]);
     }
 
@@ -82,6 +89,7 @@ class JobResource extends Resource
                 TextColumn::make('country')->searchable()->sortable(),
                 TextColumn::make('work_mode')->badge()->sortable(),
                 TextColumn::make('status')->badge()->sortable(),
+                TextColumn::make('promotion_status')->badge()->sortable()->toggleable(),
                 IconColumn::make('is_featured')->boolean(),
                 IconColumn::make('is_urgent')->boolean(),
                 TextColumn::make('applications_count')->counts('applications')->label('Applications')->sortable(),

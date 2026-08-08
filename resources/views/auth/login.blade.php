@@ -19,7 +19,10 @@
                 <label class="block text-sm font-semibold" for="password">Password</label>
                 <a class="text-sm font-semibold text-[#2a7190]" href="/forgot-password">Forgot password?</a>
             </div>
-            <input id="password" name="password" type="password" required autocomplete="current-password" class="mt-2 w-full rounded border-slate-300 px-4 py-3">
+            <div class="mt-2 flex rounded border border-slate-300 bg-white focus-within:ring-4 focus-within:ring-emerald-100">
+                <input id="password" name="password" type="password" required autocomplete="current-password" class="min-w-0 flex-1 border-0 bg-transparent px-4 py-3 focus:ring-0">
+                <button type="button" data-password-toggle="password" class="px-4 text-sm font-bold text-[#2a7190]">Show</button>
+            </div>
         </div>
         <label class="flex items-center gap-2 text-sm text-slate-700">
             <input type="checkbox" name="remember" class="rounded border-slate-300"> Remember me

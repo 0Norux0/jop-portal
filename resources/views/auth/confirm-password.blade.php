@@ -9,7 +9,10 @@
         @csrf
         <div>
             <label class="block text-sm font-semibold" for="password">Password</label>
-            <input id="password" name="password" type="password" required autofocus class="mt-2 w-full rounded border-slate-300 px-4 py-3">
+            <div class="mt-2 flex rounded border border-slate-300 bg-white focus-within:ring-4 focus-within:ring-emerald-100">
+                <input id="password" name="password" type="password" required autofocus class="min-w-0 flex-1 border-0 bg-transparent px-4 py-3 focus:ring-0">
+                <button type="button" data-password-toggle="password" class="px-4 text-sm font-bold text-[#2a7190]">Show</button>
+            </div>
         </div>
         <button type="submit" class="w-full rounded px-4 py-3 font-semibold text-white" style="background: {{ $site['brand']['primary_color'] }};">Confirm</button>
     </form>

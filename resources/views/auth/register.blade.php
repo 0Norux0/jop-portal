@@ -1,6 +1,7 @@
 @php
     $site = \App\Support\SiteContent::load();
     $portal = \App\Support\PortalData::load();
+    $nationalities = \App\Support\CountryRepository::nationalities();
 @endphp
 <x-layouts.guest>
     <div class="mb-6">
@@ -59,11 +60,21 @@
                 </div>
                 <div>
                     <label class="block text-sm font-semibold" for="nationality">Nationality</label>
-                    <input id="nationality" name="nationality" type="text" required value="{{ old('nationality') }}" class="mt-2 w-full rounded border-slate-300 px-4 py-3">
+                    <select id="nationality" name="nationality" required class="mt-2 w-full rounded border-slate-300 px-4 py-3">
+                        <option value="">Select nationality</option>
+                        @foreach ($nationalities as $nationality)
+                            <option value="{{ $nationality }}" @selected(old('nationality') === $nationality)>{{ $nationality }}</option>
+                        @endforeach
+                    </select>
                 </div>
                 <div>
-                    <label class="block text-sm font-semibold" for="current_job_title">Current job title</label>
-                    <input id="current_job_title" name="current_job_title" type="text" required value="{{ old('current_job_title') }}" class="mt-2 w-full rounded border-slate-300 px-4 py-3">
+                    <label class="block text-sm font-semibold" for="current_job_title">Current status / job title</label>
+                    <input id="current_job_title" name="current_job_title" type="text" list="current-statuses" required value="{{ old('current_job_title') }}" class="mt-2 w-full rounded border-slate-300 px-4 py-3" placeholder="Working, unemployed, student...">
+                    <datalist id="current-statuses">
+                        @foreach (['Working full-time', 'Working part-time', 'Unemployed', 'Student', 'Fresh graduate', 'Freelancer', 'Career changer', 'Business owner'] as $status)
+                            <option value="{{ $status }}"></option>
+                        @endforeach
+                    </datalist>
                 </div>
                 <div class="sm:col-span-2">
                     <label class="block text-sm font-semibold" for="preferred_job_category">Preferred job category</label>
@@ -77,20 +88,56 @@
             </div>
         </section>
 
+        <section class="rounded-lg border border-slate-200 bg-white p-4">
+            <p class="font-bold">Company details</p>
+            <p class="mt-1 text-sm text-slate-600">Required for employer and recruitment agency accounts.</p>
+            <div class="mt-4 grid gap-4 sm:grid-cols-2">
+                <div>
+                    <label class="block text-sm font-semibold" for="company_name">Company name</label>
+                    <input id="company_name" name="company_name" type="text" value="{{ old('company_name') }}" class="mt-2 w-full rounded border-slate-300 px-4 py-3" placeholder="Company or agency name">
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold" for="company_industry">Industry</label>
+                    <input id="company_industry" name="company_industry" type="text" value="{{ old('company_industry') }}" class="mt-2 w-full rounded border-slate-300 px-4 py-3" placeholder="Healthcare, IT, hospitality...">
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold" for="company_size">Company size</label>
+                    <select id="company_size" name="company_size" class="mt-2 w-full rounded border-slate-300 px-4 py-3">
+                        <option value="">Select size</option>
+                        @foreach (['1-10 employees', '11-50 employees', '51-200 employees', '201-500 employees', '501-1000 employees', '1000+ employees'] as $size)
+                            <option value="{{ $size }}" @selected(old('company_size') === $size)>{{ $size }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold" for="company_website_url">Company website</label>
+                    <input id="company_website_url" name="company_website_url" type="url" value="{{ old('company_website_url') }}" class="mt-2 w-full rounded border-slate-300 px-4 py-3" placeholder="https://">
+                </div>
+            </div>
+        </section>
+
         <section class="rounded-lg border border-slate-200 bg-slate-50 p-4">
             <p class="font-bold">Work preferences</p>
             <div class="mt-4 grid gap-4 sm:grid-cols-2">
                 <div>
                     <label class="block text-sm font-semibold" for="visa_work_permit_status">Visa / work permit status</label>
-                    <input id="visa_work_permit_status" name="visa_work_permit_status" type="text" value="{{ old('visa_work_permit_status') }}" class="mt-2 w-full rounded border-slate-300 px-4 py-3" placeholder="Citizen, resident, needs sponsorship...">
-                </div>
-                <div>
-                    <label class="block text-sm font-semibold" for="preferred_work_countries">Preferred countries</label>
-                    <select id="preferred_work_countries" name="preferred_work_countries[]" multiple class="mt-2 min-h-32 w-full rounded border-slate-300 px-4 py-3">
-                        @foreach ($portal['countries'] as $country)
-                            <option value="{{ $country }}" @selected(in_array($country, old('preferred_work_countries', []), true))>{{ $country }}</option>
+                    <select id="visa_work_permit_status" name="visa_work_permit_status" class="mt-2 w-full rounded border-slate-300 px-4 py-3">
+                        <option value="">Select status</option>
+                        @foreach (['Citizen', 'Resident', 'Has work permit', 'Needs sponsorship', 'Open to relocation', 'Not sure yet'] as $status)
+                            <option value="{{ $status }}" @selected(old('visa_work_permit_status') === $status)>{{ $status }}</option>
                         @endforeach
                     </select>
+                </div>
+                <div>
+                    <p class="block text-sm font-semibold">Preferred countries</p>
+                    <div class="mt-2 grid max-h-52 gap-2 overflow-auto rounded border border-slate-200 bg-white p-3">
+                        @foreach ($portal['countries'] as $country)
+                            <label class="flex items-center gap-2 rounded bg-slate-50 px-3 py-2 text-sm">
+                                <input type="checkbox" name="preferred_work_countries[]" value="{{ $country }}" @checked(in_array($country, old('preferred_work_countries', []), true))>
+                                <span>{{ $country }}</span>
+                            </label>
+                        @endforeach
+                    </div>
                 </div>
             </div>
             <div class="mt-4 grid gap-3 text-sm sm:grid-cols-2">
@@ -130,12 +177,18 @@
             <div class="mt-4 grid gap-4 sm:grid-cols-2">
                 <div>
                     <label class="block text-sm font-semibold" for="password">Password</label>
-                    <input id="password" name="password" type="password" required autocomplete="new-password" class="mt-2 w-full rounded border-slate-300 px-4 py-3">
+                    <div class="mt-2 flex rounded border border-slate-300 bg-white focus-within:ring-4 focus-within:ring-emerald-100">
+                        <input id="password" name="password" type="password" required autocomplete="new-password" class="min-w-0 flex-1 border-0 bg-transparent px-4 py-3 focus:ring-0">
+                        <button type="button" data-password-toggle="password" class="px-4 text-sm font-bold text-[#2a7190]">Show</button>
+                    </div>
                     <p class="mt-1 text-xs text-slate-500">At least 12 characters.</p>
                 </div>
                 <div>
                     <label class="block text-sm font-semibold" for="password_confirmation">Confirm password</label>
-                    <input id="password_confirmation" name="password_confirmation" type="password" required autocomplete="new-password" class="mt-2 w-full rounded border-slate-300 px-4 py-3">
+                    <div class="mt-2 flex rounded border border-slate-300 bg-white focus-within:ring-4 focus-within:ring-emerald-100">
+                        <input id="password_confirmation" name="password_confirmation" type="password" required autocomplete="new-password" class="min-w-0 flex-1 border-0 bg-transparent px-4 py-3 focus:ring-0">
+                        <button type="button" data-password-toggle="password_confirmation" class="px-4 text-sm font-bold text-[#2a7190]">Show</button>
+                    </div>
                 </div>
             </div>
         </section>

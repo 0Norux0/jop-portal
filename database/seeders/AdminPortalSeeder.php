@@ -12,6 +12,7 @@ use App\Domain\Portal\Models\JobApplication;
 use App\Domain\Portal\Models\JobCategory;
 use App\Domain\Portal\Models\MediaAsset;
 use App\Domain\Portal\Models\TrustReport;
+use App\Domain\Identity\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Str;
 
@@ -45,15 +46,28 @@ class AdminPortalSeeder extends Seeder
             ['name' => 'MapleCloud Labs', 'industry' => 'Technology', 'country' => 'Canada', 'city' => 'Toronto'],
             ['name' => 'Pearl Vista Hotels', 'industry' => 'Hospitality', 'country' => 'UAE', 'city' => 'Dubai'],
         ])->mapWithKeys(function (array $employer): array {
+            $owner = $employer['name'] === 'Northbridge Care Group'
+                ? User::query()->where('email', 'employer@jobportal.test')->first()
+                : null;
+
             $record = Employer::query()->updateOrCreate(
                 ['slug' => Str::slug($employer['name'])],
                 [
                     ...$employer,
+                    'user_id' => $owner?->id,
+                    'company_size' => '51-200 employees',
                     'contact_name' => 'Hiring Manager',
                     'contact_email' => 'hr@'.Str::slug($employer['name'], '').'.test',
+                    'billing_email' => 'billing@'.Str::slug($employer['name'], '').'.test',
+                    'billing_plan' => 'free',
+                    'premium_status' => 'not_upgraded',
+                    'advertising_enabled' => false,
+                    'learning_enabled' => false,
                     'verification_status' => 'verified',
                     'status' => 'active',
+                    'is_published' => true,
                     'description' => $employer['name'].' is available for admin-managed job posting and verification workflows.',
+                    'social_links' => ['linkedin' => 'https://www.linkedin.com/company/'.Str::slug($employer['name'])],
                 ],
             );
 
@@ -121,14 +135,17 @@ class AdminPortalSeeder extends Seeder
                     'vacancies' => 3,
                     'application_deadline' => now()->addMonth()->toDateString(),
                     'status' => 'published',
+                    'published_at' => now(),
                     'is_featured' => $job['is_featured'] ?? false,
                     'is_urgent' => $job['is_urgent'] ?? false,
+                    'promotion_status' => 'not_promoted',
                     'visa_sponsorship' => $job['visa_sponsorship'] ?? false,
                     'description' => 'Admin-managed job record ready for real employer content.',
                     'responsibilities' => ['Review applications', 'Interview shortlisted candidates', 'Coordinate onboarding'],
                     'skills' => ['Communication', 'Role-specific experience'],
                     'requirements' => ['Relevant experience', 'Complete candidate profile'],
                     'benefits' => ['Transparent hiring process', 'Employer-managed application review'],
+                    'applicant_questions' => ['Why are you interested in this role?', 'When can you start?'],
                 ],
             );
         }
