@@ -36,8 +36,10 @@
                             @endif
                         </div>
                         <div class="sm:col-span-2">
-                            <button class="rounded bg-[#2a7190] px-5 py-3 font-bold text-white">{{ $billing['save_label'] }}</button>
-                            <a href="{{ route('business.services') }}" class="ml-3 inline-flex rounded border border-[#2a7190] px-5 py-3 font-bold text-[#2a7190]">Request plan change</a>
+                            <div class="flex flex-wrap gap-3">
+                                <button class="rounded bg-[#2a7190] px-5 py-3 font-bold text-white shadow-sm transition hover:bg-[#215d76]">{{ $billing['save_label'] }}</button>
+                                <a href="{{ route('business.services') }}" class="inline-flex rounded border border-[#2a7190] bg-white px-5 py-3 font-bold text-[#2a7190] shadow-sm transition hover:bg-[#e9f3f7]">Request plan change</a>
+                            </div>
                         </div>
                     </form>
                 </section>
@@ -45,29 +47,13 @@
                     <div class="flex flex-col justify-between gap-3 md:flex-row md:items-center">
                         <div>
                             <p class="font-semibold text-[#2a7190]">Subscription entitlements</p>
-                            <h2 class="mt-1 text-2xl font-extrabold">What each plan unlocks</h2>
+                            <h2 class="mt-1 text-2xl font-extrabold">Plan overview</h2>
+                            <p class="mt-2 text-sm text-slate-600">These cards are read-only. Selecting a different plan is handled through a request and platform approval.</p>
                         </div>
-                        <a href="{{ route('business.services') }}" class="rounded border border-[#2a7190] px-4 py-2 text-sm font-bold text-[#2a7190]">Request services</a>
+                        <a href="{{ route('business.services') }}" class="inline-flex rounded border border-[#2a7190] bg-white px-4 py-2 text-sm font-bold text-[#2a7190] shadow-sm transition hover:bg-[#e9f3f7]">Request services</a>
                     </div>
-                    <div class="mt-5 grid gap-4 lg:grid-cols-4">
-                        @foreach ($plans as $key => $plan)
-                            <article @class([
-                                'rounded-lg border p-4',
-                                'border-[#2a7190] bg-[#e9f3f7]' => $employer->billing_plan === $key,
-                                'border-slate-200 bg-white' => $employer->billing_plan !== $key,
-                            ])>
-                                <h3 class="font-bold">{{ $plan['label'] }}</h3>
-                                <dl class="mt-4 grid gap-2 text-sm">
-                                    <div class="flex justify-between gap-3"><dt>Job posts</dt><dd class="font-bold">{{ $plan['job_posts'] }}</dd></div>
-                                    <div class="flex justify-between gap-3"><dt>Featured jobs</dt><dd class="font-bold">{{ $plan['featured_jobs'] }}</dd></div>
-                                    <div class="flex justify-between gap-3"><dt>Searches</dt><dd class="font-bold">{{ $plan['candidate_searches'] }}</dd></div>
-                                    <div class="flex justify-between gap-3"><dt>CV credits</dt><dd class="font-bold">{{ $plan['cv_credits'] }}</dd></div>
-                                    <div class="flex justify-between gap-3"><dt>Contact credits</dt><dd class="font-bold">{{ $plan['contact_credits'] }}</dd></div>
-                                    <div class="flex justify-between gap-3"><dt>Matching</dt><dd class="font-bold">{{ $plan['matching_requests'] }}</dd></div>
-                                    <div class="flex justify-between gap-3"><dt>AI tools</dt><dd class="font-bold">{{ $plan['ai_requests'] }}</dd></div>
-                                </dl>
-                            </article>
-                        @endforeach
+                    <div class="mt-5">
+                        @include('employer.partials.plan-cards', ['plans' => $plans, 'employer' => $employer])
                     </div>
                 </section>
                 <section class="rounded-lg bg-white p-6 shadow-sm">

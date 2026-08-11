@@ -9,12 +9,26 @@
 
                 <section class="rounded-lg bg-white p-6 shadow-sm">
                     <p class="font-semibold text-[#2a7190]">Paid services</p>
-                    <div class="mt-1 flex flex-col justify-between gap-4 lg:flex-row lg:items-end">
+                    <div class="mt-1 flex flex-col justify-between gap-5 lg:flex-row lg:items-center">
                         <div>
                             <h1 class="text-3xl font-extrabold">Employer growth tools</h1>
                             <p class="mt-2 max-w-3xl text-slate-600">Request packages, candidate access credits, premium matching, advertising support, AI recruitment services, and plan changes for platform review.</p>
                         </div>
-                        <a href="{{ route('business.billing') }}" class="rounded border border-[#2a7190] px-4 py-2 text-sm font-bold text-[#2a7190]">View plan</a>
+                        <a href="{{ route('business.billing') }}" class="inline-flex min-w-36 items-center justify-center rounded bg-[#2a7190] px-5 py-3 text-sm font-bold text-white shadow-sm transition hover:bg-[#215d76]">View plan</a>
+                    </div>
+                </section>
+
+                <section class="rounded-lg bg-white p-6 shadow-sm">
+                    <div class="flex flex-col justify-between gap-3 md:flex-row md:items-center">
+                        <div>
+                            <p class="font-semibold text-[#2a7190]">Subscriptions</p>
+                            <h2 class="mt-1 text-2xl font-extrabold">Plan overview</h2>
+                            <p class="mt-2 text-sm text-slate-600">This is a read-only overview. The cards do not activate or change a subscription.</p>
+                        </div>
+                        <span class="rounded-full bg-slate-100 px-4 py-2 text-sm font-bold text-slate-700">Active: {{ $plans[$employer->billing_plan]['label'] ?? str($employer->billing_plan)->headline() }}</span>
+                    </div>
+                    <div class="mt-5">
+                        @include('employer.partials.plan-cards', ['plans' => $plans, 'employer' => $employer])
                     </div>
                 </section>
 
@@ -75,7 +89,7 @@
                             <textarea name="notes" rows="4" class="mt-2 w-full rounded border-slate-300 px-4 py-3" placeholder="Hiring volume, countries, timeline, roles, or candidate type needed"></textarea>
                         </div>
                         <div class="sm:col-span-2">
-                            <button class="rounded bg-[#2a7190] px-5 py-3 font-bold text-white">Create request</button>
+                            <button class="rounded bg-[#2a7190] px-5 py-3 font-bold text-white shadow-sm transition hover:bg-[#215d76]">Create request</button>
                         </div>
                     </form>
                 </section>
