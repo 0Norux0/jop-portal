@@ -12,23 +12,9 @@
                     <div class="mt-1 flex flex-col justify-between gap-5 lg:flex-row lg:items-center">
                         <div>
                             <h1 class="text-3xl font-extrabold">Employer growth tools</h1>
-                            <p class="mt-2 max-w-3xl text-slate-600">Request packages, candidate access credits, premium matching, advertising support, AI recruitment services, and plan changes for platform review.</p>
+                            <p class="mt-2 max-w-3xl text-slate-600">Request packages, candidate access credits, premium matching, advertising support, and AI recruitment services for platform review.</p>
                         </div>
                         <a href="{{ route('business.billing') }}" class="inline-flex min-w-36 items-center justify-center rounded bg-[#2a7190] px-5 py-3 text-sm font-bold text-white shadow-sm transition hover:bg-[#215d76]">View plan</a>
-                    </div>
-                </section>
-
-                <section class="rounded-lg bg-white p-6 shadow-sm">
-                    <div class="flex flex-col justify-between gap-3 md:flex-row md:items-center">
-                        <div>
-                            <p class="font-semibold text-[#2a7190]">Subscriptions</p>
-                            <h2 class="mt-1 text-2xl font-extrabold">Plan overview</h2>
-                            <p class="mt-2 text-sm text-slate-600">This is a read-only overview. The cards do not activate or change a subscription.</p>
-                        </div>
-                        <span class="rounded-full bg-slate-100 px-4 py-2 text-sm font-bold text-slate-700">Active: {{ $plans[$employer->billing_plan]['label'] ?? str($employer->billing_plan)->headline() }}</span>
-                    </div>
-                    <div class="mt-5">
-                        @include('employer.partials.plan-cards', ['plans' => $plans, 'employer' => $employer])
                     </div>
                 </section>
 
@@ -56,7 +42,6 @@
                         <div>
                             <label class="text-sm font-bold">Service type</label>
                             <select name="type" required class="mt-2 w-full rounded border-slate-300 px-4 py-3">
-                                <option value="subscription">Plan change request</option>
                                 <option value="recruitment_package">Recruitment package</option>
                                 <option value="credit_topup">Credit top-up</option>
                                 <option value="premium_matching">Premium candidate matching</option>
@@ -70,15 +55,6 @@
                         <div>
                             <label class="text-sm font-bold">Budget</label>
                             <input name="budget" type="number" min="0" step="0.01" class="mt-2 w-full rounded border-slate-300 px-4 py-3" placeholder="Optional">
-                        </div>
-                        <div>
-                            <label class="text-sm font-bold">Requested plan</label>
-                            <select name="requested_plan" class="mt-2 w-full rounded border-slate-300 px-4 py-3">
-                                <option value="">Not a plan change</option>
-                                <option value="growth">Growth</option>
-                                <option value="premium">Premium Employer Package</option>
-                                <option value="enterprise">Enterprise</option>
-                            </select>
                         </div>
                         <div>
                             <label class="text-sm font-bold">Current plan</label>

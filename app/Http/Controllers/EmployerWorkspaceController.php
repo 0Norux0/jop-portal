@@ -398,9 +398,8 @@ class EmployerWorkspaceController
         $employer = $this->employer($request->user());
 
         $validated = $request->validate([
-            'type' => ['required', 'in:subscription,recruitment_package,premium_matching,ai_recruitment,credit_topup'],
+            'type' => ['required', 'in:recruitment_package,premium_matching,ai_recruitment,credit_topup'],
             'title' => ['required', 'string', 'max:160'],
-            'requested_plan' => ['required_if:type,subscription', 'nullable', 'in:growth,premium,enterprise'],
             'budget' => ['nullable', 'numeric', 'min:0'],
             'notes' => ['nullable', 'string', 'max:3000'],
         ]);
@@ -420,7 +419,7 @@ class EmployerWorkspaceController
             [
                 'notes' => $validated['notes'] ?? null,
                 'current_plan' => $employer->billing_plan,
-                'requested_plan' => $validated['requested_plan'] ?? null,
+                'subscription_disabled' => true,
             ],
             budget: isset($validated['budget']) ? (float) $validated['budget'] : null,
             notes: $validated['notes'] ?? null,

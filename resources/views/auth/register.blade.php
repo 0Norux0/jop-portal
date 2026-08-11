@@ -116,29 +116,6 @@
             </div>
         </section>
 
-        <section class="rounded-lg border border-slate-200 bg-white p-4">
-            <p class="font-bold">Employer plan request</p>
-            <p class="mt-1 text-sm text-slate-600">For employer and recruitment agency accounts, choose the plan you want. Paid plans require platform approval after payment.</p>
-            <div class="mt-4 grid gap-3 lg:grid-cols-4">
-                @foreach (\App\Support\EmployerEntitlements::plans() as $value => $plan)
-                    <label @class([
-                        'cursor-pointer rounded-lg border p-4',
-                        'border-[#2a7190] bg-[#e9f3f7]' => old('requested_employer_plan', 'free') === $value,
-                        'border-slate-200 bg-white' => old('requested_employer_plan', 'free') !== $value,
-                    ])>
-                        <input type="radio" name="requested_employer_plan" value="{{ $value }}" @checked(old('requested_employer_plan', 'free') === $value) class="sr-only">
-                        <span class="block font-bold">{{ $plan['label'] }}</span>
-                        <span class="mt-3 grid gap-1 text-xs text-slate-600">
-                            <span>{{ $plan['job_posts'] }} job posts</span>
-                            <span>{{ $plan['featured_jobs'] }} featured jobs</span>
-                            <span>{{ $plan['cv_credits'] }} CV credits</span>
-                            <span>{{ $plan['contact_credits'] }} contact credits</span>
-                        </span>
-                    </label>
-                @endforeach
-            </div>
-        </section>
-
         <section class="rounded-lg border border-slate-200 bg-slate-50 p-4">
             <p class="font-bold">Work preferences</p>
             <div class="mt-4 grid gap-4 sm:grid-cols-2">

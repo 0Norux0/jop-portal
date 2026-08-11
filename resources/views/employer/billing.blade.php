@@ -26,35 +26,18 @@
                         <div>
                             <label class="text-sm font-bold">{{ $billing['plan_label'] }}</label>
                             <input value="{{ $plans[$employer->billing_plan]['label'] ?? str($employer->billing_plan)->headline() }}" disabled class="mt-2 w-full rounded border-slate-300 bg-slate-50 px-4 py-3">
-                            <p class="mt-2 text-xs text-slate-500">Plan changes must be requested from Paid Services and approved by the platform.</p>
+                            <p class="mt-2 text-xs text-slate-500">Plan changes are currently disabled.</p>
                         </div>
                         <div>
                             <label class="text-sm font-bold">{{ $billing['status_label'] }}</label>
                             <input value="{{ str($employer->premium_status)->headline() }}" disabled class="mt-2 w-full rounded border-slate-300 bg-slate-50 px-4 py-3">
-                            @if (filled($employer->notes['requested_plan_label'] ?? null))
-                                <p class="mt-2 text-xs text-slate-500">Requested plan: {{ $employer->notes['requested_plan_label'] }}</p>
-                            @endif
                         </div>
                         <div class="sm:col-span-2">
                             <div class="flex flex-wrap gap-3">
                                 <button class="rounded bg-[#2a7190] px-5 py-3 font-bold text-white shadow-sm transition hover:bg-[#215d76]">{{ $billing['save_label'] }}</button>
-                                <a href="{{ route('business.services') }}" class="inline-flex rounded border border-[#2a7190] bg-white px-5 py-3 font-bold text-[#2a7190] shadow-sm transition hover:bg-[#e9f3f7]">Request plan change</a>
                             </div>
                         </div>
                     </form>
-                </section>
-                <section class="rounded-lg bg-white p-6 shadow-sm">
-                    <div class="flex flex-col justify-between gap-3 md:flex-row md:items-center">
-                        <div>
-                            <p class="font-semibold text-[#2a7190]">Subscription entitlements</p>
-                            <h2 class="mt-1 text-2xl font-extrabold">Plan overview</h2>
-                            <p class="mt-2 text-sm text-slate-600">These cards are read-only. Selecting a different plan is handled through a request and platform approval.</p>
-                        </div>
-                        <a href="{{ route('business.services') }}" class="inline-flex rounded border border-[#2a7190] bg-white px-4 py-2 text-sm font-bold text-[#2a7190] shadow-sm transition hover:bg-[#e9f3f7]">Request services</a>
-                    </div>
-                    <div class="mt-5">
-                        @include('employer.partials.plan-cards', ['plans' => $plans, 'employer' => $employer])
-                    </div>
                 </section>
                 <section class="rounded-lg bg-white p-6 shadow-sm">
                     <h2 class="text-xl font-bold">Current credit balance</h2>
