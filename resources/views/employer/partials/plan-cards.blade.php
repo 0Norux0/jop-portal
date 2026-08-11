@@ -14,19 +14,19 @@
             <div class="pr-20">
                 <h3 class="text-lg font-extrabold leading-snug text-slate-950">{{ $plan['label'] }}</h3>
             </div>
-            <dl class="mt-5 grid grid-cols-2 gap-x-4 gap-y-3 text-sm">
+            <dl class="mt-4 grid grid-cols-2 gap-x-3 gap-y-2 text-xs">
                 @foreach ([
-                    'Job posts' => $plan['job_posts'],
-                    'Featured jobs' => $plan['featured_jobs'],
+                    'Jobs' => $plan['job_posts'],
+                    'Featured' => $plan['featured_jobs'],
                     'Searches' => $plan['candidate_searches'],
-                    'CV credits' => $plan['cv_credits'],
-                    'Contact credits' => $plan['contact_credits'],
+                    'CVs' => $plan['cv_credits'],
+                    'Contacts' => $plan['contact_credits'],
                     'Matching' => $plan['matching_requests'],
                     'AI tools' => $plan['ai_requests'],
                 ] as $label => $value)
-                    <div class="flex items-center justify-between gap-3 border-b border-slate-100 pb-2">
-                        <dt class="truncate text-slate-600">{{ $label }}</dt>
-                        <dd class="shrink-0 font-extrabold text-slate-950">{{ $value }}</dd>
+                    <div class="rounded border border-slate-100 bg-slate-50 px-2 py-1.5">
+                        <dt class="text-[11px] font-semibold leading-tight text-slate-500">{{ $label }}</dt>
+                        <dd class="mt-0.5 text-sm font-extrabold leading-tight text-slate-950">{{ $value }}</dd>
                     </div>
                 @endforeach
             </dl>
