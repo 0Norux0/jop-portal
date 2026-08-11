@@ -1,10 +1,10 @@
 @props(['plans', 'employer'])
 
-<div class="grid gap-4 lg:grid-cols-4">
+<div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
     @foreach ($plans as $key => $plan)
         @php($active = $employer->billing_plan === $key)
         <article @class([
-            'relative rounded-lg border bg-white p-5 shadow-sm transition',
+            'relative flex aspect-square min-h-0 flex-col rounded-lg border bg-white p-5 shadow-sm transition',
             'border-[#2a7190] ring-2 ring-[#2a7190]/10' => $active,
             'border-slate-200' => ! $active,
         ])>
@@ -14,7 +14,7 @@
             <div class="pr-20">
                 <h3 class="text-lg font-extrabold leading-snug text-slate-950">{{ $plan['label'] }}</h3>
             </div>
-            <dl class="mt-5 grid gap-3 text-sm">
+            <dl class="mt-5 grid grid-cols-2 gap-x-4 gap-y-3 text-sm">
                 @foreach ([
                     'Job posts' => $plan['job_posts'],
                     'Featured jobs' => $plan['featured_jobs'],
@@ -24,9 +24,9 @@
                     'Matching' => $plan['matching_requests'],
                     'AI tools' => $plan['ai_requests'],
                 ] as $label => $value)
-                    <div class="flex items-center justify-between gap-3 border-b border-slate-100 pb-2 last:border-b-0 last:pb-0">
-                        <dt class="text-slate-600">{{ $label }}</dt>
-                        <dd class="font-extrabold text-slate-950">{{ $value }}</dd>
+                    <div class="flex items-center justify-between gap-3 border-b border-slate-100 pb-2">
+                        <dt class="truncate text-slate-600">{{ $label }}</dt>
+                        <dd class="shrink-0 font-extrabold text-slate-950">{{ $value }}</dd>
                     </div>
                 @endforeach
             </dl>
