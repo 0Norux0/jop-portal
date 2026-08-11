@@ -91,7 +91,7 @@
                             <div class="mt-4 grid gap-3">
                                 @foreach ([
                                     ['Hire talent', 'Search and save verified candidates.', 'business.candidates'],
-                                    ['Admin Center', 'Billing, account owner, and team placeholders.', 'business.billing'],
+                                    ['Billing & Account', 'Plans, billing email, credits, and account settings.', 'business.billing'],
                                     ['Advertise', 'Promote jobs and company pages.', 'business.promotion'],
                                     ['Paid Services', 'Request packages, matching, AI tools, and credits.', 'business.services'],
                                 ] as [$title, $copy, $route])

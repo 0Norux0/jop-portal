@@ -17,6 +17,8 @@ This checklist tracks the employer monetization features requested for the job p
 - [x] Employer credit usage is stored in the database.
 - [x] Admin can view and manage paid-service requests.
 - [x] Employer dashboard shows plan and credit status.
+- [x] Employers can request upgrades but cannot grant themselves paid plans or credits.
+- [x] Only protected admins can change employer plan level and credit balances.
 - [x] Public pages avoid internal roadmap notes.
 
 ## Implementation Notes

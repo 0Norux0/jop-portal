@@ -12,7 +12,7 @@
                     <div class="mt-1 flex flex-col justify-between gap-4 lg:flex-row lg:items-end">
                         <div>
                             <h1 class="text-3xl font-extrabold">Employer growth tools</h1>
-                            <p class="mt-2 max-w-3xl text-slate-600">Request packages, candidate access credits, premium matching, advertising support, and AI recruitment services for admin review.</p>
+                            <p class="mt-2 max-w-3xl text-slate-600">Request packages, candidate access credits, premium matching, advertising support, AI recruitment services, and plan changes for platform review.</p>
                         </div>
                         <a href="{{ route('business.billing') }}" class="rounded border border-[#2a7190] px-4 py-2 text-sm font-bold text-[#2a7190]">View plan</a>
                     </div>
@@ -42,6 +42,7 @@
                         <div>
                             <label class="text-sm font-bold">Service type</label>
                             <select name="type" required class="mt-2 w-full rounded border-slate-300 px-4 py-3">
+                                <option value="subscription">Plan change request</option>
                                 <option value="recruitment_package">Recruitment package</option>
                                 <option value="credit_topup">Credit top-up</option>
                                 <option value="premium_matching">Premium candidate matching</option>
@@ -55,6 +56,15 @@
                         <div>
                             <label class="text-sm font-bold">Budget</label>
                             <input name="budget" type="number" min="0" step="0.01" class="mt-2 w-full rounded border-slate-300 px-4 py-3" placeholder="Optional">
+                        </div>
+                        <div>
+                            <label class="text-sm font-bold">Requested plan</label>
+                            <select name="requested_plan" class="mt-2 w-full rounded border-slate-300 px-4 py-3">
+                                <option value="">Not a plan change</option>
+                                <option value="growth">Growth</option>
+                                <option value="premium">Premium Employer Package</option>
+                                <option value="enterprise">Enterprise</option>
+                            </select>
                         </div>
                         <div>
                             <label class="text-sm font-bold">Current plan</label>

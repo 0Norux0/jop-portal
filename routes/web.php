@@ -180,8 +180,8 @@ Route::middleware(['auth', 'verified', 'employer', 'portal.capability:employers'
     Route::post('/candidates/{candidate}/invite', [EmployerWorkspaceController::class, 'inviteCandidate'])->name('candidates.invite');
     Route::post('/candidates/{candidate}/cv-access', [EmployerWorkspaceController::class, 'accessCandidateCv'])->name('candidates.cv-access');
     Route::post('/candidates/{candidate}/contact-access', [EmployerWorkspaceController::class, 'requestCandidateContact'])->name('candidates.contact-access');
-    Route::get('/admin-center', [EmployerWorkspaceController::class, 'billing'])->name('billing');
-    Route::post('/admin-center', [EmployerWorkspaceController::class, 'updateBilling'])->name('billing.update');
+    Route::get('/billing', [EmployerWorkspaceController::class, 'billing'])->name('billing');
+    Route::post('/billing', [EmployerWorkspaceController::class, 'updateBilling'])->name('billing.update');
     Route::get('/advertise', [EmployerWorkspaceController::class, 'promotion'])->name('promotion');
     Route::post('/advertise', [EmployerWorkspaceController::class, 'storePromotion'])->name('promotion.store');
     Route::get('/paid-services', [EmployerWorkspaceController::class, 'services'])->name('services');

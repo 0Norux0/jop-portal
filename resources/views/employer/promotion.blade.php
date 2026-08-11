@@ -9,7 +9,7 @@
                 <section class="rounded-lg bg-white p-6 shadow-sm">
                     <p class="font-semibold text-[#2a7190]">Advertise</p>
                     <h1 class="mt-1 text-3xl font-extrabold">Promote jobs and company pages</h1>
-                    <p class="mt-3 max-w-3xl text-slate-600">Create an advertisement request for admin review. Featured-job requests use featured credits when available.</p>
+                    <p class="mt-3 max-w-3xl text-slate-600">Create an advertisement request for platform review. Featured-job requests use featured credits when available.</p>
                     <form method="POST" action="{{ route('business.promotion.store') }}" class="mt-6 grid gap-4 sm:grid-cols-2">
                         @csrf
                         @include('auth._errors')

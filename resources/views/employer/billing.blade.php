@@ -25,11 +25,8 @@
                         </div>
                         <div>
                             <label class="text-sm font-bold">{{ $billing['plan_label'] }}</label>
-                            <select name="billing_plan" class="mt-2 w-full rounded border-slate-300 px-4 py-3">
-                                @foreach ($plans as $value => $plan)
-                                    <option value="{{ $value }}" @selected($employer->billing_plan === $value)>{{ $plan['label'] }}</option>
-                                @endforeach
-                            </select>
+                            <input value="{{ $plans[$employer->billing_plan]['label'] ?? str($employer->billing_plan)->headline() }}" disabled class="mt-2 w-full rounded border-slate-300 bg-slate-50 px-4 py-3">
+                            <p class="mt-2 text-xs text-slate-500">Plan changes must be requested from Paid Services and approved by the platform.</p>
                         </div>
                         <div>
                             <label class="text-sm font-bold">{{ $billing['status_label'] }}</label>
@@ -37,6 +34,7 @@
                         </div>
                         <div class="sm:col-span-2">
                             <button class="rounded bg-[#2a7190] px-5 py-3 font-bold text-white">{{ $billing['save_label'] }}</button>
+                            <a href="{{ route('business.services') }}" class="ml-3 inline-flex rounded border border-[#2a7190] px-5 py-3 font-bold text-[#2a7190]">Request plan change</a>
                         </div>
                     </form>
                 </section>

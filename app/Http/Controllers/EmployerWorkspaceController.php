@@ -312,7 +312,7 @@ class EmployerWorkspaceController
             'candidate_name' => $candidate->full_name,
         ], candidate: $candidate);
 
-        return back()->with('status', 'Candidate contact request created for admin review.');
+        return back()->with('status', 'Candidate contact request created for platform review.');
     }
 
     public function billing(Request $request): View
@@ -331,24 +331,11 @@ class EmployerWorkspaceController
         $employer = $this->employer($request->user());
         $validated = $request->validate([
             'billing_email' => ['required', 'email', 'max:160'],
-            'billing_plan' => ['required', 'in:free,growth,premium,enterprise'],
         ]);
 
-        $oldPlan = $employer->billing_plan;
         $employer->update($validated);
 
-        if ($oldPlan !== $validated['billing_plan']) {
-            EmployerEntitlements::resetCreditsForPlan($employer->refresh());
-            $employer->premium_status = $validated['billing_plan'] === 'free' ? 'not_upgraded' : 'requested';
-            $employer->save();
-
-            $this->createServiceRequest($employer, 'subscription', 'Plan change request', [
-                'from' => $oldPlan,
-                'to' => $validated['billing_plan'],
-            ]);
-        }
-
-        return back()->with('status', 'Billing settings updated.');
+        return back()->with('status', 'Billing email updated.');
     }
 
     public function promotion(Request $request): View
@@ -392,7 +379,7 @@ class EmployerWorkspaceController
 
         $this->createServiceRequest($employer, 'advertising', $validated['campaign_name'], $validated, $job, budget: (float) $validated['budget']);
 
-        return back()->with('status', 'Advertisement request created for admin review.');
+        return back()->with('status', 'Advertisement request created for platform review.');
     }
 
     public function services(Request $request): View
@@ -411,8 +398,9 @@ class EmployerWorkspaceController
         $employer = $this->employer($request->user());
 
         $validated = $request->validate([
-            'type' => ['required', 'in:recruitment_package,premium_matching,ai_recruitment,credit_topup'],
+            'type' => ['required', 'in:subscription,recruitment_package,premium_matching,ai_recruitment,credit_topup'],
             'title' => ['required', 'string', 'max:160'],
+            'requested_plan' => ['required_if:type,subscription', 'nullable', 'in:growth,premium,enterprise'],
             'budget' => ['nullable', 'numeric', 'min:0'],
             'notes' => ['nullable', 'string', 'max:3000'],
         ]);
@@ -429,12 +417,16 @@ class EmployerWorkspaceController
             $employer,
             $validated['type'],
             $validated['title'],
-            ['notes' => $validated['notes'] ?? null],
+            [
+                'notes' => $validated['notes'] ?? null,
+                'current_plan' => $employer->billing_plan,
+                'requested_plan' => $validated['requested_plan'] ?? null,
+            ],
             budget: isset($validated['budget']) ? (float) $validated['budget'] : null,
             notes: $validated['notes'] ?? null,
         );
 
-        return back()->with('status', 'Paid service request created for admin review.');
+        return back()->with('status', 'Paid service request created for platform review.');
     }
 
     private function employer(?User $user): Employer

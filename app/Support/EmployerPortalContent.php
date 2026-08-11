@@ -112,7 +112,7 @@ class EmployerPortalContent
 
         foreach ($defaults['navigation'] as $key => $default) {
             $navigation[$key] = [
-                'label' => static::string(Arr::get($content, "navigation.{$key}.label", $default['label'])),
+                'label' => static::employerSafeText(static::string(Arr::get($content, "navigation.{$key}.label", $default['label']))),
                 'enabled' => (bool) Arr::get($content, "navigation.{$key}.enabled", $default['enabled']),
             ];
         }
@@ -120,9 +120,9 @@ class EmployerPortalContent
         return [
             'navigation' => $navigation,
             'billing' => [
-                'eyebrow' => static::string(Arr::get($content, 'billing.eyebrow', $defaults['billing']['eyebrow'])),
-                'title' => static::string(Arr::get($content, 'billing.title', $defaults['billing']['title'])),
-                'owner_label' => static::string(Arr::get($content, 'billing.owner_label', $defaults['billing']['owner_label'])),
+                'eyebrow' => static::employerSafeText(static::string(Arr::get($content, 'billing.eyebrow', $defaults['billing']['eyebrow']))),
+                'title' => static::employerSafeText(static::string(Arr::get($content, 'billing.title', $defaults['billing']['title']))),
+                'owner_label' => static::employerSafeText(static::string(Arr::get($content, 'billing.owner_label', $defaults['billing']['owner_label']))),
                 'email_label' => static::string(Arr::get($content, 'billing.email_label', $defaults['billing']['email_label'])),
                 'plan_label' => static::string(Arr::get($content, 'billing.plan_label', $defaults['billing']['plan_label'])),
                 'status_label' => static::string(Arr::get($content, 'billing.status_label', $defaults['billing']['status_label'])),
@@ -131,8 +131,8 @@ class EmployerPortalContent
                 'invoices_copy' => static::text(Arr::get($content, 'billing.invoices_copy', $defaults['billing']['invoices_copy'])),
                 'payment_title' => static::string(Arr::get($content, 'billing.payment_title', $defaults['billing']['payment_title'])),
                 'payment_copy' => static::text(Arr::get($content, 'billing.payment_copy', $defaults['billing']['payment_copy'])),
-                'team_title' => static::string(Arr::get($content, 'billing.team_title', $defaults['billing']['team_title'])),
-                'team_copy' => static::text(Arr::get($content, 'billing.team_copy', $defaults['billing']['team_copy'])),
+                'team_title' => static::employerSafeText(static::string(Arr::get($content, 'billing.team_title', $defaults['billing']['team_title']))),
+                'team_copy' => static::employerSafeText(static::text(Arr::get($content, 'billing.team_copy', $defaults['billing']['team_copy']))),
             ],
         ];
     }
@@ -149,14 +149,14 @@ class EmployerPortalContent
                 'jobs' => ['label' => 'Jobs', 'enabled' => true],
                 'applicants' => ['label' => 'Applicants', 'enabled' => true],
                 'candidates' => ['label' => 'Find Candidates', 'enabled' => true],
-                'billing' => ['label' => 'Admin Center', 'enabled' => true],
+                'billing' => ['label' => 'Billing & Account', 'enabled' => true],
                 'promotion' => ['label' => 'Advertise', 'enabled' => true],
                 'services' => ['label' => 'Paid Services', 'enabled' => true],
             ],
             'billing' => [
-                'eyebrow' => 'Admin Center',
+                'eyebrow' => 'Billing & Account',
                 'title' => 'Billing and account details',
-                'owner_label' => 'Account owner',
+                'owner_label' => 'Company contact',
                 'email_label' => 'Billing email',
                 'plan_label' => 'Plan',
                 'status_label' => 'Upgrade status',
@@ -165,8 +165,8 @@ class EmployerPortalContent
                 'invoices_copy' => 'Invoice history will appear here when payment processing is connected.',
                 'payment_title' => 'Payment method',
                 'payment_copy' => 'Payment method management is reserved for the billing integration.',
-                'team_title' => 'Team members',
-                'team_copy' => 'Employer staff roles and permissions can be enabled in a later account-team module.',
+                'team_title' => 'Account access',
+                'team_copy' => 'Employer account access changes are handled by platform staff.',
             ],
         ];
     }
@@ -196,5 +196,30 @@ class EmployerPortalContent
     private static function text(mixed $value): string
     {
         return trim(strip_tags((string) $value));
+    }
+
+    private static function employerSafeText(string $value): string
+    {
+        return str_replace(
+            [
+                'Admin Center',
+                'admin center',
+                'admin tools',
+                'Admin tools',
+                'admin privileges',
+                'Admin privileges',
+                'permissions',
+            ],
+            [
+                'Billing & Account',
+                'billing & account',
+                'account tools',
+                'Account tools',
+                'account access',
+                'Account access',
+                'access settings',
+            ],
+            $value,
+        );
     }
 }

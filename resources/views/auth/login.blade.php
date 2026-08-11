@@ -3,7 +3,7 @@
     <div class="mb-6">
         <p class="text-sm font-semibold uppercase tracking-wide text-[#2a7190]">Welcome back</p>
         <h1 class="mt-2 text-3xl font-extrabold">Sign in to your account</h1>
-        <p class="mt-2 text-sm leading-6 text-slate-600">Access your dashboard, saved jobs, applications, and admin tools from one place.</p>
+        <p class="mt-2 text-sm leading-6 text-slate-600">Access your dashboard, saved jobs, applications, and account tools from one place.</p>
     </div>
 
     @include('auth._errors')

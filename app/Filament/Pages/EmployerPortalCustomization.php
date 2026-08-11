@@ -64,11 +64,11 @@ class EmployerPortalCustomization extends Page
                         TextInput::make('navigation.candidates.label')->required()->maxLength(60),
                         Toggle::make('navigation.candidates.enabled')->label('Show find candidates'),
                         TextInput::make('navigation.billing.label')->required()->maxLength(60),
-                        Toggle::make('navigation.billing.enabled')->label('Show admin center'),
+                        Toggle::make('navigation.billing.enabled')->label('Show billing and account'),
                         TextInput::make('navigation.promotion.label')->required()->maxLength(60),
                         Toggle::make('navigation.promotion.enabled')->label('Show advertise'),
                     ]),
-                Section::make('Admin Center Text')
+                Section::make('Billing and Account Text')
                     ->description('Change billing/account labels shown to employers.')
                     ->columns(2)
                     ->schema([
@@ -80,7 +80,7 @@ class EmployerPortalCustomization extends Page
                         TextInput::make('billing.status_label')->required()->maxLength(80),
                         TextInput::make('billing.save_label')->required()->maxLength(80),
                     ]),
-                Section::make('Admin Center Cards')
+                Section::make('Billing and Account Cards')
                     ->description('Change the small cards below employer billing/account settings.')
                     ->columns(3)
                     ->schema([
