@@ -31,6 +31,9 @@
                         <div>
                             <label class="text-sm font-bold">{{ $billing['status_label'] }}</label>
                             <input value="{{ str($employer->premium_status)->headline() }}" disabled class="mt-2 w-full rounded border-slate-300 bg-slate-50 px-4 py-3">
+                            @if (filled($employer->notes['requested_plan_label'] ?? null))
+                                <p class="mt-2 text-xs text-slate-500">Requested plan: {{ $employer->notes['requested_plan_label'] }}</p>
+                            @endif
                         </div>
                         <div class="sm:col-span-2">
                             <button class="rounded bg-[#2a7190] px-5 py-3 font-bold text-white">{{ $billing['save_label'] }}</button>

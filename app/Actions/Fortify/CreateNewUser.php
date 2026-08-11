@@ -9,7 +9,9 @@ use App\Domain\Identity\Enums\RegistrationPurpose;
 use App\Domain\Identity\Enums\RegistrationSource;
 use App\Domain\Identity\Models\User;
 use App\Domain\Portal\Models\Employer;
+use App\Domain\Portal\Models\EmployerServiceRequest;
 use App\Support\CountryRepository;
+use App\Support\EmployerEntitlements;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -50,6 +52,7 @@ class CreateNewUser implements CreatesNewUsers
             'company_industry' => ['nullable', 'string', 'max:120'],
             'company_size' => ['nullable', 'string', 'max:120'],
             'company_website_url' => ['nullable', 'url', 'max:255'],
+            'requested_employer_plan' => ['nullable', 'required_if:purpose,hire,recruitment_agency', 'in:free,growth,premium,enterprise'],
             'terms' => ['accepted'],
         ])->validate();
 
@@ -93,7 +96,9 @@ class CreateNewUser implements CreatesNewUsers
             if (in_array($purpose, [RegistrationPurpose::Hire, RegistrationPurpose::RecruitmentAgency], true)) {
                 $companyName = trim((string) ($input['company_name'] ?? ''));
 
-                Employer::query()->create([
+                $requestedPlan = (string) ($input['requested_employer_plan'] ?? 'free');
+
+                $employer = Employer::query()->create([
                     'user_id' => $user->id,
                     'name' => $companyName,
                     'slug' => $this->uniqueEmployerSlug($companyName),
@@ -107,13 +112,41 @@ class CreateNewUser implements CreatesNewUsers
                     'contact_phone' => $input['phone'] ?? null,
                     'billing_email' => $input['email'],
                     'billing_plan' => 'free',
-                    'premium_status' => 'not_upgraded',
+                    'premium_status' => $requestedPlan === 'free' ? 'not_upgraded' : 'requested',
+                    'job_post_limit' => 2,
+                    'featured_job_credits' => 0,
+                    'candidate_search_credits' => 10,
+                    'cv_access_credits' => 1,
+                    'candidate_contact_credits' => 1,
+                    'matching_request_credits' => 0,
+                    'ai_recruitment_credits' => 0,
                     'verification_status' => 'pending',
                     'status' => 'active',
                     'is_published' => false,
                     'description' => null,
+                    'notes' => [
+                        'requested_plan' => $requestedPlan,
+                        'requested_plan_label' => EmployerEntitlements::plans()[$requestedPlan]['label'] ?? 'Free Employer Account',
+                        'requested_at_signup' => now()->toDateTimeString(),
+                    ],
                     'social_links' => [],
                 ]);
+
+                if ($requestedPlan !== 'free') {
+                    EmployerServiceRequest::query()->create([
+                        'employer_id' => $employer->id,
+                        'type' => 'subscription',
+                        'title' => 'Signup plan request',
+                        'status' => 'requested',
+                        'payload' => [
+                            'current_plan' => 'free',
+                            'requested_plan' => $requestedPlan,
+                            'requested_plan_label' => EmployerEntitlements::plans()[$requestedPlan]['label'] ?? $requestedPlan,
+                            'source' => 'registration',
+                        ],
+                        'notes' => 'Employer selected this plan during account creation. Activate only after payment/admin approval.',
+                    ]);
+                }
             }
 
             return $user;

@@ -10,6 +10,8 @@ This checklist tracks the employer monetization features requested for the job p
 - [x] Employers have CV access credits.
 - [x] Employers have candidate contact credits.
 - [x] Employers have subscription-style plans with entitlements.
+- [x] Employers choose a desired plan during signup without activating paid privileges.
+- [x] Paid signup plan choices create subscription requests for admin/payment approval.
 - [x] Employers can request recruitment packages.
 - [x] Employers can request premium candidate matching.
 - [x] Employers can request AI recruitment tools.
