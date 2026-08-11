@@ -30,7 +30,7 @@ Route::middleware('portal.capability:employers')->group(function (): void {
     Route::get('/employer-register', static fn () => view('portal.employer-register', ['portal' => PortalData::load()]))->name('employer-register');
     Route::get('/employer-dashboard', static fn () => view('portal.employer-dashboard', ['portal' => PortalData::load()]))->name('employer-dashboard');
     Route::get('/candidate-search', static fn () => view('portal.candidate-search', ['portal' => PortalData::load()]))->name('candidate-search');
-    Route::get('/packages', static fn () => view('portal.packages', ['portal' => PortalData::load()]))->name('packages');
+    Route::get('/packages', static fn () => abort(404))->name('packages');
 });
 
 Route::middleware('portal.capability:content')->group(function (): void {

@@ -135,7 +135,7 @@ class EmployerWorkspaceController
         $status = $request->input('action') === 'publish' ? 'published' : 'draft';
 
         if ($status === 'published' && ! $this->canPublishMoreJobs($employer)) {
-            return back()->withInput()->with('status', 'Your current employer plan has reached its published job limit. Request a package or upgrade from Paid Services.');
+            return back()->withInput()->with('status', 'Your employer account has reached its published job limit.');
         }
 
         $employer->jobs()->create($this->jobPayload($validated, $status));
@@ -152,7 +152,7 @@ class EmployerWorkspaceController
         $status = $request->input('action') === 'publish' ? 'published' : ($request->input('status') ?: 'draft');
 
         if ($status === 'published' && $job->status !== 'published' && ! $this->canPublishMoreJobs($employer)) {
-            return back()->withInput()->with('status', 'Your current employer plan has reached its published job limit. Request a package or upgrade from Paid Services.');
+            return back()->withInput()->with('status', 'Your employer account has reached its published job limit.');
         }
 
         $job->update($this->jobPayload($validated, $status, $job->id));
@@ -233,7 +233,7 @@ class EmployerWorkspaceController
 
             if (! $request->session()->has($signature)) {
                 if (! $this->consumeCredit($employer, 'candidate_search_credits', 'candidate_search', 'Candidate search')) {
-                    return redirect()->route('business.services')->with('status', 'No candidate search credits left. Request more search credits or upgrade your plan.');
+                    return redirect()->route('business.services')->with('status', 'No candidate search credits left. Request more search credits from Paid Services.');
                 }
 
                 $request->session()->put($signature, true);
@@ -398,18 +398,18 @@ class EmployerWorkspaceController
         $employer = $this->employer($request->user());
 
         $validated = $request->validate([
-            'type' => ['required', 'in:recruitment_package,premium_matching,ai_recruitment,credit_topup'],
+            'type' => ['required', 'in:recruitment_package,matching_support,ai_recruitment,credit_topup'],
             'title' => ['required', 'string', 'max:160'],
             'budget' => ['nullable', 'numeric', 'min:0'],
             'notes' => ['nullable', 'string', 'max:3000'],
         ]);
 
-        if ($validated['type'] === 'premium_matching' && ! $this->consumeCredit($employer, 'matching_request_credits', 'premium_matching', $validated['title'])) {
-            return back()->withInput()->with('status', 'No matching request credits left. Request a matching package or upgrade first.');
+        if ($validated['type'] === 'matching_support' && ! $this->consumeCredit($employer, 'matching_request_credits', 'matching_support', $validated['title'])) {
+            return back()->withInput()->with('status', 'No matching request credits left. Request matching support from Paid Services.');
         }
 
         if ($validated['type'] === 'ai_recruitment' && ! $this->consumeCredit($employer, 'ai_recruitment_credits', 'ai_recruitment', $validated['title'])) {
-            return back()->withInput()->with('status', 'No AI recruitment credits left. Request an AI package or upgrade first.');
+            return back()->withInput()->with('status', 'No AI recruitment credits left. Request AI support from Paid Services.');
         }
 
         $this->createServiceRequest(

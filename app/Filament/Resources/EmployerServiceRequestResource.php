@@ -46,6 +46,7 @@ class EmployerServiceRequestResource extends Resource
                 'candidate_contact' => 'Candidate contact',
                 'recruitment_package' => 'Recruitment package',
                 'credit_topup' => 'Credit top-up',
+                'matching_support' => 'Candidate matching support',
                 'premium_matching' => 'Premium candidate matching',
                 'ai_recruitment' => 'AI recruitment tools',
             ])->required(),

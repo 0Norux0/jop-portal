@@ -9,7 +9,6 @@
                 <a href="/employer-register" class="rounded bg-[#2a7190] px-5 py-3 text-sm font-semibold text-white">Register employer</a>
                 <a href="/employer-dashboard" class="rounded border border-[#2a7190] px-5 py-3 text-sm font-semibold text-[#2a7190]">View dashboard</a>
                 <a href="/candidate-search" class="rounded border border-[#2a7190] px-5 py-3 text-sm font-semibold text-[#2a7190]">Search candidates</a>
-                <a href="/packages" class="rounded border border-[#2a7190] px-5 py-3 text-sm font-semibold text-[#2a7190]">Packages</a>
             </div>
             <div class="mt-8 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
                 @foreach (['Employer registration' => ['Company name', 'Contact person', 'Business email', 'Mobile/WhatsApp', 'Country/city', 'Company website', 'Industry', 'Company size', 'Verification documents'], 'Employer dashboard' => ['Post jobs', 'Manage jobs', 'View applicants', 'Shortlist candidates', 'Download CVs', 'Watch videos', 'View portfolios', 'Message candidates', 'Analytics'], 'Candidate search' => ['Country', 'Skills', 'Experience', 'Education', 'Certification', 'Salary expectation', 'Video available', 'Portfolio available', 'ICSA/NAS verified optional filter']] as $title => $items)

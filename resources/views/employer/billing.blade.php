@@ -23,15 +23,6 @@
                             <label class="text-sm font-bold">{{ $billing['email_label'] }}</label>
                             <input name="billing_email" type="email" value="{{ old('billing_email', $employer->billing_email ?: $employer->contact_email) }}" required class="mt-2 w-full rounded border-slate-300 px-4 py-3">
                         </div>
-                        <div>
-                            <label class="text-sm font-bold">{{ $billing['plan_label'] }}</label>
-                            <input value="{{ $plans[$employer->billing_plan]['label'] ?? str($employer->billing_plan)->headline() }}" disabled class="mt-2 w-full rounded border-slate-300 bg-slate-50 px-4 py-3">
-                            <p class="mt-2 text-xs text-slate-500">Plan changes are currently disabled.</p>
-                        </div>
-                        <div>
-                            <label class="text-sm font-bold">{{ $billing['status_label'] }}</label>
-                            <input value="{{ str($employer->premium_status)->headline() }}" disabled class="mt-2 w-full rounded border-slate-300 bg-slate-50 px-4 py-3">
-                        </div>
                         <div class="sm:col-span-2">
                             <div class="flex flex-wrap gap-3">
                                 <button class="rounded bg-[#2a7190] px-5 py-3 font-bold text-white shadow-sm transition hover:bg-[#215d76]">{{ $billing['save_label'] }}</button>

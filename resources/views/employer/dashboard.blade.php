@@ -93,7 +93,7 @@
                                     ['Hire talent', 'Search and save verified candidates.', 'business.candidates'],
                                     ['Billing & Account', 'Plans, billing email, credits, and account settings.', 'business.billing'],
                                     ['Advertise', 'Promote jobs and company pages.', 'business.promotion'],
-                                    ['Paid Services', 'Request packages, matching, AI tools, and credits.', 'business.services'],
+                                    ['Paid Services', 'Request matching, AI tools, and credits.', 'business.services'],
                                 ] as [$title, $copy, $route])
                                     <a href="{{ route($route) }}" class="rounded border border-slate-200 p-4 hover:border-[#2a7190]">
                                         <p class="font-bold">{{ $title }}</p>

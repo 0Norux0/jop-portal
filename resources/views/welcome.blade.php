@@ -173,7 +173,7 @@
                 <h2 class="mt-2 text-3xl font-extrabold">{{ $site['home']['employer_tools_heading'] }}</h2>
                 <p class="mt-4 leading-7 text-slate-600">{{ $site['home']['employer_tools_description'] }}</p>
                 <div class="mt-6 grid gap-3 sm:grid-cols-2">
-                    @foreach (['Verified employer badges', 'Candidate search credits', 'Urgent hiring packages', 'Recruitment agency tools'] as $item)
+                    @foreach (['Verified employer badges', 'Candidate search tools', 'Urgent hiring workflows', 'Recruitment agency tools'] as $item)
                         <div class="rounded-lg border border-slate-200 p-4 font-semibold">{{ $item }}</div>
                     @endforeach
                 </div>

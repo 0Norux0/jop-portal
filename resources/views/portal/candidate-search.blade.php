@@ -11,7 +11,7 @@
                 @endforeach
             </div>
             <div class="mt-5 flex flex-wrap gap-2 text-xs">
-                @foreach (['Willing to relocate', 'Remote available', 'Video profile available', 'Portfolio available', 'Verified profile', 'ICSA/NAS verified', 'Recently active', 'Open to work', 'Basic free preview', 'Advanced paid/premium search'] as $chip)
+                @foreach (['Willing to relocate', 'Remote available', 'Video profile available', 'Portfolio available', 'Verified profile', 'ICSA/NAS verified', 'Recently active', 'Open to work', 'Basic preview', 'Approved access required'] as $chip)
                     <label class="rounded-full border border-slate-200 bg-white px-3 py-2 font-semibold text-slate-700">
                         <input type="checkbox" class="mr-1 align-middle"> {{ $chip }}
                     </label>

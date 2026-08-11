@@ -12,9 +12,9 @@
                     <div class="mt-1 flex flex-col justify-between gap-5 lg:flex-row lg:items-center">
                         <div>
                             <h1 class="text-3xl font-extrabold">Employer growth tools</h1>
-                            <p class="mt-2 max-w-3xl text-slate-600">Request packages, candidate access credits, premium matching, advertising support, and AI recruitment services for platform review.</p>
+                            <p class="mt-2 max-w-3xl text-slate-600">Request candidate access credits, matching support, advertising support, and AI recruitment services for platform review.</p>
                         </div>
-                        <a href="{{ route('business.billing') }}" class="inline-flex min-w-36 items-center justify-center rounded bg-[#2a7190] px-5 py-3 text-sm font-bold text-white shadow-sm transition hover:bg-[#215d76]">View plan</a>
+                        <a href="{{ route('business.billing') }}" class="inline-flex min-w-36 items-center justify-center rounded bg-[#2a7190] px-5 py-3 text-sm font-bold text-white shadow-sm transition hover:bg-[#215d76]">Billing</a>
                     </div>
                 </section>
 
@@ -42,9 +42,9 @@
                         <div>
                             <label class="text-sm font-bold">Service type</label>
                             <select name="type" required class="mt-2 w-full rounded border-slate-300 px-4 py-3">
-                                <option value="recruitment_package">Recruitment package</option>
+                                <option value="recruitment_package">Recruitment support</option>
                                 <option value="credit_topup">Credit top-up</option>
-                                <option value="premium_matching">Premium candidate matching</option>
+                                <option value="matching_support">Candidate matching support</option>
                                 <option value="ai_recruitment">AI recruitment tools</option>
                             </select>
                         </div>
@@ -55,10 +55,6 @@
                         <div>
                             <label class="text-sm font-bold">Budget</label>
                             <input name="budget" type="number" min="0" step="0.01" class="mt-2 w-full rounded border-slate-300 px-4 py-3" placeholder="Optional">
-                        </div>
-                        <div>
-                            <label class="text-sm font-bold">Current plan</label>
-                            <input value="{{ $plans[$employer->billing_plan]['label'] ?? str($employer->billing_plan)->headline() }}" disabled class="mt-2 w-full rounded border-slate-300 bg-slate-50 px-4 py-3">
                         </div>
                         <div class="sm:col-span-2">
                             <label class="text-sm font-bold">Notes</label>

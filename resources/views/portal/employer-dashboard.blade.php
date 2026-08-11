@@ -17,7 +17,7 @@
                 @foreach ([
                     'Hiring actions' => ['Post jobs', 'Manage jobs', 'View applicants', 'Shortlist candidates', 'Invite candidates to apply', 'Schedule interviews'],
                     'Candidate review' => ['Search candidates', 'Download CVs', 'Watch video profiles', 'View portfolios', 'Message candidates'],
-                    'Commercial tools' => ['Buy job packages', 'Buy CV search credits', 'View analytics'],
+                    'Employer tools' => ['Request CV access', 'Request candidate contact', 'View analytics'],
                 ] as $title => $items)
                     <section class="rounded-lg bg-white p-6 shadow-sm">
                         <h2 class="text-xl font-bold">{{ $title }}</h2>

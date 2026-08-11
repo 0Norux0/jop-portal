@@ -17,7 +17,7 @@
                     'Candidate verification',
                     'Employer verification',
                     'Payments',
-                    'Packages',
+                    'Employer services',
                     'Credits',
                     'Reports',
                     'Content management',

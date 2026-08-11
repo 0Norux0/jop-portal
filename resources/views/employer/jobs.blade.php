@@ -57,7 +57,7 @@
                 <section id="create-job" class="rounded-lg bg-white p-6 shadow-sm">
                     <p class="font-semibold text-[#2a7190]">Job posting</p>
                     <h2 class="mt-1 text-2xl font-extrabold">Create job post</h2>
-                    <p class="mt-2 text-sm text-slate-600">Your plan allows {{ $employer->job_post_limit }} published jobs. Extra posting packages can be requested from Paid Services.</p>
+                    <p class="mt-2 text-sm text-slate-600">Your account currently allows {{ $employer->job_post_limit }} published jobs.</p>
                     <form method="POST" action="{{ route('business.jobs.store') }}" class="mt-6 grid gap-5 sm:grid-cols-2">
                         @csrf
                         @include('auth._errors')

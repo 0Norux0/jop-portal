@@ -13,7 +13,7 @@
                     'Company document verified',
                     'Recruitment agency verified',
                     'Trusted employer',
-                    'Premium employer',
+                    'Trusted employer',
                 ] as $level)
                     <div class="rounded-lg bg-white p-5 shadow-sm">
                         <div class="flex h-12 w-12 items-center justify-center rounded-full bg-[#e9f3f7] text-[#2a7190]">

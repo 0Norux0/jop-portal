@@ -30,7 +30,7 @@ return [
         ],
         'employers' => [
             'label' => 'Employers',
-            'description' => 'Employer registration, dashboard, packages, candidate search, and verification.',
+            'description' => 'Employer registration, dashboard, candidate search, and verification.',
             'enabled' => true,
             'public' => true,
             'admin_section' => 'employers',
