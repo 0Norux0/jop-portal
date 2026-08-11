@@ -13,6 +13,7 @@
                         <div><dt class="text-slate-500">Current status</dt><dd class="font-semibold">{{ $candidate->current_job_title ?: 'Not listed' }}</dd></div>
                         <div><dt class="text-slate-500">Expected salary</dt><dd class="font-semibold">{{ $candidate->expected_salary ?: 'Not listed' }}</dd></div>
                         <div><dt class="text-slate-500">Notice period</dt><dd class="font-semibold">{{ $candidate->notice_period ?: 'Not listed' }}</dd></div>
+                        <div><dt class="text-slate-500">Availability</dt><dd class="font-semibold">{{ str($candidate->availability_status)->replace('_', ' ')->headline() ?: 'Not listed' }}</dd></div>
                         <div><dt class="text-slate-500">Profile completion</dt><dd class="font-semibold">{{ $completion['percent'] }}%</dd></div>
                     </dl>
                     @if ($candidate->cv_path)
@@ -29,6 +30,19 @@
                                 <span class="rounded-full bg-slate-100 px-3 py-1 text-sm font-semibold">{{ $skill }}</span>
                             @endforeach
                         </div>
+                    </section>
+
+                    <section class="rounded-lg bg-white p-6 shadow-sm">
+                        <h2 class="text-xl font-bold">Work preferences</h2>
+                        <dl class="mt-4 grid gap-4 text-sm sm:grid-cols-2">
+                            <div><dt class="text-slate-500">Preferred locations</dt><dd class="font-semibold">{{ implode(', ', $candidate->preferred_locations ?? []) ?: 'Not listed' }}</dd></div>
+                            <div><dt class="text-slate-500">Employment type</dt><dd class="font-semibold">{{ str($candidate->employment_type_preference)->replace('_', ' ')->headline() ?: 'Not listed' }}</dd></div>
+                            <div><dt class="text-slate-500">Work mode</dt><dd class="font-semibold">{{ str($candidate->work_mode_preference)->replace('_', ' ')->headline() ?: 'Not listed' }}</dd></div>
+                            <div><dt class="text-slate-500">Work authorisation</dt><dd class="font-semibold">{{ $candidate->work_authorization ?: 'Not listed' }}</dd></div>
+                            <div><dt class="text-slate-500">Visa requirements</dt><dd class="font-semibold">{{ $candidate->visa_requirements ?: 'Not listed' }}</dd></div>
+                            <div><dt class="text-slate-500">Relocation</dt><dd class="font-semibold">{{ str($candidate->relocation_preference)->replace('_', ' ')->headline() ?: 'Not listed' }}</dd></div>
+                            <div class="sm:col-span-2"><dt class="text-slate-500">Languages</dt><dd class="font-semibold">{{ implode(', ', $candidate->languages ?? []) ?: 'Not listed' }}</dd></div>
+                        </dl>
                     </section>
 
                     @if ($candidate->video_path)

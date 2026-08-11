@@ -43,6 +43,23 @@ class CandidateResource extends Resource
             TextInput::make('city')->maxLength(120),
             TextInput::make('current_job_title')->maxLength(160),
             TextInput::make('preferred_job_category')->maxLength(160),
+            TagsInput::make('preferred_locations')->separator(',')->columnSpanFull(),
+            Select::make('employment_type_preference')->options([
+                'full_time' => 'Full-time',
+                'part_time' => 'Part-time',
+                'contract' => 'Contract',
+                'freelance' => 'Freelance',
+                'internship' => 'Internship',
+            ]),
+            Select::make('work_mode_preference')->options([
+                'on_site' => 'On-site',
+                'hybrid' => 'Hybrid',
+                'remote' => 'Remote',
+                'flexible' => 'Flexible',
+            ]),
+            TextInput::make('work_authorization')->maxLength(160),
+            TextInput::make('visa_requirements')->maxLength(160),
+            TextInput::make('relocation_preference')->maxLength(160),
             TextInput::make('linkedin_url')->url()->maxLength(255),
             TextInput::make('portfolio_url')->url()->maxLength(255),
             TextInput::make('cv_path')->maxLength(255),
@@ -59,6 +76,7 @@ class CandidateResource extends Resource
             ])->required(),
             TextInput::make('trust_score')->numeric()->minValue(0)->maxValue(100)->default(0),
             TagsInput::make('skills')->separator(',')->columnSpanFull(),
+            TagsInput::make('languages')->separator(',')->columnSpanFull(),
             Textarea::make('bio')->rows(4)->columnSpanFull(),
         ]);
     }

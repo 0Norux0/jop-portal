@@ -17,6 +17,11 @@ Build the job seeker side as a real, mostly free candidate workspace. Job seeker
 - [x] Candidate can add education records.
 - [x] Candidate can add work experience records.
 - [x] Candidate can add and edit skills.
+- [x] Candidate can add and edit languages.
+- [x] Candidate can manage preferred locations.
+- [x] Candidate can manage employment type preference.
+- [x] Candidate can manage remote/hybrid/on-site preference.
+- [x] Candidate can manage work authorisation, visa, relocation, availability, salary, and notice-period details.
 - [x] Candidate can manage external professional profile links.
 - [x] Candidate gets an online public professional profile.
 - [x] Candidate can search jobs.
@@ -37,6 +42,7 @@ Build the job seeker side as a real, mostly free candidate workspace. Job seeker
 - [x] Basic employer messaging exists.
 - [x] Registration stores external links.
 - [x] Candidate model has basic profile fields and skills.
+- [x] Candidate model has salary expectation, availability, and notice period fields.
 
 ## Implementation Notes
 
@@ -50,9 +56,13 @@ Build the job seeker side as a real, mostly free candidate workspace. Job seeker
 
 - Added database tables for portfolio items, projects, certificates, education, experience, and job alerts.
 - Added extra candidate fields for public profile slug, video upload, salary expectation, notice period, public visibility, and external links.
+- Added candidate work-preference fields for languages, preferred locations, employment type, work mode, work authorisation, visa requirements, and relocation.
 - Added candidate profile manager at `/profile`.
 - Added public professional profile at `/talent/{slug}`.
 - Added CV and video upload controls.
+- Added editable candidate work-preference controls to the profile manager.
+- Added candidate work-preference display to the public professional profile.
+- Added admin-side candidate work-preference fields.
 - Added repeatable forms for experience, education, certificates, projects, and portfolio items.
 - Added job alert creation/removal.
 - Added `job-alerts:send` command and daily schedule entry for job alert delivery.

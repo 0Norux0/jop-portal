@@ -28,6 +28,12 @@ class Candidate extends Model
         'city',
         'current_job_title',
         'preferred_job_category',
+        'preferred_locations',
+        'employment_type_preference',
+        'work_mode_preference',
+        'work_authorization',
+        'visa_requirements',
+        'relocation_preference',
         'linkedin_url',
         'portfolio_url',
         'cv_path',
@@ -39,12 +45,15 @@ class Candidate extends Model
         'is_public',
         'trust_score',
         'skills',
+        'languages',
         'external_links',
         'bio',
     ];
 
     protected $casts = [
         'skills' => 'array',
+        'languages' => 'array',
+        'preferred_locations' => 'array',
         'external_links' => 'array',
         'is_public' => 'boolean',
         'trust_score' => 'integer',

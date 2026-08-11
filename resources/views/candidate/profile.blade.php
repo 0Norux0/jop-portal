@@ -1,6 +1,7 @@
 @php
     $links = $candidate->external_links ?? [];
     $skillsText = implode(', ', $candidate->skills ?? []);
+    $languagesText = implode(', ', $candidate->languages ?? []);
 @endphp
 
 <x-layouts.app title="My Profile">
@@ -105,6 +106,75 @@
                                 <input name="skills" value="{{ old('skills', $skillsText) }}" class="mt-2 w-full rounded border-slate-300 px-4 py-3" placeholder="Caregiving, First aid, English">
                             </div>
                         </div>
+
+                        <section class="mt-6 rounded-lg border border-slate-200 bg-slate-50 p-4">
+                            <h3 class="font-bold">Work preferences</h3>
+                            <div class="mt-4 grid gap-4 md:grid-cols-2">
+                                <div>
+                                    <label class="text-sm font-bold">Languages</label>
+                                    <input name="languages" value="{{ old('languages', $languagesText) }}" class="mt-2 w-full rounded border-slate-300 px-4 py-3" placeholder="English, Arabic, Tagalog">
+                                </div>
+                                <div>
+                                    <label class="text-sm font-bold">Availability</label>
+                                    <select name="availability_status" class="mt-2 w-full rounded border-slate-300 px-4 py-3">
+                                        @foreach (['open_to_work' => 'Open to work', 'available_immediately' => 'Available immediately', 'available_soon' => 'Available soon', 'not_looking' => 'Not looking'] as $value => $label)
+                                            <option value="{{ $value }}" @selected(old('availability_status', $candidate->availability_status) === $value)>{{ $label }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="text-sm font-bold">Employment type</label>
+                                    <select name="employment_type_preference" class="mt-2 w-full rounded border-slate-300 px-4 py-3">
+                                        <option value="">Select type</option>
+                                        @foreach (['full_time' => 'Full-time', 'part_time' => 'Part-time', 'contract' => 'Contract', 'freelance' => 'Freelance', 'internship' => 'Internship'] as $value => $label)
+                                            <option value="{{ $value }}" @selected(old('employment_type_preference', $candidate->employment_type_preference) === $value)>{{ $label }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="text-sm font-bold">Work mode</label>
+                                    <select name="work_mode_preference" class="mt-2 w-full rounded border-slate-300 px-4 py-3">
+                                        <option value="">Select mode</option>
+                                        @foreach (['on_site' => 'On-site', 'hybrid' => 'Hybrid', 'remote' => 'Remote', 'flexible' => 'Flexible'] as $value => $label)
+                                            <option value="{{ $value }}" @selected(old('work_mode_preference', $candidate->work_mode_preference) === $value)>{{ $label }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="text-sm font-bold">Work authorisation</label>
+                                    <select name="work_authorization" class="mt-2 w-full rounded border-slate-300 px-4 py-3">
+                                        <option value="">Select status</option>
+                                        @foreach (['Citizen', 'Resident', 'Has work permit', 'Needs sponsorship', 'Open to relocation', 'Not sure yet'] as $status)
+                                            <option value="{{ $status }}" @selected(old('work_authorization', $candidate->work_authorization) === $status)>{{ $status }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="text-sm font-bold">Visa requirements</label>
+                                    <input name="visa_requirements" value="{{ old('visa_requirements', $candidate->visa_requirements) }}" class="mt-2 w-full rounded border-slate-300 px-4 py-3" placeholder="Needs sponsorship, transferable visa...">
+                                </div>
+                                <div>
+                                    <label class="text-sm font-bold">Relocation preference</label>
+                                    <select name="relocation_preference" class="mt-2 w-full rounded border-slate-300 px-4 py-3">
+                                        <option value="">Select preference</option>
+                                        @foreach (['willing_to_relocate' => 'Willing to relocate', 'local_only' => 'Local only', 'remote_only' => 'Remote only', 'depends_on_offer' => 'Depends on offer'] as $value => $label)
+                                            <option value="{{ $value }}" @selected(old('relocation_preference', $candidate->relocation_preference) === $value)>{{ $label }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div>
+                                    <p class="text-sm font-bold">Preferred locations</p>
+                                    <div class="mt-2 grid max-h-44 gap-2 overflow-auto rounded border border-slate-200 bg-white p-3">
+                                        @foreach ($portal['countries'] as $country)
+                                            <label class="flex items-center gap-2 rounded bg-slate-50 px-3 py-2 text-sm">
+                                                <input type="checkbox" name="preferred_locations[]" value="{{ $country }}" @checked(in_array($country, old('preferred_locations', $candidate->preferred_locations ?? []), true))>
+                                                <span>{{ $country }}</span>
+                                            </label>
+                                        @endforeach
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
 
                         <div class="mt-6 grid gap-4 md:grid-cols-2">
                             <div>
