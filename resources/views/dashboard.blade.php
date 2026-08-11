@@ -16,20 +16,17 @@
                             <h2 class="text-xl font-bold">Profile completion</h2>
                             <p class="mt-1 text-sm text-slate-600">CV, skills, video, portfolio, and preferences</p>
                         </div>
-                        <p class="text-3xl font-extrabold text-[#2a7190]">78%</p>
+                        <p class="text-3xl font-extrabold text-[#2a7190]">{{ $profileCompletion['percent'] ?? 0 }}%</p>
                     </div>
                     <div class="mt-5 h-3 rounded-full bg-slate-100">
-                        <div class="h-3 w-[78%] rounded-full bg-[#2a7190]"></div>
+                        <div class="h-3 rounded-full bg-[#2a7190]" style="width: {{ $profileCompletion['percent'] ?? 0 }}%"></div>
                     </div>
                     <div class="mt-6 grid gap-3">
-                        @foreach ([
-                            ['Add one more certificate', '/candidate-profile'],
-                            ['Upload portfolio samples', '/portfolio'],
-                            ['Confirm phone verification', '/candidate-verification'],
-                            ['Add preferred salary range', '/candidate-profile'],
-                        ] as [$improvement, $url])
-                            <a href="{{ $url }}" class="rounded border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-semibold hover:border-[#2a7190] hover:text-[#2a7190]">{{ $improvement }}</a>
-                        @endforeach
+                        @forelse (($profileCompletion['missing'] ?? []) as $improvement)
+                            <a href="{{ route('candidate.profile') }}" class="rounded border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-semibold hover:border-[#2a7190] hover:text-[#2a7190]">{{ $improvement }}</a>
+                        @empty
+                            <a href="{{ route('candidate.profile') }}" class="rounded border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-semibold text-emerald-800">View completed profile</a>
+                        @endforelse
                     </div>
                 </aside>
 
@@ -38,7 +35,7 @@
                         'Profile views' => '42',
                         'CV downloads' => '8',
                         'Video views' => '15',
-                        'Job alerts' => '6',
+                        'Job alerts' => (string) (($alerts ?? collect())->count()),
                     ] as $label => $value)
                         <div class="min-h-[132px] rounded-lg bg-white p-6 shadow-sm">
                             <p class="text-3xl font-extrabold text-[#2a7190]">{{ $value }}</p>
@@ -109,7 +106,10 @@
                 <section class="rounded-lg bg-white p-6 shadow-sm">
                     <h2 class="text-xl font-bold">Career tips</h2>
                     <p class="mt-3 text-sm leading-6 text-slate-600">Add a 60-second video profile and one country-specific CV version to improve shortlist chances.</p>
-                    <a href="/career-coach" class="mt-4 inline-flex rounded bg-[#2a7190] px-4 py-2 text-sm font-semibold text-white">Open career coach</a>
+                    <div class="mt-4 flex flex-wrap gap-2">
+                        <a href="{{ route('candidate.profile') }}" class="inline-flex rounded bg-[#2a7190] px-4 py-2 text-sm font-semibold text-white">Edit profile</a>
+                        <a href="/career-coach" class="inline-flex rounded border border-[#2a7190] px-4 py-2 text-sm font-semibold text-[#2a7190]">Open career coach</a>
+                    </div>
                 </section>
             </div>
         </div>

@@ -43,10 +43,24 @@
                                     <span class="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold">{{ $skill }}</span>
                                 @endforeach
                             </div>
-                            <form method="POST" action="{{ route('business.candidates.invite', $candidate) }}" class="mt-5">
-                                @csrf
-                                <button class="rounded bg-[#2a7190] px-4 py-2 text-sm font-bold text-white">Save / invite candidate</button>
-                            </form>
+                            <div class="mt-5 flex flex-wrap gap-2">
+                                @if ($candidate->is_public && $candidate->slug)
+                                    <a href="{{ route('candidate.public', $candidate->slug) }}" class="rounded border border-[#2a7190] px-4 py-2 text-sm font-bold text-[#2a7190]">Public profile</a>
+                                @endif
+                                @if ($candidate->cv_path)
+                                    <a href="{{ asset($candidate->cv_path) }}" class="rounded border border-slate-200 px-4 py-2 text-sm font-bold">CV</a>
+                                @endif
+                                @if ($candidate->video_path)
+                                    <a href="{{ asset($candidate->video_path) }}" class="rounded border border-slate-200 px-4 py-2 text-sm font-bold">Video</a>
+                                @endif
+                                @if ($candidate->portfolio_url)
+                                    <a href="{{ $candidate->portfolio_url }}" class="rounded border border-slate-200 px-4 py-2 text-sm font-bold">Portfolio</a>
+                                @endif
+                                <form method="POST" action="{{ route('business.candidates.invite', $candidate) }}">
+                                    @csrf
+                                    <button class="rounded bg-[#2a7190] px-4 py-2 text-sm font-bold text-white">Save candidate</button>
+                                </form>
+                            </div>
                         </article>
                     @empty
                         <p class="rounded-lg bg-white p-6 text-sm text-slate-600 shadow-sm">No candidates match these filters yet.</p>

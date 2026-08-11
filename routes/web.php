@@ -19,10 +19,10 @@ Route::get('/', static fn () => view('welcome', ['portal' => PortalData::load()]
 
 Route::middleware('portal.capability:candidates')->group(function (): void {
     Route::get('/job-seekers', static fn () => view('portal.job-seekers', ['portal' => PortalData::load()]))->name('job-seekers');
-    Route::get('/candidate-profile', static fn () => view('portal.candidate-profile', ['portal' => PortalData::load()]))->name('candidate-profile');
-    Route::get('/cv-builder', static fn () => view('portal.cv-builder', ['portal' => PortalData::load()]))->name('cv-builder');
-    Route::get('/video-profile', static fn () => view('portal.video-profile', ['portal' => PortalData::load()]))->name('video-profile');
-    Route::get('/portfolio', static fn () => view('portal.portfolio', ['portal' => PortalData::load()]))->name('portfolio');
+    Route::get('/candidate-profile', static fn () => Auth::check() ? redirect()->route('candidate.profile') : view('portal.candidate-profile', ['portal' => PortalData::load()]))->name('candidate-profile');
+    Route::get('/cv-builder', static fn () => Auth::check() ? redirect()->route('candidate.profile') : view('portal.cv-builder', ['portal' => PortalData::load()]))->name('cv-builder');
+    Route::get('/video-profile', static fn () => Auth::check() ? redirect()->route('candidate.profile') : view('portal.video-profile', ['portal' => PortalData::load()]))->name('video-profile');
+    Route::get('/portfolio', static fn () => Auth::check() ? redirect()->route('candidate.profile') : view('portal.portfolio', ['portal' => PortalData::load()]))->name('portfolio');
 });
 
 Route::middleware('portal.capability:employers')->group(function (): void {
@@ -148,11 +148,23 @@ Route::middleware(['auth', 'verified'])->group(function (): void {
     Route::post('/jobs/{job:slug}/save', [CandidateWorkspaceController::class, 'saveJob'])->name('candidate.jobs.save');
     Route::delete('/saved-jobs/{savedJob}', [CandidateWorkspaceController::class, 'unsaveJob'])->name('candidate.saved-jobs.destroy');
     Route::post('/jobs/{job:slug}/apply', [CandidateWorkspaceController::class, 'apply'])->name('candidate.jobs.apply');
+    Route::get('/profile', [CandidateWorkspaceController::class, 'profile'])->name('candidate.profile');
+    Route::post('/profile', [CandidateWorkspaceController::class, 'updateProfile'])->name('candidate.profile.update');
+    Route::post('/profile/portfolio', [CandidateWorkspaceController::class, 'storePortfolio'])->name('candidate.profile.portfolio.store');
+    Route::post('/profile/projects', [CandidateWorkspaceController::class, 'storeProject'])->name('candidate.profile.projects.store');
+    Route::post('/profile/certificates', [CandidateWorkspaceController::class, 'storeCertificate'])->name('candidate.profile.certificates.store');
+    Route::post('/profile/education', [CandidateWorkspaceController::class, 'storeEducation'])->name('candidate.profile.education.store');
+    Route::post('/profile/experience', [CandidateWorkspaceController::class, 'storeExperience'])->name('candidate.profile.experience.store');
+    Route::delete('/profile/{type}/{publicId}', [CandidateWorkspaceController::class, 'destroyProfileItem'])->name('candidate.profile.items.destroy');
+    Route::post('/job-alerts', [CandidateWorkspaceController::class, 'storeAlert'])->name('candidate.alerts.store');
+    Route::delete('/job-alerts/{alert}', [CandidateWorkspaceController::class, 'destroyAlert'])->name('candidate.alerts.destroy');
     Route::get('/saved-jobs', [CandidateWorkspaceController::class, 'savedJobs'])->name('candidate.saved-jobs');
     Route::get('/applications', [CandidateWorkspaceController::class, 'applications'])->name('candidate.applications');
     Route::get('/messages', [CandidateWorkspaceController::class, 'messages'])->name('candidate.messages');
     Route::post('/messages', [CandidateWorkspaceController::class, 'sendMessage'])->name('candidate.messages.store');
 });
+
+Route::get('/talent/{slug}', [CandidateWorkspaceController::class, 'publicProfile'])->name('candidate.public');
 
 Route::middleware(['auth', 'verified', 'employer', 'portal.capability:employers'])->prefix('business')->name('business.')->group(function (): void {
     Route::get('/', [EmployerWorkspaceController::class, 'dashboard'])->name('dashboard');

@@ -12,6 +12,7 @@ use App\Domain\Identity\Enums\Role as RoleEnum;
 use App\Domain\Portal\Models\ConversationMessage;
 use App\Domain\Portal\Models\Employer;
 use App\Domain\Portal\Models\JobApplication;
+use App\Domain\Portal\Models\JobAlert;
 use App\Domain\Portal\Models\SavedJob;
 use App\Domain\Shared\Concerns\HasPublicId;
 use Database\Factories\UserFactory;
@@ -103,6 +104,11 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail
     public function candidateMessages(): HasMany
     {
         return $this->hasMany(ConversationMessage::class, 'candidate_user_id');
+    }
+
+    public function jobAlerts(): HasMany
+    {
+        return $this->hasMany(JobAlert::class);
     }
 
     // ----------------------------------------------------------------------

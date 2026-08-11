@@ -41,15 +41,15 @@
                     </div>
                 </section>
                 <section class="rounded-lg bg-white p-6 shadow-sm">
-                    <h2 class="text-xl font-bold">Multi-language roadmap</h2>
+                    <h2 class="text-xl font-bold">Language support</h2>
                     <div class="mt-4 grid gap-3 sm:grid-cols-2">
                         @foreach ($portal['languages'] as $language)
                             <div class="rounded border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-semibold">
-                                {{ $language }} {{ $language === 'English' ? '· initial language' : '· later phase' }}
+                                {{ $language }}{{ $language === 'English' ? ' · active' : '' }}
                             </div>
                         @endforeach
                     </div>
-                    <p class="mt-4 text-sm leading-6 text-slate-600">Important pages use centralized content/config patterns so translation can be introduced later.</p>
+                    <p class="mt-4 text-sm leading-6 text-slate-600">Important pages use centralized content patterns for consistent wording.</p>
                 </section>
             </div>
         </div>

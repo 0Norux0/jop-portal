@@ -35,6 +35,12 @@
                                         <a href="{{ $application->linkedin_url }}" class="rounded border border-slate-200 px-3 py-2 font-semibold">LinkedIn profile</a>
                                     @endif
                                     <a href="{{ $application->cv_path ? asset($application->cv_path) : '#' }}" class="rounded border border-slate-200 px-3 py-2 font-semibold">CV / resume</a>
+                                    @if ($application->candidate?->video_path)
+                                        <a href="{{ asset($application->candidate->video_path) }}" class="rounded border border-slate-200 px-3 py-2 font-semibold">Video profile</a>
+                                    @endif
+                                    @if ($application->candidate?->is_public && $application->candidate?->slug)
+                                        <a href="{{ route('candidate.public', $application->candidate->slug) }}" class="rounded border border-slate-200 px-3 py-2 font-semibold">Professional profile</a>
+                                    @endif
                                 </div>
                                 @if ($application->cover_letter)
                                     <p class="mt-4 text-sm leading-6 text-slate-700">{{ $application->cover_letter }}</p>

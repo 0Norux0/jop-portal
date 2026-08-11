@@ -18,6 +18,7 @@ class Candidate extends Model
 
     protected $fillable = [
         'public_id',
+        'slug',
         'user_id',
         'full_name',
         'headline',
@@ -30,15 +31,22 @@ class Candidate extends Model
         'linkedin_url',
         'portfolio_url',
         'cv_path',
+        'video_path',
         'verification_status',
         'availability_status',
+        'expected_salary',
+        'notice_period',
+        'is_public',
         'trust_score',
         'skills',
+        'external_links',
         'bio',
     ];
 
     protected $casts = [
         'skills' => 'array',
+        'external_links' => 'array',
+        'is_public' => 'boolean',
         'trust_score' => 'integer',
     ];
 
@@ -50,5 +58,30 @@ class Candidate extends Model
     public function applications(): HasMany
     {
         return $this->hasMany(JobApplication::class);
+    }
+
+    public function portfolioItems(): HasMany
+    {
+        return $this->hasMany(CandidatePortfolioItem::class);
+    }
+
+    public function projects(): HasMany
+    {
+        return $this->hasMany(CandidateProject::class);
+    }
+
+    public function certificates(): HasMany
+    {
+        return $this->hasMany(CandidateCertificate::class);
+    }
+
+    public function educations(): HasMany
+    {
+        return $this->hasMany(CandidateEducation::class);
+    }
+
+    public function experiences(): HasMany
+    {
+        return $this->hasMany(CandidateExperience::class);
     }
 }
