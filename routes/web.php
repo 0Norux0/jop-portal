@@ -34,7 +34,6 @@ Route::middleware('portal.capability:employers')->group(function (): void {
 });
 
 Route::middleware('portal.capability:content')->group(function (): void {
-    Route::get('/career-ecosystem', static fn () => view('portal.ecosystem', ['portal' => PortalData::load()]))->name('ecosystem');
     Route::get('/career-resources', static fn () => view('portal.blog', ['portal' => PortalData::load()]))->name('blog');
     Route::get('/career-coach', function (Request $request) {
         $input = $request->only(['target_role', 'skills', 'has_cv', 'has_portfolio', 'has_video']);

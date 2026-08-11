@@ -224,7 +224,6 @@ class SiteContent
                     ['label' => 'Portfolio', 'url' => '/portfolio', 'enabled' => true],
                     ['label' => 'Hire talent', 'url' => '/employers', 'enabled' => true],
                     ['label' => 'International support', 'url' => '/international-support', 'enabled' => true],
-                    ['label' => 'Career ecosystem', 'url' => '/career-ecosystem', 'enabled' => true],
                 ],
                 'policy_links' => [
                     ['label' => 'Anti-Scam Policy', 'url' => '/policies/anti-scam', 'enabled' => true],
