@@ -9,6 +9,7 @@
                 <section class="rounded-lg bg-white p-6 shadow-sm">
                     <p class="font-semibold text-[#2a7190]">Hire talent</p>
                     <h1 class="mt-1 text-3xl font-extrabold">Candidate discovery</h1>
+                    <p class="mt-2 text-sm text-slate-600">Search credits: {{ $employer->candidate_search_credits }} · CV credits: {{ $employer->cv_access_credits }} · Contact credits: {{ $employer->candidate_contact_credits }}</p>
                     <form method="GET" class="mt-6 grid gap-3 md:grid-cols-4">
                         <select name="category" class="rounded border-slate-300 px-4 py-3 text-sm">
                             <option value="">All categories</option>
@@ -48,7 +49,14 @@
                                     <a href="{{ route('candidate.public', $candidate->slug) }}" class="rounded border border-[#2a7190] px-4 py-2 text-sm font-bold text-[#2a7190]">Public profile</a>
                                 @endif
                                 @if ($candidate->cv_path)
-                                    <a href="{{ asset($candidate->cv_path) }}" class="rounded border border-slate-200 px-4 py-2 text-sm font-bold">CV</a>
+                                    @if (filled($access[$candidate->public_id]['cv'] ?? null))
+                                        <a href="{{ asset($candidate->cv_path) }}" class="rounded border border-slate-200 px-4 py-2 text-sm font-bold">Open CV</a>
+                                    @else
+                                        <form method="POST" action="{{ route('business.candidates.cv-access', $candidate) }}">
+                                            @csrf
+                                            <button class="rounded border border-slate-200 px-4 py-2 text-sm font-bold">Use CV credit</button>
+                                        </form>
+                                    @endif
                                 @endif
                                 @if ($candidate->video_path)
                                     <a href="{{ asset($candidate->video_path) }}" class="rounded border border-slate-200 px-4 py-2 text-sm font-bold">Video</a>
@@ -59,6 +67,12 @@
                                 <form method="POST" action="{{ route('business.candidates.invite', $candidate) }}">
                                     @csrf
                                     <button class="rounded bg-[#2a7190] px-4 py-2 text-sm font-bold text-white">Save candidate</button>
+                                </form>
+                                <form method="POST" action="{{ route('business.candidates.contact-access', $candidate) }}">
+                                    @csrf
+                                    <button class="rounded border border-[#2a7190] px-4 py-2 text-sm font-bold text-[#2a7190]">
+                                        {{ filled($access[$candidate->public_id]['contact'] ?? null) ? 'Contact requested' : 'Use contact credit' }}
+                                    </button>
                                 </form>
                             </div>
                         </article>

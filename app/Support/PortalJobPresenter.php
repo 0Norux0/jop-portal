@@ -17,6 +17,7 @@ class PortalJobPresenter
         $jobs = Job::query()
             ->with(['employer', 'category'])
             ->where('status', 'published')
+            ->orderByDesc('is_featured')
             ->latest('updated_at')
             ->get()
             ->map(fn (Job $job): array => static::job($job))

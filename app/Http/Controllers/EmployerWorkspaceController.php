@@ -8,9 +8,12 @@ use App\Domain\Identity\Models\User;
 use App\Domain\Portal\Models\Candidate;
 use App\Domain\Portal\Models\ConversationMessage;
 use App\Domain\Portal\Models\Employer;
+use App\Domain\Portal\Models\EmployerCreditTransaction;
+use App\Domain\Portal\Models\EmployerServiceRequest;
 use App\Domain\Portal\Models\Job;
 use App\Domain\Portal\Models\JobApplication;
 use App\Domain\Portal\Models\JobCategory;
+use App\Support\EmployerEntitlements;
 use App\Support\PortalData;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -42,7 +45,11 @@ class EmployerWorkspaceController
                     ->where('status', 'shortlisted')
                     ->whereHas('job', fn ($query) => $query->where('employer_id', $employer->id))
                     ->count(),
+                'CV credits' => $employer->cv_access_credits,
+                'Contact credits' => $employer->candidate_contact_credits,
             ],
+            'entitlements' => EmployerEntitlements::forEmployer($employer),
+            'serviceRequests' => $employer->serviceRequests()->latest()->take(5)->get(),
         ]);
     }
 
@@ -127,6 +134,10 @@ class EmployerWorkspaceController
         $validated = $this->validateJob($request);
         $status = $request->input('action') === 'publish' ? 'published' : 'draft';
 
+        if ($status === 'published' && ! $this->canPublishMoreJobs($employer)) {
+            return back()->withInput()->with('status', 'Your current employer plan has reached its published job limit. Request a package or upgrade from Paid Services.');
+        }
+
         $employer->jobs()->create($this->jobPayload($validated, $status));
 
         return back()->with('status', $status === 'published' ? 'Job published publicly.' : 'Job saved as draft.');
@@ -139,6 +150,10 @@ class EmployerWorkspaceController
 
         $validated = $this->validateJob($request);
         $status = $request->input('action') === 'publish' ? 'published' : ($request->input('status') ?: 'draft');
+
+        if ($status === 'published' && $job->status !== 'published' && ! $this->canPublishMoreJobs($employer)) {
+            return back()->withInput()->with('status', 'Your current employer plan has reached its published job limit. Request a package or upgrade from Paid Services.');
+        }
 
         $job->update($this->jobPayload($validated, $status, $job->id));
 
@@ -211,6 +226,20 @@ class EmployerWorkspaceController
     {
         $employer = $this->employer($request->user());
         $filters = $request->only(['category', 'country', 'skill', 'visa']);
+        $activeFilters = array_filter($filters, fn (mixed $value): bool => filled($value));
+
+        if ($activeFilters !== []) {
+            $signature = 'employer_candidate_search_'.$employer->id.'_'.md5(json_encode($activeFilters));
+
+            if (! $request->session()->has($signature)) {
+                if (! $this->consumeCredit($employer, 'candidate_search_credits', 'candidate_search', 'Candidate search')) {
+                    return redirect()->route('business.services')->with('status', 'No candidate search credits left. Request more search credits or upgrade your plan.');
+                }
+
+                $request->session()->put($signature, true);
+                $employer->refresh();
+            }
+        }
 
         $candidates = Candidate::query()
             ->when($filters['category'] ?? null, fn ($query, string $category) => $query->where('preferred_job_category', $category))
@@ -225,6 +254,7 @@ class EmployerWorkspaceController
             'candidates' => $candidates,
             'filters' => $filters,
             'portal' => PortalData::load(),
+            'access' => $employer->notes['candidate_access'] ?? [],
         ]);
     }
 
@@ -245,9 +275,55 @@ class EmployerWorkspaceController
         return back()->with('status', 'Candidate saved to your employer workspace.');
     }
 
+    public function accessCandidateCv(Request $request, Candidate $candidate): RedirectResponse
+    {
+        $employer = $this->employer($request->user());
+
+        if (! $candidate->cv_path) {
+            return back()->with('status', 'This candidate has not uploaded a CV yet.');
+        }
+
+        if (! $this->hasCandidateAccess($employer, $candidate, 'cv')) {
+            if (! $this->consumeCredit($employer, 'cv_access_credits', 'cv_access', 'CV access for '.$candidate->full_name, $candidate)) {
+                return back()->with('status', 'No CV access credits left. Request more credits from Paid Services.');
+            }
+
+            $this->grantCandidateAccess($employer, $candidate, 'cv');
+        }
+
+        return redirect(asset($candidate->cv_path));
+    }
+
+    public function requestCandidateContact(Request $request, Candidate $candidate): RedirectResponse
+    {
+        $employer = $this->employer($request->user());
+
+        if ($this->hasCandidateAccess($employer, $candidate, 'contact')) {
+            return back()->with('status', 'Candidate contact access is already recorded for your employer account.');
+        }
+
+        if (! $this->consumeCredit($employer, 'candidate_contact_credits', 'candidate_contact', 'Contact request for '.$candidate->full_name, $candidate)) {
+            return back()->with('status', 'No candidate contact credits left. Request more credits from Paid Services.');
+        }
+
+        $this->grantCandidateAccess($employer, $candidate, 'contact');
+        $this->createServiceRequest($employer, 'candidate_contact', 'Candidate contact request', [
+            'candidate_id' => $candidate->id,
+            'candidate_name' => $candidate->full_name,
+        ], candidate: $candidate);
+
+        return back()->with('status', 'Candidate contact request created for admin review.');
+    }
+
     public function billing(Request $request): View
     {
-        return view('employer.billing', ['employer' => $this->employer($request->user())]);
+        $employer = $this->employer($request->user());
+
+        return view('employer.billing', [
+            'employer' => $employer,
+            'plans' => EmployerEntitlements::plans(),
+            'transactions' => $employer->creditTransactions()->latest()->take(10)->get(),
+        ]);
     }
 
     public function updateBilling(Request $request): RedirectResponse
@@ -258,7 +334,19 @@ class EmployerWorkspaceController
             'billing_plan' => ['required', 'in:free,growth,premium,enterprise'],
         ]);
 
+        $oldPlan = $employer->billing_plan;
         $employer->update($validated);
+
+        if ($oldPlan !== $validated['billing_plan']) {
+            EmployerEntitlements::resetCreditsForPlan($employer->refresh());
+            $employer->premium_status = $validated['billing_plan'] === 'free' ? 'not_upgraded' : 'requested';
+            $employer->save();
+
+            $this->createServiceRequest($employer, 'subscription', 'Plan change request', [
+                'from' => $oldPlan,
+                'to' => $validated['billing_plan'],
+            ]);
+        }
 
         return back()->with('status', 'Billing settings updated.');
     }
@@ -286,19 +374,67 @@ class EmployerWorkspaceController
             abort_unless($employer->jobs()->whereKey($validated['job_id'])->exists(), 403);
         }
 
-        $notes = $employer->notes ?? [];
-        $notes['ad_requests'] = collect($notes['ad_requests'] ?? [])->push([
-            ...$validated,
-            'status' => 'requested',
-            'requested_at' => now()->toDateTimeString(),
-        ])->values()->all();
+        $job = null;
 
-        $employer->update([
-            'advertising_enabled' => true,
-            'notes' => $notes,
-        ]);
+        if (($validated['job_id'] ?? null) !== null) {
+            $job = $employer->jobs()->whereKey($validated['job_id'])->first();
+
+            if ($validated['goal'] === 'featured_job' && $job instanceof Job) {
+                if (! $this->consumeCredit($employer, 'featured_job_credits', 'featured_job', 'Featured job request for '.$job->title, job: $job)) {
+                    return back()->withInput()->with('status', 'No featured job credits left. Request a featured-job package from Paid Services.');
+                }
+
+                $job->update(['promotion_status' => 'requested']);
+            }
+        }
+
+        $employer->update(['advertising_enabled' => true]);
+
+        $this->createServiceRequest($employer, 'advertising', $validated['campaign_name'], $validated, $job, budget: (float) $validated['budget']);
 
         return back()->with('status', 'Advertisement request created for admin review.');
+    }
+
+    public function services(Request $request): View
+    {
+        $employer = $this->employer($request->user());
+
+        return view('employer.services', [
+            'employer' => $employer,
+            'plans' => EmployerEntitlements::plans(),
+            'requests' => $employer->serviceRequests()->latest()->paginate(10),
+        ]);
+    }
+
+    public function requestService(Request $request): RedirectResponse
+    {
+        $employer = $this->employer($request->user());
+
+        $validated = $request->validate([
+            'type' => ['required', 'in:recruitment_package,premium_matching,ai_recruitment,credit_topup'],
+            'title' => ['required', 'string', 'max:160'],
+            'budget' => ['nullable', 'numeric', 'min:0'],
+            'notes' => ['nullable', 'string', 'max:3000'],
+        ]);
+
+        if ($validated['type'] === 'premium_matching' && ! $this->consumeCredit($employer, 'matching_request_credits', 'premium_matching', $validated['title'])) {
+            return back()->withInput()->with('status', 'No matching request credits left. Request a matching package or upgrade first.');
+        }
+
+        if ($validated['type'] === 'ai_recruitment' && ! $this->consumeCredit($employer, 'ai_recruitment_credits', 'ai_recruitment', $validated['title'])) {
+            return back()->withInput()->with('status', 'No AI recruitment credits left. Request an AI package or upgrade first.');
+        }
+
+        $this->createServiceRequest(
+            $employer,
+            $validated['type'],
+            $validated['title'],
+            ['notes' => $validated['notes'] ?? null],
+            budget: isset($validated['budget']) ? (float) $validated['budget'] : null,
+            notes: $validated['notes'] ?? null,
+        );
+
+        return back()->with('status', 'Paid service request created for admin review.');
     }
 
     private function employer(?User $user): Employer
@@ -319,6 +455,13 @@ class EmployerWorkspaceController
                 'billing_email' => $user->email,
                 'billing_plan' => 'free',
                 'premium_status' => 'not_upgraded',
+                'job_post_limit' => 2,
+                'featured_job_credits' => 0,
+                'candidate_search_credits' => 10,
+                'cv_access_credits' => 1,
+                'candidate_contact_credits' => 1,
+                'matching_request_credits' => 0,
+                'ai_recruitment_credits' => 0,
                 'verification_status' => 'pending',
                 'status' => 'active',
                 'is_published' => false,
@@ -443,5 +586,68 @@ class EmployerWorkspaceController
         $file->move($directory, $name);
 
         return 'company-assets/'.$name;
+    }
+
+    private function canPublishMoreJobs(Employer $employer): bool
+    {
+        return $employer->jobs()->where('status', 'published')->count() < max(0, $employer->job_post_limit);
+    }
+
+    private function consumeCredit(Employer $employer, string $column, string $type, string $description, ?Candidate $candidate = null, ?Job $job = null): bool
+    {
+        $employer->refresh();
+
+        if ((int) $employer->{$column} <= 0) {
+            return false;
+        }
+
+        $employer->decrement($column);
+
+        EmployerCreditTransaction::query()->create([
+            'employer_id' => $employer->id,
+            'candidate_id' => $candidate?->id,
+            'job_id' => $job?->id,
+            'credit_type' => $type,
+            'amount' => -1,
+            'description' => $description,
+            'metadata' => ['balance_column' => $column],
+        ]);
+
+        return true;
+    }
+
+    private function grantCandidateAccess(Employer $employer, Candidate $candidate, string $type): void
+    {
+        $notes = $employer->notes ?? [];
+        $access = $notes['candidate_access'] ?? [];
+        $candidateAccess = $access[$candidate->public_id] ?? [];
+        $candidateAccess[$type] = now()->toDateTimeString();
+        $access[$candidate->public_id] = $candidateAccess;
+        $notes['candidate_access'] = $access;
+
+        $employer->update(['notes' => $notes]);
+    }
+
+    private function hasCandidateAccess(Employer $employer, Candidate $candidate, string $type): bool
+    {
+        return filled($employer->notes['candidate_access'][$candidate->public_id][$type] ?? null);
+    }
+
+    /**
+     * @param  array<string, mixed>  $payload
+     */
+    private function createServiceRequest(Employer $employer, string $type, string $title, array $payload = [], ?Job $job = null, ?Candidate $candidate = null, ?float $budget = null, ?string $notes = null): EmployerServiceRequest
+    {
+        return EmployerServiceRequest::query()->create([
+            'employer_id' => $employer->id,
+            'job_id' => $job?->id,
+            'candidate_id' => $candidate?->id,
+            'type' => $type,
+            'title' => $title,
+            'status' => 'requested',
+            'budget' => $budget,
+            'payload' => $payload,
+            'notes' => $notes,
+        ]);
     }
 }

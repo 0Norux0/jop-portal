@@ -59,10 +59,18 @@ class EmployerResource extends Resource
             ])->required(),
             Select::make('premium_status')->options([
                 'not_upgraded' => 'Not upgraded',
+                'requested' => 'Requested',
                 'trial' => 'Trial',
                 'active' => 'Active',
                 'expired' => 'Expired',
             ])->required(),
+            TextInput::make('job_post_limit')->numeric()->default(2),
+            TextInput::make('featured_job_credits')->numeric()->default(0),
+            TextInput::make('candidate_search_credits')->numeric()->default(10),
+            TextInput::make('cv_access_credits')->numeric()->default(1),
+            TextInput::make('candidate_contact_credits')->numeric()->default(1),
+            TextInput::make('matching_request_credits')->numeric()->default(0),
+            TextInput::make('ai_recruitment_credits')->numeric()->default(0),
             Select::make('verification_status')->options([
                 'pending' => 'Pending',
                 'verified' => 'Verified',
@@ -90,6 +98,9 @@ class EmployerResource extends Resource
                 TextColumn::make('verification_status')->badge()->sortable(),
                 TextColumn::make('status')->badge()->sortable(),
                 TextColumn::make('billing_plan')->badge()->sortable(),
+                TextColumn::make('premium_status')->badge()->sortable()->toggleable(),
+                TextColumn::make('cv_access_credits')->label('CV credits')->sortable()->toggleable(),
+                TextColumn::make('candidate_contact_credits')->label('Contact credits')->sortable()->toggleable(),
                 TextColumn::make('jobs_count')->counts('jobs')->label('Jobs')->sortable(),
                 TextColumn::make('updated_at')->dateTime()->sortable()->toggleable(),
             ])

@@ -9,7 +9,7 @@
                 <section class="rounded-lg bg-white p-6 shadow-sm">
                     <p class="font-semibold text-[#2a7190]">Advertise</p>
                     <h1 class="mt-1 text-3xl font-extrabold">Promote jobs and company pages</h1>
-                    <p class="mt-3 max-w-3xl text-slate-600">Create an advertisement request for admin review. Billing and paid campaign activation can be connected later.</p>
+                    <p class="mt-3 max-w-3xl text-slate-600">Create an advertisement request for admin review. Featured-job requests use featured credits when available.</p>
                     <form method="POST" action="{{ route('business.promotion.store') }}" class="mt-6 grid gap-4 sm:grid-cols-2">
                         @csrf
                         @include('auth._errors')
@@ -45,15 +45,15 @@
                         <button class="rounded bg-[#2a7190] px-5 py-3 font-bold text-white">Create advertisement request</button>
                     </form>
                 </section>
-                @php($requests = collect($employer->notes['ad_requests'] ?? [])->reverse())
+                @php($requests = $employer->serviceRequests()->where('type', 'advertising')->latest()->get())
                 @if ($requests->isNotEmpty())
                     <section class="rounded-lg bg-white p-6 shadow-sm">
                         <h2 class="text-xl font-bold">Advertisement requests</h2>
                         <div class="mt-4 grid gap-3">
                             @foreach ($requests as $request)
                                 <div class="rounded border border-slate-200 p-4">
-                                    <p class="font-bold">{{ $request['campaign_name'] ?? 'Campaign' }}</p>
-                                    <p class="mt-1 text-sm text-slate-600">{{ str($request['goal'] ?? 'requested')->replace('_', ' ')->headline() }} · {{ $request['budget'] ?? 0 }} · {{ str($request['status'] ?? 'requested')->headline() }}</p>
+                                    <p class="font-bold">{{ $request->title }}</p>
+                                    <p class="mt-1 text-sm text-slate-600">{{ str($request->payload['goal'] ?? 'requested')->replace('_', ' ')->headline() }} · {{ $request->budget ?? 0 }} · {{ str($request->status)->headline() }}</p>
                                 </div>
                             @endforeach
                         </div>

@@ -26,8 +26,8 @@
                         <div>
                             <label class="text-sm font-bold">{{ $billing['plan_label'] }}</label>
                             <select name="billing_plan" class="mt-2 w-full rounded border-slate-300 px-4 py-3">
-                                @foreach (['free' => 'Free Employer Account', 'growth' => 'Growth', 'premium' => 'Premium Employer Package', 'enterprise' => 'Enterprise'] as $value => $label)
-                                    <option value="{{ $value }}" @selected($employer->billing_plan === $value)>{{ $label }}</option>
+                                @foreach ($plans as $value => $plan)
+                                    <option value="{{ $value }}" @selected($employer->billing_plan === $value)>{{ $plan['label'] }}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -40,6 +40,68 @@
                         </div>
                     </form>
                 </section>
+                <section class="rounded-lg bg-white p-6 shadow-sm">
+                    <div class="flex flex-col justify-between gap-3 md:flex-row md:items-center">
+                        <div>
+                            <p class="font-semibold text-[#2a7190]">Subscription entitlements</p>
+                            <h2 class="mt-1 text-2xl font-extrabold">What each plan unlocks</h2>
+                        </div>
+                        <a href="{{ route('business.services') }}" class="rounded border border-[#2a7190] px-4 py-2 text-sm font-bold text-[#2a7190]">Request services</a>
+                    </div>
+                    <div class="mt-5 grid gap-4 lg:grid-cols-4">
+                        @foreach ($plans as $key => $plan)
+                            <article @class([
+                                'rounded-lg border p-4',
+                                'border-[#2a7190] bg-[#e9f3f7]' => $employer->billing_plan === $key,
+                                'border-slate-200 bg-white' => $employer->billing_plan !== $key,
+                            ])>
+                                <h3 class="font-bold">{{ $plan['label'] }}</h3>
+                                <dl class="mt-4 grid gap-2 text-sm">
+                                    <div class="flex justify-between gap-3"><dt>Job posts</dt><dd class="font-bold">{{ $plan['job_posts'] }}</dd></div>
+                                    <div class="flex justify-between gap-3"><dt>Featured jobs</dt><dd class="font-bold">{{ $plan['featured_jobs'] }}</dd></div>
+                                    <div class="flex justify-between gap-3"><dt>Searches</dt><dd class="font-bold">{{ $plan['candidate_searches'] }}</dd></div>
+                                    <div class="flex justify-between gap-3"><dt>CV credits</dt><dd class="font-bold">{{ $plan['cv_credits'] }}</dd></div>
+                                    <div class="flex justify-between gap-3"><dt>Contact credits</dt><dd class="font-bold">{{ $plan['contact_credits'] }}</dd></div>
+                                    <div class="flex justify-between gap-3"><dt>Matching</dt><dd class="font-bold">{{ $plan['matching_requests'] }}</dd></div>
+                                    <div class="flex justify-between gap-3"><dt>AI tools</dt><dd class="font-bold">{{ $plan['ai_requests'] }}</dd></div>
+                                </dl>
+                            </article>
+                        @endforeach
+                    </div>
+                </section>
+                <section class="rounded-lg bg-white p-6 shadow-sm">
+                    <h2 class="text-xl font-bold">Current credit balance</h2>
+                    <div class="mt-4 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+                        @foreach ([
+                            'Published job limit' => $employer->job_post_limit,
+                            'Featured job credits' => $employer->featured_job_credits,
+                            'Candidate search credits' => $employer->candidate_search_credits,
+                            'CV access credits' => $employer->cv_access_credits,
+                            'Contact credits' => $employer->candidate_contact_credits,
+                            'Matching credits' => $employer->matching_request_credits,
+                            'AI recruitment credits' => $employer->ai_recruitment_credits,
+                        ] as $label => $value)
+                            <div class="rounded border border-slate-200 p-4">
+                                <p class="text-2xl font-extrabold text-[#2a7190]">{{ $value }}</p>
+                                <p class="mt-1 text-sm text-slate-600">{{ $label }}</p>
+                            </div>
+                        @endforeach
+                    </div>
+                </section>
+                @if ($transactions->isNotEmpty())
+                    <section class="rounded-lg bg-white p-6 shadow-sm">
+                        <h2 class="text-xl font-bold">Credit usage</h2>
+                        <div class="mt-4 overflow-hidden rounded border border-slate-200">
+                            @foreach ($transactions as $transaction)
+                                <div class="grid gap-2 border-b border-slate-100 p-4 text-sm last:border-b-0 md:grid-cols-[1fr_160px_120px]">
+                                    <p class="font-semibold">{{ $transaction->description }}</p>
+                                    <p class="text-slate-600">{{ str($transaction->credit_type)->replace('_', ' ')->headline() }}</p>
+                                    <p class="font-bold text-[#2a7190]">{{ $transaction->amount }}</p>
+                                </div>
+                            @endforeach
+                        </div>
+                    </section>
+                @endif
                 <div class="grid gap-4 md:grid-cols-3">
                     @foreach ([
                         $billing['invoices_title'] => $billing['invoices_copy'],

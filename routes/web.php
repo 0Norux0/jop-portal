@@ -178,10 +178,14 @@ Route::middleware(['auth', 'verified', 'employer', 'portal.capability:employers'
     Route::post('/applicants/{application}/message', [EmployerWorkspaceController::class, 'messageApplicant'])->name('applicants.message');
     Route::get('/candidates', [EmployerWorkspaceController::class, 'candidates'])->name('candidates');
     Route::post('/candidates/{candidate}/invite', [EmployerWorkspaceController::class, 'inviteCandidate'])->name('candidates.invite');
+    Route::post('/candidates/{candidate}/cv-access', [EmployerWorkspaceController::class, 'accessCandidateCv'])->name('candidates.cv-access');
+    Route::post('/candidates/{candidate}/contact-access', [EmployerWorkspaceController::class, 'requestCandidateContact'])->name('candidates.contact-access');
     Route::get('/admin-center', [EmployerWorkspaceController::class, 'billing'])->name('billing');
     Route::post('/admin-center', [EmployerWorkspaceController::class, 'updateBilling'])->name('billing.update');
     Route::get('/advertise', [EmployerWorkspaceController::class, 'promotion'])->name('promotion');
     Route::post('/advertise', [EmployerWorkspaceController::class, 'storePromotion'])->name('promotion.store');
+    Route::get('/paid-services', [EmployerWorkspaceController::class, 'services'])->name('services');
+    Route::post('/paid-services', [EmployerWorkspaceController::class, 'requestService'])->name('services.store');
 });
 
 Route::middleware('portal.capability:content')->group(function (): void {

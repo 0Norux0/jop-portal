@@ -151,6 +151,7 @@ class EmployerPortalContent
                 'candidates' => ['label' => 'Find Candidates', 'enabled' => true],
                 'billing' => ['label' => 'Admin Center', 'enabled' => true],
                 'promotion' => ['label' => 'Advertise', 'enabled' => true],
+                'services' => ['label' => 'Paid Services', 'enabled' => true],
             ],
             'billing' => [
                 'eyebrow' => 'Admin Center',
@@ -183,6 +184,7 @@ class EmployerPortalContent
             'candidates' => 'business.candidates',
             'billing' => 'business.billing',
             'promotion' => 'business.promotion',
+            'services' => 'business.services',
         ];
     }
 

@@ -12,6 +12,7 @@
                         <div>
                             <p class="font-semibold text-[#2a7190]">Employer jobs</p>
                             <h1 class="mt-1 text-3xl font-extrabold">Your job posts</h1>
+                            <p class="mt-2 text-sm text-slate-600">Published jobs: {{ $jobs->where('status', 'published')->count() }} / {{ $employer->job_post_limit }} · Featured credits: {{ $employer->featured_job_credits }}</p>
                         </div>
                         <a href="#create-job" class="rounded bg-[#2a7190] px-5 py-3 text-sm font-bold text-white">Create a job</a>
                     </div>
@@ -24,7 +25,17 @@
                                             <p class="font-bold">{{ $job->title }}</p>
                                             <p class="mt-1 text-sm text-slate-600">{{ $job->city }}, {{ $job->country }} · {{ str($job->status)->headline() }} · {{ $job->applications_count }} applicants</p>
                                         </div>
-                                        <a href="{{ $job->status === 'published' ? route('jobs.show', $job->slug) : '#' }}" class="rounded border border-slate-300 px-4 py-2 text-sm font-bold">Public view</a>
+                                        <div class="flex flex-wrap gap-2">
+                                            <a href="{{ $job->status === 'published' ? route('jobs.show', $job->slug) : '#' }}" class="rounded border border-slate-300 px-4 py-2 text-sm font-bold">Public view</a>
+                                            <form method="POST" action="{{ route('business.promotion.store') }}">
+                                                @csrf
+                                                <input type="hidden" name="job_id" value="{{ $job->id }}">
+                                                <input type="hidden" name="campaign_name" value="Featured job: {{ $job->title }}">
+                                                <input type="hidden" name="goal" value="featured_job">
+                                                <input type="hidden" name="budget" value="0">
+                                                <button class="rounded border border-[#2a7190] px-4 py-2 text-sm font-bold text-[#2a7190]">Request featured</button>
+                                            </form>
+                                        </div>
                                     </div>
                                 </summary>
                                 <form method="POST" action="{{ route('business.jobs.update', $job) }}" class="mt-5 grid gap-5 border-t border-slate-100 pt-5 sm:grid-cols-2">
@@ -44,8 +55,9 @@
                 </section>
 
                 <section id="create-job" class="rounded-lg bg-white p-6 shadow-sm">
-                    <p class="font-semibold text-[#2a7190]">Post a job for free</p>
+                    <p class="font-semibold text-[#2a7190]">Job posting</p>
                     <h2 class="mt-1 text-2xl font-extrabold">Create job post</h2>
+                    <p class="mt-2 text-sm text-slate-600">Your plan allows {{ $employer->job_post_limit }} published jobs. Extra posting packages can be requested from Paid Services.</p>
                     <form method="POST" action="{{ route('business.jobs.store') }}" class="mt-6 grid gap-5 sm:grid-cols-2">
                         @csrf
                         @include('auth._errors')

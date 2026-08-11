@@ -54,6 +54,7 @@ class JobResource extends Resource
                 'not_promoted' => 'Not promoted',
                 'requested' => 'Requested',
                 'active' => 'Active',
+                'featured' => 'Featured',
                 'expired' => 'Expired',
             ])->required(),
             TextInput::make('country')->maxLength(120),

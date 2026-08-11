@@ -34,6 +34,13 @@ class Employer extends Model
         'billing_email',
         'billing_plan',
         'premium_status',
+        'job_post_limit',
+        'featured_job_credits',
+        'candidate_search_credits',
+        'cv_access_credits',
+        'candidate_contact_credits',
+        'matching_request_credits',
+        'ai_recruitment_credits',
         'advertising_enabled',
         'learning_enabled',
         'verification_status',
@@ -50,6 +57,13 @@ class Employer extends Model
         'is_published' => 'boolean',
         'advertising_enabled' => 'boolean',
         'learning_enabled' => 'boolean',
+        'job_post_limit' => 'integer',
+        'featured_job_credits' => 'integer',
+        'candidate_search_credits' => 'integer',
+        'cv_access_credits' => 'integer',
+        'candidate_contact_credits' => 'integer',
+        'matching_request_credits' => 'integer',
+        'ai_recruitment_credits' => 'integer',
     ];
 
     public function user(): BelongsTo
@@ -65,5 +79,15 @@ class Employer extends Model
     public function messages(): HasMany
     {
         return $this->hasMany(ConversationMessage::class);
+    }
+
+    public function serviceRequests(): HasMany
+    {
+        return $this->hasMany(EmployerServiceRequest::class);
+    }
+
+    public function creditTransactions(): HasMany
+    {
+        return $this->hasMany(EmployerCreditTransaction::class);
     }
 }
