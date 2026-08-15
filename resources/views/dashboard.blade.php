@@ -1,4 +1,9 @@
 <x-layouts.app title="Dashboard">
+    @php
+        $missingProfileItems = collect($profileCompletion['missing'] ?? []);
+        $visibleProfileItems = $missingProfileItems->take(3);
+        $hiddenProfileItemCount = $missingProfileItems->count() - $visibleProfileItems->count();
+    @endphp
     <section class="bg-[#f7f7f7]">
         <div class="mx-auto max-w-7xl px-6 py-10 lg:px-8">
             <div class="flex flex-col justify-between gap-4 lg:flex-row lg:items-end">
@@ -9,7 +14,7 @@
                 </div>
             </div>
 
-            <div class="mt-8 grid items-start gap-5 xl:grid-cols-[380px_1fr]">
+            <div class="mt-8 grid items-start gap-5 xl:grid-cols-[minmax(0,1fr)_520px]">
                 <aside class="rounded-lg bg-white p-6 shadow-sm">
                     <div class="flex items-center justify-between">
                         <div>
@@ -21,23 +26,28 @@
                     <div class="mt-5 h-3 rounded-full bg-slate-100">
                         <div class="h-3 rounded-full bg-[#2a7190]" style="width: {{ $profileCompletion['percent'] ?? 0 }}%"></div>
                     </div>
-                    <div class="mt-6 grid gap-3">
-                        @forelse (($profileCompletion['missing'] ?? []) as $improvement)
-                            <a href="{{ route('candidate.profile') }}" class="rounded border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-semibold hover:border-[#2a7190] hover:text-[#2a7190]">{{ $improvement }}</a>
+                    <div class="mt-5 flex flex-wrap gap-2">
+                        @forelse ($visibleProfileItems as $improvement)
+                            <a href="{{ route('candidate.profile') }}" class="rounded-full border border-slate-200 bg-slate-50 px-4 py-2 text-sm font-semibold hover:border-[#2a7190] hover:text-[#2a7190]">{{ $improvement }}</a>
                         @empty
-                            <a href="{{ route('candidate.profile') }}" class="rounded border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-semibold text-emerald-800">View completed profile</a>
+                            <a href="{{ route('candidate.profile') }}" class="rounded-full border border-emerald-200 bg-emerald-50 px-4 py-2 text-sm font-semibold text-emerald-800">View completed profile</a>
                         @endforelse
                     </div>
+                    @if ($hiddenProfileItemCount > 0)
+                        <a href="{{ route('candidate.profile') }}" class="mt-4 inline-flex text-sm font-semibold text-[#2a7190]">
+                            {{ $hiddenProfileItemCount }} more profile items
+                        </a>
+                    @endif
                 </aside>
 
-                <div class="grid auto-rows-min gap-5 sm:grid-cols-2 lg:grid-cols-4">
+                <div class="grid auto-rows-min gap-5 sm:grid-cols-2">
                     @foreach ([
                         'Profile views' => '42',
                         'CV downloads' => '8',
                         'Video views' => '15',
                         'Job alerts' => (string) (($alerts ?? collect())->count()),
                     ] as $label => $value)
-                        <div class="min-h-[132px] rounded-lg bg-white p-6 shadow-sm">
+                        <div class="min-h-[116px] rounded-lg bg-white p-6 shadow-sm">
                             <p class="text-3xl font-extrabold text-[#2a7190]">{{ $value }}</p>
                             <p class="mt-1 text-sm text-slate-600">{{ $label }}</p>
                         </div>

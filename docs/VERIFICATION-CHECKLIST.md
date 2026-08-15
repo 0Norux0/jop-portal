@@ -1,15 +1,15 @@
 # Runtime verification checklist
 
-These are steps for the developer/deployment environment. **None are marked
-complete** — the generating environment had no network, PHP, database, or Redis,
-so nothing here was executed.
+Use this before uploading or switching `icsajobs.com` into production mode.
+Record the actual command output for anything checked on the server.
 
 ## Install
 - [ ] Containers start successfully (`docker compose ps` all healthy)
 - [ ] `composer install` resolves with Filament `^5.6` (no dependency conflict)
 - [ ] Application key generated
 - [ ] Database connection successful
-- [ ] Redis connection successful
+- [ ] Cache/session/queue settings match the intended deployment (`file` and
+  `sync` are valid for the current no-Redis setup)
 - [ ] Package assets/migrations published; stub migrations removed if duplicated
 - [ ] Migrations successful
 - [ ] Seeders successful (roles, permissions, settings, super-admin)
@@ -39,6 +39,10 @@ so nothing here was executed.
 - [ ] All 13 Pest files pass (report actual output)
 
 ## Security (production)
-- [ ] APP_DEBUG=false, SESSION_SECURE_COOKIE=true
+- [ ] APP_ENV=production and APP_DEBUG=false
+- [ ] APP_URL matches the live domain (`http://icsajobs.com` now, or
+  `https://icsajobs.com` after SSL is enabled)
+- [ ] SESSION_SECURE_COOKIE=true when HTTPS is enabled
+- [ ] `FILESYSTEM_LOCAL_SERVE=false` so private storage is not exposed
 - [ ] HTTPS + security headers at proxy
 - [ ] Admin 2FA enforcement hook wired and verified

@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace App\Providers;
 
+use App\Actions\Fortify\CreateNewUser;
+use App\Actions\Fortify\ResetUserPassword;
+use App\Actions\Fortify\UpdateUserPassword;
 use App\Domain\Identity\Actions\RecordLoginActivity;
 use App\Domain\Identity\Models\User;
 use Illuminate\Cache\RateLimiting\Limit;
@@ -18,6 +21,10 @@ class FortifyServiceProvider extends ServiceProvider
 {
     public function boot(): void
     {
+        Fortify::createUsersUsing(CreateNewUser::class);
+        Fortify::resetUserPasswordsUsing(ResetUserPassword::class);
+        Fortify::updateUserPasswordsUsing(UpdateUserPassword::class);
+
         // Custom login that rejects users whose status forbids authentication.
         Fortify::authenticateUsing(function (Request $request) {
             $recorder = app(RecordLoginActivity::class);

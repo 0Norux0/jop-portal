@@ -2,6 +2,11 @@
 
 declare(strict_types=1);
 
+$mysqlSslCa = env('MYSQL_ATTR_SSL_CA');
+$mysqlSslCaAttribute = defined('Pdo\Mysql::ATTR_SSL_CA')
+    ? constant('Pdo\Mysql::ATTR_SSL_CA')
+    : constant('PDO::MYSQL_ATTR_SSL_CA');
+
 return [
     'default' => env('DB_CONNECTION', 'mariadb'),
     'connections' => [
@@ -20,9 +25,20 @@ return [
             'prefix_indexes' => true,
             'strict' => true,
             'engine' => null,
-            'options' => extension_loaded('pdo_mysql') ? array_filter([
-                PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
-            ]) : [],
+            'options' => extension_loaded('pdo_mysql') && filled($mysqlSslCa) ? [
+                $mysqlSslCaAttribute => $mysqlSslCa,
+            ] : [],
+        ],
+
+        'sqlite' => [
+            'driver' => 'sqlite',
+            'url' => env('DB_URL'),
+            'database' => env('DB_DATABASE', database_path('database.sqlite')),
+            'prefix' => '',
+            'foreign_key_constraints' => env('DB_FOREIGN_KEYS', true),
+            'busy_timeout' => null,
+            'journal_mode' => null,
+            'synchronous' => null,
         ],
     ],
     'migrations' => [

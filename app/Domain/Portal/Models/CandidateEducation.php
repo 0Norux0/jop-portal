@@ -12,6 +12,8 @@ class CandidateEducation extends Model
 {
     use HasPublicId;
 
+    protected $table = 'candidate_educations';
+
     protected $fillable = ['public_id', 'candidate_id', 'school', 'degree', 'field', 'started_on', 'ended_on', 'description'];
 
     protected $casts = [

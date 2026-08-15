@@ -18,6 +18,11 @@ it('registers a job seeker and assigns the job seeker role', function (): void {
         'password' => 'super-secret-1234',
         'password_confirmation' => 'super-secret-1234',
         'purpose' => 'find_job',
+        'country' => 'Kuwait',
+        'city' => 'Kuwait City',
+        'nationality' => 'Kuwaiti',
+        'current_job_title' => 'Working full-time',
+        'preferred_job_category' => 'Information Technology',
         'terms' => 'on',
     ]);
 

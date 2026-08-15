@@ -88,19 +88,6 @@
         </div>
     </section>
 
-    @if ($site['home_sections']['stats']['enabled'])
-    <section class="bg-white">
-        <div class="mx-auto grid max-w-7xl gap-5 px-6 py-10 sm:grid-cols-2 lg:grid-cols-4 lg:px-8">
-            @foreach ($portal['stats'] as $stat)
-                <div class="rounded-lg border border-slate-200 p-5">
-                    <p class="text-3xl font-extrabold" style="color: {{ $primary }};">{{ $stat['value'] }}</p>
-                    <p class="mt-1 text-sm text-slate-600">{{ $stat['label'] }}</p>
-                </div>
-            @endforeach
-        </div>
-    </section>
-    @endif
-
     @if ($site['home_sections']['jobs']['enabled'])
     <section style="background: {{ $secondary }};">
         <div class="mx-auto max-w-7xl px-6 py-14 lg:px-8">
