@@ -5,36 +5,65 @@
             <p class="font-semibold text-[#2a7190]">{{ $pageContent['eyebrow'] }}</p>
             <h1 class="mt-2 text-4xl font-extrabold text-[#2a7190]">{{ $pageContent['title'] }}</h1>
             <p class="mt-3 max-w-3xl text-slate-600">{{ $pageContent['description'] }}</p>
-            <div class="mt-6 grid gap-3 rounded-lg bg-white p-5 shadow-[0_18px_45px_rgba(15,23,42,0.10)] md:grid-cols-4">
-                @foreach (['Country', 'City', 'Remote / hybrid / on-site', 'Job category', 'Industry', 'Salary range', 'Currency', 'Experience level', 'Education level', 'Employment type', 'Visa sponsorship available', 'Date posted'] as $filter)
-                    <select class="rounded bg-slate-50 text-sm"><option>{{ $filter }}</option></select>
-                @endforeach
-            </div>
-            <div class="mt-5">
-                <p class="text-sm font-bold text-slate-700">Employment type</p>
-                <div class="mt-3 flex flex-wrap gap-2 text-xs">
-                    @foreach (['Full-time', 'Part-time', 'Contract', 'Freelance', 'Internship', 'Temporary', 'Apprenticeship', 'Fresh graduate', 'Skilled worker'] as $chip)
-                        <label class="rounded-full border border-slate-200 bg-white px-3 py-2 font-semibold text-slate-700">
-                            <input type="checkbox" class="mr-1 align-middle"> {{ $chip }}
-                        </label>
-                    @endforeach
+
+            @if (session('status'))
+                <div class="mt-5 rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-semibold text-emerald-800">{{ session('status') }}</div>
+            @endif
+
+            <form method="GET" class="mt-6 rounded-lg bg-white p-5 shadow-[0_18px_45px_rgba(15,23,42,0.10)]">
+                <div class="grid gap-3 md:grid-cols-[1fr_auto]">
+                    <input name="q" value="{{ $filters['q'] ?? '' }}" class="rounded border-slate-300 px-4 py-3 text-sm" placeholder="Search jobs, companies, skills, or locations">
+                    <button class="rounded bg-[#2a7190] px-5 py-3 text-sm font-bold text-white">Search</button>
                 </div>
-            </div>
-            <div class="mt-5">
-                <p class="text-sm font-bold text-slate-700">International support and trust</p>
-                <div class="mt-3 flex flex-wrap gap-2 text-xs">
-                    @foreach (['Relocation support', 'Work permit support', 'Accommodation provided', 'Transportation provided', 'Urgent hiring', 'Verified employer', 'Salary disclosed', 'Language requirement', 'Nationality requirement where legal', 'Gender requirement where legal', 'Disability-friendly employer', 'Overseas applicants accepted'] as $chip)
-                        <label class="rounded-full border border-slate-200 bg-white px-3 py-2 font-semibold text-slate-700">
-                            <input type="checkbox" class="mr-1 align-middle"> {{ $chip }}
+
+                <details class="mt-4" @if(collect($filters ?? [])->except('q')->filter()->isNotEmpty()) open @endif>
+                    <summary class="cursor-pointer text-sm font-bold text-[#2a7190]">Filter</summary>
+                    <div class="mt-4 grid gap-3 md:grid-cols-3">
+                        <select name="country" class="rounded border-slate-300 px-4 py-3 text-sm">
+                            <option value="">All countries</option>
+                            @foreach ($portal['countries'] as $country)
+                                <option value="{{ $country }}" @selected(($filters['country'] ?? '') === $country)>{{ $country }}</option>
+                            @endforeach
+                        </select>
+
+                        <select name="category" class="rounded border-slate-300 px-4 py-3 text-sm">
+                            <option value="">All categories</option>
+                            @foreach ($portal['categories'] as $category)
+                                <option value="{{ $category }}" @selected(($filters['category'] ?? '') === $category)>{{ $category }}</option>
+                            @endforeach
+                        </select>
+
+                        <select name="work_mode" class="rounded border-slate-300 px-4 py-3 text-sm">
+                            <option value="">Any work mode</option>
+                            @foreach (['on_site' => 'On-site', 'remote' => 'Remote', 'hybrid' => 'Hybrid'] as $value => $label)
+                                <option value="{{ $value }}" @selected(($filters['work_mode'] ?? '') === $value)>{{ $label }}</option>
+                            @endforeach
+                        </select>
+
+                        <select name="employment_type" class="rounded border-slate-300 px-4 py-3 text-sm">
+                            <option value="">Any employment type</option>
+                            @foreach (['full_time' => 'Full-time', 'part_time' => 'Part-time', 'contract' => 'Contract', 'freelance' => 'Freelance', 'internship' => 'Internship'] as $value => $label)
+                                <option value="{{ $value }}" @selected(($filters['employment_type'] ?? '') === $value)>{{ $label }}</option>
+                            @endforeach
+                        </select>
+
+                        <label class="flex items-center gap-2 rounded border border-slate-200 px-4 py-3 text-sm font-semibold text-slate-700">
+                            <input type="checkbox" name="visa" value="1" @checked(($filters['visa'] ?? '') === '1')>
+                            Visa sponsorship
                         </label>
-                    @endforeach
-                </div>
-            </div>
+
+                        <label class="flex items-center gap-2 rounded border border-slate-200 px-4 py-3 text-sm font-semibold text-slate-700">
+                            <input type="checkbox" name="urgent" value="1" @checked(($filters['urgent'] ?? '') === '1')>
+                            Urgent hiring
+                        </label>
+                    </div>
+                </details>
+            </form>
         </div>
     </section>
 
     <section class="mx-auto grid max-w-7xl gap-5 px-4 py-10 sm:px-6 lg:px-8">
-        @foreach ($portal['jobs'] as $job)
+        @forelse ($portal['jobs'] as $job)
             <article class="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
                 <div class="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
                     <div>
@@ -59,6 +88,8 @@
                     </div>
                 </div>
             </article>
-        @endforeach
+        @empty
+            <p class="rounded-lg border border-slate-200 bg-white p-6 text-sm text-slate-600 shadow-sm">No jobs match these filters yet.</p>
+        @endforelse
     </section>
 </x-layouts.app>

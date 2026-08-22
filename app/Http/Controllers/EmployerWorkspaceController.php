@@ -45,8 +45,6 @@ class EmployerWorkspaceController
                     ->where('status', 'shortlisted')
                     ->whereHas('job', fn ($query) => $query->where('employer_id', $employer->id))
                     ->count(),
-                'CV credits' => $employer->cv_access_credits,
-                'Contact credits' => $employer->candidate_contact_credits,
             ],
             'entitlements' => EmployerEntitlements::forEmployer($employer),
             'serviceRequests' => $employer->serviceRequests()->latest()->take(5)->get(),
@@ -226,20 +224,6 @@ class EmployerWorkspaceController
     {
         $employer = $this->employer($request->user());
         $filters = $request->only(['category', 'country', 'skill', 'visa']);
-        $activeFilters = array_filter($filters, fn (mixed $value): bool => filled($value));
-
-        if ($activeFilters !== []) {
-            $signature = 'employer_candidate_search_'.$employer->id.'_'.md5(json_encode($activeFilters));
-
-            if (! $request->session()->has($signature)) {
-                if (! $this->consumeCredit($employer, 'candidate_search_credits', 'candidate_search', 'Candidate search')) {
-                    return redirect()->route('business.services')->with('status', 'No candidate search credits left. Request more search credits from Paid Services.');
-                }
-
-                $request->session()->put($signature, true);
-                $employer->refresh();
-            }
-        }
 
         $candidates = Candidate::query()
             ->when($filters['category'] ?? null, fn ($query, string $category) => $query->where('preferred_job_category', $category))
@@ -254,7 +238,7 @@ class EmployerWorkspaceController
             'candidates' => $candidates,
             'filters' => $filters,
             'portal' => PortalData::load(),
-            'access' => $employer->notes['candidate_access'] ?? [],
+            'access' => $this->candidateAccess($employer),
         ]);
     }
 
@@ -284,10 +268,6 @@ class EmployerWorkspaceController
         }
 
         if (! $this->hasCandidateAccess($employer, $candidate, 'cv')) {
-            if (! $this->consumeCredit($employer, 'cv_access_credits', 'cv_access', 'CV access for '.$candidate->full_name, $candidate)) {
-                return back()->with('status', 'No CV access credits left. Request more credits from Paid Services.');
-            }
-
             $this->grantCandidateAccess($employer, $candidate, 'cv');
         }
 
@@ -302,9 +282,6 @@ class EmployerWorkspaceController
             return back()->with('status', 'Candidate contact access is already recorded for your employer account.');
         }
 
-        if (! $this->consumeCredit($employer, 'candidate_contact_credits', 'candidate_contact', 'Contact request for '.$candidate->full_name, $candidate)) {
-            return back()->with('status', 'No candidate contact credits left. Request more credits from Paid Services.');
-        }
 
         $this->grantCandidateAccess($employer, $candidate, 'contact');
         $this->createServiceRequest($employer, 'candidate_contact', 'Candidate contact request', [
@@ -581,7 +558,7 @@ class EmployerWorkspaceController
 
     private function canPublishMoreJobs(Employer $employer): bool
     {
-        return $employer->jobs()->where('status', 'published')->count() < max(0, $employer->job_post_limit);
+        return true;
     }
 
     private function consumeCredit(Employer $employer, string $column, string $type, string $description, ?Candidate $candidate = null, ?Job $job = null): bool
@@ -621,7 +598,19 @@ class EmployerWorkspaceController
 
     private function hasCandidateAccess(Employer $employer, Candidate $candidate, string $type): bool
     {
-        return filled($employer->notes['candidate_access'][$candidate->public_id][$type] ?? null);
+        return filled($this->candidateAccess($employer)[$candidate->public_id][$type] ?? null);
+    }
+
+    /**
+     * @return array<string, array<string, string>>
+     */
+    private function candidateAccess(Employer $employer): array
+    {
+        $notes = $employer->notes;
+
+        return is_array($notes) && is_array($notes['candidate_access'] ?? null)
+            ? $notes['candidate_access']
+            : [];
     }
 
     /**

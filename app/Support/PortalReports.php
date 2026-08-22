@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace App\Support;
 
+use App\Domain\Portal\Models\TrustReport;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Throwable;
 
 class PortalReports
 {
@@ -32,6 +34,7 @@ class PortalReports
     public static function create(array $data): array
     {
         $description = self::text($data['description'] ?? '');
+        $flags = self::detectFlags($description.' '.self::text($data['reason'] ?? ''));
         $report = [
             'id' => (string) Str::uuid(),
             'type' => self::type($data['type'] ?? 'job'),
@@ -40,9 +43,25 @@ class PortalReports
             'description' => $description,
             'contact_email' => self::email($data['contact_email'] ?? ''),
             'status' => 'pending_review',
-            'flags' => self::detectFlags($description.' '.self::text($data['reason'] ?? '')),
+            'flags' => $flags,
             'created_at' => now()->toIso8601String(),
         ];
+
+        try {
+            $trustReport = TrustReport::query()->create([
+                'reporter_id' => $data['reporter_id'] ?? null,
+                'subject_type' => $report['type'],
+                'subject_reference' => $report['subject'],
+                'reason' => $report['reason'],
+                'priority' => $flags === [] ? 'normal' : 'high',
+                'status' => 'open',
+                'description' => trim($description."\n\nContact email: ".($report['contact_email'] ?: 'Not provided')),
+            ]);
+
+            $report['id'] = $trustReport->public_id;
+        } catch (Throwable) {
+            // Keep the public report flow working even if the admin database is unavailable.
+        }
 
         $reports = self::all();
         array_unshift($reports, $report);

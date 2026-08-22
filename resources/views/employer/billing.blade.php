@@ -30,39 +30,7 @@
                         </div>
                     </form>
                 </section>
-                <section class="rounded-lg bg-white p-6 shadow-sm">
-                    <h2 class="text-xl font-bold">Current credit balance</h2>
-                    <div class="mt-4 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-                        @foreach ([
-                            'Published job limit' => $employer->job_post_limit,
-                            'Featured job credits' => $employer->featured_job_credits,
-                            'Candidate search credits' => $employer->candidate_search_credits,
-                            'CV access credits' => $employer->cv_access_credits,
-                            'Contact credits' => $employer->candidate_contact_credits,
-                            'Matching credits' => $employer->matching_request_credits,
-                            'AI recruitment credits' => $employer->ai_recruitment_credits,
-                        ] as $label => $value)
-                            <div class="rounded border border-slate-200 p-4">
-                                <p class="text-2xl font-extrabold text-[#2a7190]">{{ $value }}</p>
-                                <p class="mt-1 text-sm text-slate-600">{{ $label }}</p>
-                            </div>
-                        @endforeach
-                    </div>
-                </section>
-                @if ($transactions->isNotEmpty())
-                    <section class="rounded-lg bg-white p-6 shadow-sm">
-                        <h2 class="text-xl font-bold">Credit usage</h2>
-                        <div class="mt-4 overflow-hidden rounded border border-slate-200">
-                            @foreach ($transactions as $transaction)
-                                <div class="grid gap-2 border-b border-slate-100 p-4 text-sm last:border-b-0 md:grid-cols-[1fr_160px_120px]">
-                                    <p class="font-semibold">{{ $transaction->description }}</p>
-                                    <p class="text-slate-600">{{ str($transaction->credit_type)->replace('_', ' ')->headline() }}</p>
-                                    <p class="font-bold text-[#2a7190]">{{ $transaction->amount }}</p>
-                                </div>
-                            @endforeach
-                        </div>
-                    </section>
-                @endif
+
                 <div class="grid gap-4 md:grid-cols-3">
                     @foreach ([
                         $billing['invoices_title'] => $billing['invoices_copy'],

@@ -172,9 +172,9 @@ class SiteContent
                 'register_label' => 'Create Account',
                 'links' => [
                     ['label' => 'Home', 'url' => '/', 'enabled' => true],
-                    ['label' => 'About Us', 'url' => '/job-seekers', 'enabled' => true],
+                    ['label' => 'About Us', 'url' => '/about-us', 'enabled' => true],
                     ['label' => 'Job', 'url' => '/jobs', 'enabled' => true],
-                    ['label' => 'Contact', 'url' => '/employers', 'enabled' => true],
+                    ['label' => 'Contact', 'url' => '/contact', 'enabled' => true],
                 ],
             ],
             'home' => [

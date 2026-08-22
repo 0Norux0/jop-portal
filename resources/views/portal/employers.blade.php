@@ -7,7 +7,7 @@
             <p class="mt-4 max-w-3xl leading-7 text-slate-700">{{ $pageContent['description'] }}</p>
             <div class="mt-6 flex flex-wrap gap-3">
                 <a href="/employer-register" class="rounded bg-[#2a7190] px-5 py-3 text-sm font-semibold text-white">Register employer</a>
-                <a href="/employer-dashboard" class="rounded border border-[#2a7190] px-5 py-3 text-sm font-semibold text-[#2a7190]">View dashboard</a>
+                <a href="{{ route('employer-dashboard') }}" class="rounded border border-[#2a7190] px-5 py-3 text-sm font-semibold text-[#2a7190]">View dashboard</a>
                 <a href="/candidate-search" class="rounded border border-[#2a7190] px-5 py-3 text-sm font-semibold text-[#2a7190]">Search candidates</a>
             </div>
             <div class="mt-8 grid gap-5 md:grid-cols-2 lg:grid-cols-3">

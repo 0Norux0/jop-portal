@@ -150,8 +150,8 @@ class EmployerPortalContent
                 'applicants' => ['label' => 'Applicants', 'enabled' => true],
                 'candidates' => ['label' => 'Find Candidates', 'enabled' => true],
                 'billing' => ['label' => 'Billing & Account', 'enabled' => true],
-                'promotion' => ['label' => 'Advertise', 'enabled' => true],
-                'services' => ['label' => 'Paid Services', 'enabled' => true],
+                'promotion' => ['label' => 'Advertise', 'enabled' => false],
+                'services' => ['label' => 'Paid Services', 'enabled' => false],
             ],
             'billing' => [
                 'eyebrow' => 'Billing & Account',

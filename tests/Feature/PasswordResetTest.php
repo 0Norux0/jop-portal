@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 use App\Domain\Identity\Models\User;
-use Illuminate\Auth\Notifications\ResetPassword;
+use App\Notifications\ResetPasswordNotification;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Password;
 
@@ -13,7 +13,7 @@ it('sends a reset link to a known email', function (): void {
 
     $this->post('/forgot-password', ['email' => $user->email]);
 
-    Notification::assertSentTo($user, ResetPassword::class);
+    Notification::assertSentTo($user, ResetPasswordNotification::class);
 });
 
 it('resets the password with a valid token', function (): void {

@@ -32,8 +32,23 @@ class CandidateWorkspaceController
         $user = $this->user($request);
         $candidate = $this->candidate($user);
 
+        $jobs = collect(PortalJobPresenter::publishedJobs());
+        $preferredCategory = (string) $candidate->preferred_job_category;
+        $preferredCountries = collect($candidate->preferred_locations ?? [])->filter()->values();
+        $recommendedJobs = $jobs
+            ->sortByDesc(function (array $job) use ($candidate, $preferredCategory, $preferredCountries): int {
+                return ($preferredCategory !== '' && ($job['category'] ?? '') === $preferredCategory ? 60 : 0)
+                    + ($preferredCountries->contains($job['country'] ?? '') ? 35 : 0)
+                    + (filled($candidate->country) && ($job['country'] ?? '') === $candidate->country ? 20 : 0)
+                    + (filled($candidate->work_mode_preference) && str_contains(strtolower((string) ($job['mode'] ?? '')), strtolower(str_replace('_', '-', (string) $candidate->work_mode_preference))) ? 10 : 0);
+            })
+            ->values()
+            ->take(3)
+            ->all();
+
         return view('dashboard', [
-            'portal' => ['jobs' => PortalJobPresenter::publishedJobs()],
+            'portal' => ['jobs' => $jobs->all()],
+            'recommendedJobs' => $recommendedJobs,
             'candidate' => $candidate,
             'profileCompletion' => $this->completion($candidate),
             'alerts' => $user->jobAlerts()->latest()->take(3)->get(),

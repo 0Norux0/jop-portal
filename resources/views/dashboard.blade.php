@@ -60,7 +60,7 @@
                     <h2 class="text-xl font-bold">Recommended jobs</h2>
                     <p class="mt-1 text-sm text-slate-600">Refreshed from the latest published jobs.</p>
                     <div class="mt-4 grid gap-3">
-                        @foreach (array_slice($portal['jobs'], 0, 3) as $job)
+                        @foreach (($recommendedJobs ?? array_slice($portal['jobs'], 0, 3)) as $job)
                             <a href="/jobs/{{ $job['slug'] }}" class="rounded border border-slate-200 p-4 hover:border-[#2a7190]">
                                 <p class="font-semibold">{{ $job['title'] }}</p>
                                 <p class="mt-1 text-sm text-slate-600">{{ $job['city'] }}, {{ $job['country'] }}</p>

@@ -30,7 +30,13 @@ class AdminPanelProvider extends PanelProvider
             ->path('admin')
             ->login(AdminLogin::class)
             ->brandName((string) data_get(SiteContent::load(), 'brand.name', config('jobportal.brand_name')))
-            ->colors(['primary' => Color::Indigo])
+            ->colors([
+                'primary' => Color::Teal,
+                'gray' => Color::Slate,
+                'info' => Color::Sky,
+                'success' => Color::Emerald,
+            ])
+            ->viteTheme('resources/css/filament/admin/theme.css')
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
             ->pages([Dashboard::class])

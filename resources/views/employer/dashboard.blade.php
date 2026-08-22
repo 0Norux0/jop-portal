@@ -14,12 +14,12 @@
                         <div class="mt-2 flex flex-col justify-between gap-4 lg:flex-row lg:items-end">
                             <div>
                                 <h1 class="text-3xl font-extrabold text-slate-950">Welcome back, {{ auth()->user()->name }}</h1>
-                                <p class="mt-2 max-w-2xl text-slate-600">Manage hiring, company presence, applicants, billing, paid services, promotion requests, and account controls from one place.</p>
+                                <p class="mt-2 max-w-2xl text-slate-600">Manage hiring, company presence, applicants, candidate discovery, and account controls from one place.</p>
                             </div>
                             <div class="flex flex-wrap gap-2">
                                 <a href="{{ route('business.company') }}" class="rounded border border-[#2a7190] px-4 py-2 text-sm font-bold text-[#2a7190]">Create Company Page</a>
                                 <a href="{{ route('business.jobs') }}" class="rounded bg-[#2a7190] px-4 py-2 text-sm font-bold text-white">Post a Job</a>
-                                <a href="{{ route('business.services') }}" class="rounded border border-slate-300 px-4 py-2 text-sm font-bold">Paid Services</a>
+
                             </div>
                         </div>
                     </div>
@@ -33,28 +33,6 @@
                         @endforeach
                     </div>
 
-                    <section class="rounded-lg bg-white p-6 shadow-sm">
-                        <div class="flex flex-col justify-between gap-3 md:flex-row md:items-center">
-                            <div>
-                                <p class="font-semibold text-[#2a7190]">{{ $entitlements['label'] }}</p>
-                                <h2 class="mt-1 text-xl font-bold">Plan limits and paid credits</h2>
-                            </div>
-                            <a href="{{ route('business.billing') }}" class="rounded border border-[#2a7190] px-4 py-2 text-sm font-bold text-[#2a7190]">Manage plan</a>
-                        </div>
-                        <div class="mt-5 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-                            @foreach ([
-                                'Published job limit' => $employer->jobs()->where('status', 'published')->count().' / '.$employer->job_post_limit,
-                                'Featured job credits' => $employer->featured_job_credits,
-                                'Candidate searches' => $employer->candidate_search_credits,
-                                'Matching requests' => $employer->matching_request_credits,
-                            ] as $label => $value)
-                                <div class="rounded border border-slate-200 p-4">
-                                    <p class="text-2xl font-extrabold text-[#2a7190]">{{ $value }}</p>
-                                    <p class="mt-1 text-sm text-slate-600">{{ $label }}</p>
-                                </div>
-                            @endforeach
-                        </div>
-                    </section>
 
                     <div class="grid gap-6 xl:grid-cols-[1.2fr_0.8fr]">
                         <section class="rounded-lg bg-white p-6 shadow-sm">
@@ -91,9 +69,7 @@
                             <div class="mt-4 grid gap-3">
                                 @foreach ([
                                     ['Hire talent', 'Search and save verified candidates.', 'business.candidates'],
-                                    ['Billing & Account', 'Plans, billing email, credits, and account settings.', 'business.billing'],
-                                    ['Advertise', 'Promote jobs and company pages.', 'business.promotion'],
-                                    ['Paid Services', 'Request matching, AI tools, and credits.', 'business.services'],
+                                    ['Billing & Account', 'Billing email and account settings.', 'business.billing'],
                                 ] as [$title, $copy, $route])
                                     <a href="{{ route($route) }}" class="rounded border border-slate-200 p-4 hover:border-[#2a7190]">
                                         <p class="font-bold">{{ $title }}</p>
@@ -104,22 +80,6 @@
                         </section>
                     </div>
 
-                    @if ($serviceRequests->isNotEmpty())
-                        <section class="rounded-lg bg-white p-6 shadow-sm">
-                            <div class="flex items-center justify-between gap-3">
-                                <h2 class="text-xl font-bold">Recent paid-service requests</h2>
-                                <a href="{{ route('business.services') }}" class="text-sm font-bold text-[#2a7190]">View all</a>
-                            </div>
-                            <div class="mt-4 grid gap-3">
-                                @foreach ($serviceRequests as $request)
-                                    <div class="rounded border border-slate-200 p-4">
-                                        <p class="font-bold">{{ $request->title }}</p>
-                                        <p class="mt-1 text-sm text-slate-600">{{ str($request->type)->replace('_', ' ')->headline() }} · {{ str($request->status)->headline() }}</p>
-                                    </div>
-                                @endforeach
-                            </div>
-                        </section>
-                    @endif
 
                     <section class="rounded-lg bg-white p-6 shadow-sm">
                         <div class="flex items-center justify-between gap-3">
@@ -128,10 +88,10 @@
                         </div>
                         <div class="mt-4 grid gap-3">
                             @forelse ($applications as $application)
-                                <div class="rounded border border-slate-200 p-4">
+                                <a href="{{ route('business.applicants', ['status' => $application->status]) }}" class="block rounded border border-slate-200 p-4 hover:border-[#2a7190]">
                                     <p class="font-bold">{{ $application->candidate_name }}</p>
                                     <p class="mt-1 text-sm text-slate-600">{{ $application->job?->title }} · {{ str($application->status)->headline() }}</p>
-                                </div>
+                                </a>
                             @empty
                                 <p class="rounded border border-dashed border-slate-300 p-5 text-sm text-slate-600">Applicants will appear here once candidates apply to your jobs.</p>
                             @endforelse

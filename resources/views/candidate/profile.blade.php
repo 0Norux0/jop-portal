@@ -200,7 +200,7 @@
                                 'personal_website_url' => ['Personal website', $links['personal_website'] ?? ''],
                                 'github_url' => ['GitHub', $links['github'] ?? ''],
                                 'behance_url' => ['Behance', $links['behance'] ?? ''],
-                                'youtube_url' => ['YouTube', $links['youtube'] ?? ''],
+                                'youtube_url' => ['YouTube video CV', $links['youtube'] ?? ''],
                             ] as $name => [$label, $value])
                                 <div>
                                     <label class="text-sm font-bold">{{ $label }}</label>
@@ -221,9 +221,10 @@
                     </div>
 
                     <div class="rounded-lg bg-white p-6 shadow-sm">
-                        <h2 class="text-xl font-bold">Add records</h2>
+                        <h2 class="text-xl font-bold">Choose what to add</h2>
+                        <p class="mt-1 text-sm text-slate-600">Open one section and fill only what you need right now.</p>
                         <div class="mt-5 grid gap-4 lg:grid-cols-2">
-                            <form method="POST" action="{{ route('candidate.profile.experience.store') }}" class="grid gap-3 rounded border border-slate-200 p-4">
+                            <details class="rounded border border-slate-200 p-4"><summary class="cursor-pointer font-bold">Experience</summary><form method="POST" action="{{ route('candidate.profile.experience.store') }}" class="mt-4 grid gap-3">
                                 @csrf
                                 <p class="font-bold">Experience</p>
                                 <input name="title" required class="rounded border-slate-300 px-4 py-3" placeholder="Job title">
@@ -233,9 +234,9 @@
                                 <label class="flex items-center gap-2 text-sm"><input name="is_current" type="checkbox" value="1"> Current role</label>
                                 <textarea name="description" rows="3" class="rounded border-slate-300 px-4 py-3" placeholder="Responsibilities and achievements"></textarea>
                                 <button class="rounded bg-[#2a7190] px-4 py-2 font-bold text-white">Add experience</button>
-                            </form>
+                            </form></details>
 
-                            <form method="POST" action="{{ route('candidate.profile.education.store') }}" class="grid gap-3 rounded border border-slate-200 p-4">
+                            <details class="rounded border border-slate-200 p-4"><summary class="cursor-pointer font-bold">Education</summary><form method="POST" action="{{ route('candidate.profile.education.store') }}" class="mt-4 grid gap-3">
                                 @csrf
                                 <p class="font-bold">Education</p>
                                 <input name="school" required class="rounded border-slate-300 px-4 py-3" placeholder="School">
@@ -244,9 +245,9 @@
                                 <div class="grid gap-3 sm:grid-cols-2"><input name="started_on" type="date" class="rounded border-slate-300 px-4 py-3"><input name="ended_on" type="date" class="rounded border-slate-300 px-4 py-3"></div>
                                 <textarea name="description" rows="3" class="rounded border-slate-300 px-4 py-3" placeholder="Notes"></textarea>
                                 <button class="rounded bg-[#2a7190] px-4 py-2 font-bold text-white">Add education</button>
-                            </form>
+                            </form></details>
 
-                            <form method="POST" action="{{ route('candidate.profile.certificates.store') }}" enctype="multipart/form-data" class="grid gap-3 rounded border border-slate-200 p-4">
+                            <details class="rounded border border-slate-200 p-4"><summary class="cursor-pointer font-bold">Certificate</summary><form method="POST" action="{{ route('candidate.profile.certificates.store') }}" enctype="multipart/form-data" class="mt-4 grid gap-3">
                                 @csrf
                                 <p class="font-bold">Certificate</p>
                                 <input name="name" required class="rounded border-slate-300 px-4 py-3" placeholder="Certificate name">
@@ -256,9 +257,9 @@
                                 <div class="grid gap-3 sm:grid-cols-2"><input name="issued_on" type="date" class="rounded border-slate-300 px-4 py-3"><input name="expires_on" type="date" class="rounded border-slate-300 px-4 py-3"></div>
                                 <input name="file" type="file" class="rounded border border-slate-300 px-4 py-3">
                                 <button class="rounded bg-[#2a7190] px-4 py-2 font-bold text-white">Add certificate</button>
-                            </form>
+                            </form></details>
 
-                            <form method="POST" action="{{ route('candidate.profile.projects.store') }}" class="grid gap-3 rounded border border-slate-200 p-4">
+                            <details class="rounded border border-slate-200 p-4"><summary class="cursor-pointer font-bold">Project</summary><form method="POST" action="{{ route('candidate.profile.projects.store') }}" class="mt-4 grid gap-3">
                                 @csrf
                                 <p class="font-bold">Project</p>
                                 <input name="title" required class="rounded border-slate-300 px-4 py-3" placeholder="Project title">
@@ -268,9 +269,9 @@
                                 <div class="grid gap-3 sm:grid-cols-2"><input name="started_on" type="date" class="rounded border-slate-300 px-4 py-3"><input name="ended_on" type="date" class="rounded border-slate-300 px-4 py-3"></div>
                                 <textarea name="description" rows="3" class="rounded border-slate-300 px-4 py-3" placeholder="What you built or contributed"></textarea>
                                 <button class="rounded bg-[#2a7190] px-4 py-2 font-bold text-white">Add project</button>
-                            </form>
+                            </form></details>
 
-                            <form method="POST" action="{{ route('candidate.profile.portfolio.store') }}" enctype="multipart/form-data" class="grid gap-3 rounded border border-slate-200 p-4 lg:col-span-2">
+                            <details class="rounded border border-slate-200 p-4 lg:col-span-2"><summary class="cursor-pointer font-bold">Portfolio item</summary><form method="POST" action="{{ route('candidate.profile.portfolio.store') }}" enctype="multipart/form-data" class="mt-4 grid gap-3">
                                 @csrf
                                 <p class="font-bold">Portfolio item</p>
                                 <div class="grid gap-3 md:grid-cols-2">
@@ -286,7 +287,7 @@
                                 </div>
                                 <textarea name="description" rows="3" class="rounded border-slate-300 px-4 py-3" placeholder="Description"></textarea>
                                 <button class="w-fit rounded bg-[#2a7190] px-4 py-2 font-bold text-white">Add portfolio item</button>
-                            </form>
+                            </form></details>
                         </div>
                     </div>
 

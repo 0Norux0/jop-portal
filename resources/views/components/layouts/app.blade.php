@@ -26,15 +26,17 @@
                         <span class="px-4 py-3">{{ $site['brand']['name'] }}</span>
                     @endif
                 </a>
-                <form action="/jobs" method="GET" class="hidden h-12 w-[280px] items-center overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm sm:flex">
-                    <input name="q" value="{{ request('q') }}" class="h-full min-w-0 flex-1 border-0 bg-transparent px-4 text-sm text-slate-800 placeholder:text-slate-400 focus:ring-0" placeholder="Search jobs">
-                    <button type="submit" class="flex h-full items-center gap-2 px-4 text-sm font-semibold text-white" style="background: {{ $primary }};">
-                        <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                            <path d="m20 20-4.2-4.2m1.2-5.3a6.5 6.5 0 1 1-13 0 6.5 6.5 0 0 1 13 0Z" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                        </svg>
-                        <span>Search</span>
-                    </button>
-                </form>
+                @unless (request()->routeIs('login', 'register', 'password.*', 'verification.*'))
+                    <form action="/jobs" method="GET" class="hidden h-12 w-[280px] items-center overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm sm:flex">
+                        <input name="q" value="{{ request('q') }}" class="h-full min-w-0 flex-1 border-0 bg-transparent px-4 text-sm text-slate-800 placeholder:text-slate-400 focus:ring-0" placeholder="Search jobs, skills, or companies">
+                        <button type="submit" class="flex h-full items-center gap-2 px-4 text-sm font-semibold text-white" style="background: {{ $primary }};">
+                            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                                <path d="m20 20-4.2-4.2m1.2-5.3a6.5 6.5 0 1 1-13 0 6.5 6.5 0 0 1 13 0Z" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                            </svg>
+                            <span>Search</span>
+                        </button>
+                    </form>
+                @endunless
             </div>
             <nav class="hidden items-center gap-8 text-sm font-medium text-slate-800 lg:flex">
                 @foreach ($site['navigation']['links'] as $link)
@@ -47,8 +49,8 @@
             </nav>
             <nav class="flex items-center gap-3 text-sm font-medium">
                 @auth
-                    <a href="{{ auth()->user()->hasAnyRole([\App\Domain\Identity\Enums\Role::Employer->value, \App\Domain\Identity\Enums\Role::RecruitmentAgency->value]) ? route('business.dashboard') : route('dashboard') }}" style="color: {{ $primary }};">Dashboard</a>
-                    <a href="{{ route('logout.safe') }}" class="text-slate-500 underline">Sign out</a>
+                    <a href="{{ auth()->user()->hasAnyRole([\App\Domain\Identity\Enums\Role::Employer->value, \App\Domain\Identity\Enums\Role::RecruitmentAgency->value]) ? route('business.dashboard') : route('dashboard') }}" class="rounded-lg border border-slate-200 bg-white px-4 py-2 font-semibold shadow-sm" style="color: {{ $primary }};">Dashboard</a>
+                    <a href="{{ route('logout.safe') }}" class="rounded-lg bg-slate-900 px-4 py-2 font-semibold text-white shadow-sm">Sign out</a>
                 @else
                     <a href="/login" class="hidden text-slate-700 sm:inline">{{ $site['navigation']['sign_in_label'] }}</a>
                     <a href="/register" class="flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-4 py-2 shadow-sm" style="color: {{ $primary }};">

@@ -41,7 +41,7 @@ class LoginActivityResource extends Resource
                 TextColumn::make('user.email')->label('User')->searchable()->placeholder('Unknown'),
                 IconColumn::make('successful')->boolean(),
                 TextColumn::make('failure_reason')->placeholder('—'),
-                TextColumn::make('ip_address')->label('IP'),
+
                 TextColumn::make('user_agent')->limit(40)->toggleable(),
                 TextColumn::make('created_at')->dateTime()->sortable(),
             ]);

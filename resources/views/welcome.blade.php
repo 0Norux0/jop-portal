@@ -55,11 +55,7 @@
                         <option>Negotiable</option>
                         <option>Visa support</option>
                     </select>
-                    <div class="flex flex-wrap gap-2 sm:col-span-1">
-                        <a href="/employers" class="rounded border px-4 py-3 text-sm font-semibold" style="border-color: {{ $primary }}; color: {{ $primary }};">Hire Talent</a>
-                        <a href="/register" class="rounded border px-4 py-3 text-sm font-semibold" style="border-color: {{ $primary }}; color: {{ $primary }};">Upload CV</a>
-                        <a href="/employers" class="rounded border px-4 py-3 text-sm font-semibold" style="border-color: {{ $primary }}; color: {{ $primary }};">Post a Job</a>
-                    </div>
+
                 </form>
             </div>
 
@@ -130,7 +126,7 @@
             <div class="grid gap-4 sm:grid-cols-2">
                 @foreach (['Northbridge Care Group' => 'United Kingdom · Care homes', 'MapleCloud Labs' => 'Canada · Remote technology', 'Pearl Vista Hotels' => 'UAE · Hospitality', 'GulfSecure Systems' => 'Kuwait · Cybersecurity'] as $company => $meta)
                     <a href="/employers" class="rounded-lg border border-slate-200 bg-[#f7f7f7] p-5 transition hover:border-[#2a7190] hover:bg-white">
-                        <div class="flex h-12 w-12 items-center justify-center rounded text-lg font-bold text-white" style="background: {{ $primary }};">{{ substr($company, 0, 1) }}</div>
+                        <div class="flex h-12 w-12 items-center justify-center rounded-full text-lg font-bold text-white" style="background: {{ $primary }};">{{ substr($company, 0, 1) }}</div>
                         <h3 class="mt-4 font-bold">{{ $company }}</h3>
                         <p class="mt-1 text-sm text-slate-600">{{ $meta }}</p>
                         <span class="mt-3 inline-flex rounded-full bg-[#e9f3f7] px-3 py-1 text-xs font-bold text-[#2a7190]">Verified employer</span>

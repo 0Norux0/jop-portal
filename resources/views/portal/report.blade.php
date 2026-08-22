@@ -16,7 +16,7 @@
                 <input type="hidden" name="type" value="{{ $type }}">
                 <div>
                     <label class="block text-sm font-semibold" for="subject">Reported {{ strtolower($typeLabel) }}</label>
-                    <input id="subject" name="subject" type="text" required value="{{ old('subject', $subject) }}" class="mt-2 w-full rounded border-slate-300 px-4 py-3">
+                    <input id="subject" name="subject" type="text" readonly required value="{{ old('subject', $subject) }}" class="mt-2 w-full rounded border-slate-300 bg-slate-50 px-4 py-3 text-slate-700">
                 </div>
                 <div class="mt-5">
                     <label class="block text-sm font-semibold" for="reason">Reason</label>
@@ -36,7 +36,7 @@
                 </div>
                 <div class="mt-6 flex flex-wrap gap-3">
                     <button type="submit" class="rounded bg-[#2a7190] px-5 py-3 text-sm font-semibold text-white">Submit report</button>
-                    <a href="/trust-safety" class="rounded border border-slate-300 px-5 py-3 text-sm font-semibold text-slate-700">Cancel</a>
+                    <a href="{{ route('jobs.index') }}" class="rounded border border-slate-300 px-5 py-3 text-sm font-semibold text-slate-700">Cancel</a>
                 </div>
             </form>
         </div>

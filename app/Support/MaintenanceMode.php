@@ -20,7 +20,7 @@ class MaintenanceMode
         $defaults = [
             'enabled' => false,
             'message' => 'The site is temporarily down for maintenance. Please check back shortly.',
-            'allowed_paths' => ['admin', 'admin/*', 'login', 'logout', 'maintenance'],
+            'allowed_paths' => ['admin', 'admin/*', 'livewire/*', 'filament/*', 'login', 'logout', 'maintenance'],
         ];
 
         try {

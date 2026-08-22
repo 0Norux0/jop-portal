@@ -9,7 +9,7 @@
                 <section class="rounded-lg bg-white p-6 shadow-sm">
                     <p class="font-semibold text-[#2a7190]">Hire talent</p>
                     <h1 class="mt-1 text-3xl font-extrabold">Candidate discovery</h1>
-                    <p class="mt-2 text-sm text-slate-600">Search credits: {{ $employer->candidate_search_credits }} · CV credits: {{ $employer->cv_access_credits }} · Contact credits: {{ $employer->candidate_contact_credits }}</p>
+                    <p class="mt-2 text-sm text-slate-600">Search candidates by role, country, and skill. Contact details stay protected until you request access.</p>
                     <form method="GET" class="mt-6 grid gap-3 md:grid-cols-4">
                         <select name="category" class="rounded border-slate-300 px-4 py-3 text-sm">
                             <option value="">All categories</option>
@@ -23,7 +23,7 @@
                                 <option value="{{ $country }}" @selected(($filters['country'] ?? '') === $country)>{{ $country }}</option>
                             @endforeach
                         </select>
-                        <input name="skill" value="{{ $filters['skill'] ?? '' }}" class="rounded border-slate-300 px-4 py-3 text-sm" placeholder="Skill keyword">
+                        <input name="skill" value="{{ $filters['skill'] ?? '' }}" class="rounded border-slate-300 px-4 py-3 text-sm" placeholder="Skill, tool, or keyword">
                         <button class="rounded bg-[#2a7190] px-4 py-3 text-sm font-bold text-white">Search</button>
                     </form>
                     <p class="mt-4 rounded border border-[#2a7190]/20 bg-[#e9f3f7] p-4 text-sm leading-6 text-slate-700">Contact details stay protected. Save candidates here, then request contact access through the approved employer workflow.</p>
@@ -54,7 +54,7 @@
                                     @else
                                         <form method="POST" action="{{ route('business.candidates.cv-access', $candidate) }}">
                                             @csrf
-                                            <button class="rounded border border-slate-200 px-4 py-2 text-sm font-bold">Use CV credit</button>
+                                            <button class="rounded border border-slate-200 px-4 py-2 text-sm font-bold">Open CV</button>
                                         </form>
                                     @endif
                                 @endif
@@ -71,7 +71,7 @@
                                 <form method="POST" action="{{ route('business.candidates.contact-access', $candidate) }}">
                                     @csrf
                                     <button class="rounded border border-[#2a7190] px-4 py-2 text-sm font-bold text-[#2a7190]">
-                                        {{ filled($access[$candidate->public_id]['contact'] ?? null) ? 'Contact requested' : 'Use contact credit' }}
+                                        {{ filled($access[$candidate->public_id]['contact'] ?? null) ? 'Contact requested' : 'Request contact' }}
                                     </button>
                                 </form>
                             </div>

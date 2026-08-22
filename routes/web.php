@@ -6,6 +6,7 @@ use App\Support\PortalData;
 use App\Support\PortalJobPresenter;
 use App\Support\PortalReports;
 use App\Support\CareerCoach;
+use App\Support\EmailContent;
 use App\Support\InstitutionMetrics;
 use App\Http\Controllers\CandidateWorkspaceController;
 use App\Http\Controllers\EmployerWorkspaceController;
@@ -16,6 +17,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', static fn () => view('welcome', ['portal' => PortalData::load()]))->name('home');
+Route::get('/about-us', static fn () => view('portal.about-us', ['portal' => PortalData::load()]))->name('about-us');
+Route::get('/contact', static fn () => view('portal.contact', ['portal' => PortalData::load()]))->name('contact');
 
 Route::middleware('portal.capability:candidates')->group(function (): void {
     Route::get('/job-seekers', static fn () => view('portal.job-seekers', ['portal' => PortalData::load()]))->name('job-seekers');
@@ -28,8 +31,39 @@ Route::middleware('portal.capability:candidates')->group(function (): void {
 Route::middleware('portal.capability:employers')->group(function (): void {
     Route::get('/employers', static fn () => view('portal.employers', ['portal' => PortalData::load()]))->name('employers');
     Route::get('/employer-register', static fn () => view('portal.employer-register', ['portal' => PortalData::load()]))->name('employer-register');
-    Route::get('/employer-dashboard', static fn () => view('portal.employer-dashboard', ['portal' => PortalData::load()]))->name('employer-dashboard');
-    Route::get('/candidate-search', static fn () => view('portal.candidate-search', ['portal' => PortalData::load()]))->name('candidate-search');
+    Route::get('/employer-dashboard', static function (Request $request) {
+        if ($request->user()?->hasAnyRole([Role::Employer->value, Role::RecruitmentAgency->value])) {
+            return redirect()->route('business.dashboard');
+        }
+
+        return redirect()->route('login');
+    })->name('employer-dashboard');
+    Route::get('/candidate-search', static function (Request $request) {
+        $portal = PortalData::load();
+        $filters = [
+            'q' => trim((string) $request->query('q', '')),
+            'country' => trim((string) $request->query('country', '')),
+            'badge' => trim((string) $request->query('badge', '')),
+        ];
+
+        $portal['candidates'] = collect($portal['candidates'])
+            ->when($filters['q'] !== '', fn ($candidates) => $candidates->filter(function (array $candidate) use ($filters): bool {
+                $haystack = strtolower(implode(' ', [
+                    $candidate['name'] ?? '',
+                    $candidate['headline'] ?? '',
+                    $candidate['country'] ?? '',
+                    implode(' ', $candidate['skills'] ?? []),
+                ]));
+
+                return str_contains($haystack, strtolower($filters['q']));
+            }))
+            ->when($filters['country'] !== '', fn ($candidates) => $candidates->where('country', $filters['country']))
+            ->when($filters['badge'] !== '', fn ($candidates) => $candidates->filter(fn (array $candidate): bool => in_array($filters['badge'], $candidate['badges'] ?? [], true)))
+            ->values()
+            ->all();
+
+        return view('portal.candidate-search', ['portal' => $portal, 'filters' => $filters]);
+    })->name('candidate-search');
     Route::get('/packages', static fn () => abort(404))->name('packages');
 });
 
@@ -69,7 +103,7 @@ Route::middleware('portal.capability:content')->group(function (): void {
 });
 
 Route::middleware('portal.capability:trust_safety')->group(function (): void {
-    Route::get('/trust-safety', static fn () => view('portal.trust-safety', ['portal' => PortalData::load()]))->name('trust-safety');
+    Route::get('/trust-safety', static fn () => abort(404))->name('trust-safety');
     Route::get('/platform-admin', static fn () => view('portal.platform-admin', ['portal' => PortalData::load()]))->name('platform-admin');
     Route::get('/candidate-verification', static fn () => view('portal.candidate-verification', ['portal' => PortalData::load()]))->name('candidate-verification');
     Route::get('/employer-verification', static fn () => view('portal.employer-verification', ['portal' => PortalData::load()]))->name('employer-verification');
@@ -92,18 +126,50 @@ Route::middleware('portal.capability:trust_safety')->group(function (): void {
             'contact_email' => ['nullable', 'email', 'max:160'],
         ]);
 
+        $validated['reporter_id'] = $request->user()?->id;
         $report = PortalReports::create($validated);
 
-        return redirect('/trust-safety')->with('status', 'Report submitted for admin review. Reference: '.$report['id']);
+        return redirect()->route('jobs.index')->with('status', 'Report submitted for admin review. Reference: '.$report['id']);
     })->name('report.store');
 });
 
 Route::middleware('portal.capability:jobs')->group(function (): void {
-    Route::get('/jobs', static function () {
+    Route::get('/jobs', static function (Request $request) {
         $portal = PortalData::load();
-        $portal['jobs'] = PortalJobPresenter::publishedJobs();
+        $filters = [
+            'q' => trim((string) $request->query('q', '')),
+            'country' => trim((string) $request->query('country', '')),
+            'category' => trim((string) $request->query('category', '')),
+            'work_mode' => trim((string) $request->query('work_mode', '')),
+            'employment_type' => trim((string) $request->query('employment_type', '')),
+            'visa' => (string) $request->query('visa', ''),
+            'urgent' => (string) $request->query('urgent', ''),
+        ];
 
-        return view('portal.jobs.index', ['portal' => $portal]);
+        $portal['jobs'] = collect(PortalJobPresenter::publishedJobs())
+            ->when($filters['q'] !== '', fn ($jobs) => $jobs->filter(function (array $job) use ($filters): bool {
+                $haystack = strtolower(implode(' ', [
+                    $job['title'] ?? '',
+                    $job['company'] ?? '',
+                    $job['city'] ?? '',
+                    $job['country'] ?? '',
+                    $job['category'] ?? '',
+                    $job['description'] ?? '',
+                    implode(' ', $job['skills'] ?? []),
+                ]));
+
+                return str_contains($haystack, strtolower($filters['q']));
+            }))
+            ->when($filters['country'] !== '', fn ($jobs) => $jobs->where('country', $filters['country']))
+            ->when($filters['category'] !== '', fn ($jobs) => $jobs->where('category', $filters['category']))
+            ->when($filters['work_mode'] !== '', fn ($jobs) => $jobs->filter(fn (array $job): bool => strtolower((string) $job['mode']) === strtolower(str_replace('_', '-', $filters['work_mode']))))
+            ->when($filters['employment_type'] !== '', fn ($jobs) => $jobs->filter(fn (array $job): bool => strtolower((string) $job['type']) === strtolower(str_replace('_', '-', $filters['employment_type']))))
+            ->when($filters['visa'] === '1', fn ($jobs) => $jobs->filter(fn (array $job): bool => in_array('Visa sponsorship', $job['badges'] ?? [], true)))
+            ->when($filters['urgent'] === '1', fn ($jobs) => $jobs->where('urgent', true))
+            ->values()
+            ->all();
+
+        return view('portal.jobs.index', ['portal' => $portal, 'filters' => $filters]);
     })->name('jobs.index');
     Route::get('/jobs/{slug}', function (string $slug) {
         $portal = PortalData::load();
@@ -166,6 +232,52 @@ Route::middleware(['auth', 'verified'])->group(function (): void {
 
 Route::get('/talent/{slug}', [CandidateWorkspaceController::class, 'publicProfile'])->name('candidate.public');
 
+Route::middleware(['auth', 'verified', 'admin.section:email-previews'])
+    ->prefix('email-previews')
+    ->name('email-previews.')
+    ->group(function (): void {
+        Route::get('/', function () {
+            return view('emails.preview-index', [
+                'previews' => [
+                    ['label' => 'Forgot password email', 'url' => route('email-previews.show', 'reset-password')],
+                    ['label' => 'Email confirmation', 'url' => route('email-previews.show', 'verify-email')],
+                    ['label' => 'Welcome email', 'url' => route('email-previews.show', 'welcome')],
+                ],
+            ]);
+        })->name('index');
+
+        Route::get('/{type}', function (string $type) {
+            $user = request()->user();
+            $content = EmailContent::load();
+            $branding = EmailContent::branding();
+
+            return match ($type) {
+                'reset-password' => view('emails.auth.reset-password', [
+                    ...$branding,
+                    'content' => $content['reset_password'],
+                    'user' => $user,
+                    'resetUrl' => url(route('password.reset', [
+                        'token' => 'preview-token',
+                        'email' => $user->email,
+                    ], false)),
+                ]),
+                'verify-email' => view('emails.auth.verify-email', [
+                    ...$branding,
+                    'content' => $content['verify_email'],
+                    'user' => $user,
+                    'verificationUrl' => url('/email/verify/preview-link'),
+                ]),
+                'welcome' => view('emails.auth.welcome', [
+                    ...$branding,
+                    'content' => $content['welcome'],
+                    'user' => $user,
+                    'dashboardUrl' => url('/dashboard'),
+                ]),
+                default => abort(404),
+            };
+        })->name('show');
+    });
+
 Route::middleware(['auth', 'verified', 'employer', 'portal.capability:employers'])->prefix('business')->name('business.')->group(function (): void {
     Route::get('/', [EmployerWorkspaceController::class, 'dashboard'])->name('dashboard');
     Route::get('/company', [EmployerWorkspaceController::class, 'company'])->name('company');
@@ -182,10 +294,10 @@ Route::middleware(['auth', 'verified', 'employer', 'portal.capability:employers'
     Route::post('/candidates/{candidate}/contact-access', [EmployerWorkspaceController::class, 'requestCandidateContact'])->name('candidates.contact-access');
     Route::get('/billing', [EmployerWorkspaceController::class, 'billing'])->name('billing');
     Route::post('/billing', [EmployerWorkspaceController::class, 'updateBilling'])->name('billing.update');
-    Route::get('/advertise', [EmployerWorkspaceController::class, 'promotion'])->name('promotion');
-    Route::post('/advertise', [EmployerWorkspaceController::class, 'storePromotion'])->name('promotion.store');
-    Route::get('/paid-services', [EmployerWorkspaceController::class, 'services'])->name('services');
-    Route::post('/paid-services', [EmployerWorkspaceController::class, 'requestService'])->name('services.store');
+    Route::get('/advertise', static fn () => abort(404))->name('promotion');
+    Route::post('/advertise', static fn () => abort(404))->name('promotion.store');
+    Route::get('/paid-services', static fn () => abort(404))->name('services');
+    Route::post('/paid-services', static fn () => abort(404))->name('services.store');
 });
 
 Route::middleware('portal.capability:content')->group(function (): void {

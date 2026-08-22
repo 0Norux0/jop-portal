@@ -9,7 +9,7 @@
             <div class="mt-8 grid gap-5 lg:grid-cols-4">
                 @foreach (['Images', 'PDFs', 'Videos', 'Website links', 'GitHub links', 'Behance links', 'Google Drive links', 'Certificates'] as $type)
                     <div class="rounded-lg bg-white p-5 shadow-sm">
-                        <div class="flex h-14 w-14 items-center justify-center rounded bg-[#2a7190] font-bold text-white">{{ substr($type, 0, 1) }}</div>
+                        <div class="flex h-14 w-14 items-center justify-center rounded-full bg-[#2a7190] font-bold text-white">{{ substr($type, 0, 1) }}</div>
                         <h2 class="mt-4 font-bold">{{ $type }}</h2>
                     </div>
                 @endforeach

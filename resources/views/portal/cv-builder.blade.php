@@ -9,12 +9,27 @@
             <div class="mt-8 grid gap-5 lg:grid-cols-3">
                 <section class="rounded-lg bg-white p-6 shadow-sm">
                     <h2 class="text-xl font-bold">Upload CV</h2>
-                    <div class="mt-4 flex min-h-40 items-center justify-center rounded-lg border-2 border-dashed border-slate-300 bg-slate-50 p-5 text-center">
-                        <div>
-                            <p class="font-semibold">Drop PDF or DOCX here</p>
-                            <p class="mt-1 text-sm text-slate-600">File validation and storage connect to the candidate module.</p>
-                        </div>
-                    </div>
+                    <label data-cv-dropzone class="mt-4 flex min-h-40 cursor-pointer items-center justify-center rounded-lg border-2 border-dashed border-slate-300 bg-slate-50 p-5 text-center transition hover:border-[#2a7190] hover:bg-white">
+                        <input data-cv-input type="file" accept=".pdf,.doc,.docx" class="sr-only">
+                        <span>
+                            <span class="block font-semibold">Choose PDF, DOC, or DOCX</span>
+                            <span data-cv-file class="mt-1 block text-sm text-slate-600">Signed-in candidates upload from the profile page.</span>
+                        </span>
+                    </label>
+                    <script>
+                        document.querySelectorAll('[data-cv-dropzone]').forEach((zone) => {
+                            const input = zone.querySelector('[data-cv-input]');
+                            const label = zone.querySelector('[data-cv-file]');
+                            const showFile = (file) => { if (file && label) label.textContent = file.name + ' selected. Sign in to save it to your profile.'; };
+                            zone.addEventListener('dragover', (event) => event.preventDefault());
+                            zone.addEventListener('drop', (event) => {
+                                event.preventDefault();
+                                const file = event.dataTransfer.files[0];
+                                if (file) showFile(file);
+                            });
+                            input?.addEventListener('change', () => showFile(input.files[0]));
+                        });
+                    </script>
                 </section>
                 <section class="rounded-lg bg-white p-6 shadow-sm">
                     <h2 class="text-xl font-bold">Create CV online</h2>
